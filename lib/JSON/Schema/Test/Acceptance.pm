@@ -4,9 +4,15 @@ use 5.006;
 use strict;
 use warnings;
 
+use Test::More;
+use Cwd 'abs_path';
+use JSON;
+
+use Data::Dumper;
+
 =head1 NAME
 
-JSON::Schema::Test::Acceptance - The great new JSON::Schema::Test::Acceptance!
+JSON::Schema::Test::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
 
 =head1 VERSION
 
@@ -16,6 +22,7 @@ Version 0.01
 
 our $VERSION = '0.01';
 
+plan tests => 1;
 
 =head1 SYNOPSIS
 
@@ -28,25 +35,75 @@ Perhaps a little code snippet.
     my $foo = JSON::Schema::Test::Acceptance->new();
     ...
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+# =head2 function1
 
 =cut
 
-sub function1 {
+sub acceptance {
+  my ($self, $code) = @_;
+  foreach my $case (@{$self->cases}) {
+    my $input  = $case->{input};
+    my $schema = $case->{schema};
+    my $output = $case->{output};
+    my $result = $code->($input, $schema);
+    # Don't think this is the correct test method to use. Check this.
+    # is_deeply $result, $output, $case->{name};
+
+  }
 }
 
-=head2 function2
+sub _load_tests {
 
-=cut
+  my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
 
-sub function2 {
+  my $draft_dir = $mod_dir . '/tests/draft3/';
+
+  # opendir (my $dir, $draft_dir) ;
+  # my @tests = grep { -f "$draft_dir/$_"} readdir $dir;
+  # closedir $dir;
+
+  # warn Dumper(\@tests);
+  # foreach my $file (@tests) {
+  #   #some stuff
+  #   # open ( my $fh, '<', $file ) or die ("Could not open schema file $fn for read");
+  # }
+
+  my $fn = $draft_dir . "required.json";
+  open ( my $fh, '<', $fn ) or die ("Could not open schema file $fn for read");
+  my $raw_json = '';
+  $raw_json .= $_ while (<$fh>);
+  my $parsed_json = JSON::from_json($raw_json);
+
+  warn 'the json';
+  warn Dumper($parsed_json);
+
+  my @test_tests = @{$parsed_json};
+
+  my $test = $test_tests[0];
+  warn 'the test';
+  warn Dumper($test);
+
+  my $t_description = $test->{description};
+  my $test_test_cases = $test->{tests};
+  my $schema = $test->{schema};
+
+  # Just while developing...
+  use JSON::Schema;
+
+  my $validator = JSON::Schema->new($schema);
+  my $result = $validator->validate($test_test_cases->[0]->{data});
+
+  warn 'results';
+  warn Dumper($result);
+  warn 'test test case';
+  warn Dumper($test_test_cases->[0]);
+
+
+  warn 'is OK?';
+  ok(!($test_test_cases->[0]->{valid} xor $result));
+
 }
 
 =head1 AUTHOR
@@ -58,8 +115,6 @@ Ben Hutton (@relequestual), C<< <relequest at cpan.org> >>
 Please report any bugs or feature requests to C<bug-json-schema-test-acceptance at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=JSON-Schema-Test-Acceptance>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
 
 
 =head1 SUPPORT
