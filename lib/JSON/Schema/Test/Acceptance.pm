@@ -8,6 +8,7 @@ use Test::More;
 use Cwd 'abs_path';
 use JSON;
 
+use JSON::Schema;
 use Data::Dumper;
 
 =head1 NAME
@@ -21,8 +22,6 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
-
-plan tests => 1;
 
 =head1 SYNOPSIS
 
@@ -41,20 +40,66 @@ Perhaps a little code snippet.
 
 =cut
 
+sub new {
+  my $class = shift;
+  return bless {}, $class;
+}
+
 sub acceptance {
   my ($self, $code) = @_;
-  foreach my $case (@{$self->cases}) {
-    my $input  = $case->{input};
-    my $schema = $case->{schema};
-    my $output = $case->{output};
-    my $result = $code->($input, $schema);
-    # Don't think this is the correct test method to use. Check this.
-    # is_deeply $result, $output, $case->{name};
+  my $tests = $self->_load_tests;
+  # $self->_validate;
+  $self->_run_tests($code, $tests);
 
-  }
+
+  # foreach my $case (@{$self->cases}) {
+  #   my $input  = $case->{input};
+  #   my $schema = $case->{schema};
+  #   my $output = $case->{output};
+  #   my $result = $code->($input, $schema);
+  # }
+
+
+}
+
+
+sub _test_testing {
+  my $accepter = shift->new();
+
+  $accepter->acceptance(sub{
+    my $input = shift;
+    my $schema = shift;
+    JSON::Schema->new($schema)->validate($input);
+  });
+
+  done_testing();
+}
+
+sub _validate {}
+
+sub _run_tests {
+  my $self = shift;
+  my $code = shift;
+  my $test = shift;
+
+  my $test_test_cases = $test->{tests};
+  my $schema = $test->{schema};
+
+  warn 'test test case';
+  warn Dumper($test_test_cases->[0]);
+
+  my $result = $code->($schema, $test_test_cases->[0]->{data});
+
+  # warn 'results';
+  # warn Dumper($result);
+
+
+  ok(_eq_bool($test_test_cases->[0]->{valid}, $result), $test->{description} . ' - ' . $test_test_cases->[0]->{description});
+
 }
 
 sub _load_tests {
+
 
   my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
 
@@ -85,25 +130,14 @@ sub _load_tests {
   warn 'the test';
   warn Dumper($test);
 
-  my $t_description = $test->{description};
-  my $test_test_cases = $test->{tests};
-  my $schema = $test->{schema};
+  return $test;
 
-  # Just while developing...
-  use JSON::Schema;
-
-  my $validator = JSON::Schema->new($schema);
-  my $result = $validator->validate($test_test_cases->[0]->{data});
-
-  warn 'results';
-  warn Dumper($result);
-  warn 'test test case';
-  warn Dumper($test_test_cases->[0]);
+}
 
 
-  warn 'is OK?';
-  ok(!($test_test_cases->[0]->{valid} xor $result));
-
+# Forces the two variables passed, into boolean context.
+sub _eq_bool {
+  return !(shift xor shift);
 }
 
 =head1 AUTHOR
