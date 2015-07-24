@@ -11,6 +11,8 @@ use JSON;
 use JSON::Schema;
 use Data::Dumper;
 
+use Carp::Always;
+
 =head1 NAME
 
 JSON::Schema::Test::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
@@ -46,10 +48,12 @@ sub new {
 }
 
 sub acceptance {
-  my ($self, $code) = @_;
+  my ($self, $code, $options) = @_;
   my $tests = $self->_load_tests;
-  # $self->_validate;
-  $self->_run_tests($code, $tests);
+
+  my $skip_tests = $options->{skip_tests} // {};
+
+  $self->_run_tests($code, $tests, $skip_tests);
 
 
   # foreach my $case (@{$self->cases}) {
@@ -66,11 +70,42 @@ sub acceptance {
 sub _test_testing {
   my $accepter = shift->new();
 
+  #Skip tests which are known not to be supported and cause problems.
+  my $skip_tests = ['multiple extends'];
+
   $accepter->acceptance(sub{
-    my $input = shift;
     my $schema = shift;
-    JSON::Schema->new($schema)->validate($input);
-  });
+    my $input = shift;
+    my $return;
+
+
+
+    # my $json = JSON->new;
+
+    # my $test_case = from_json('
+    #   {
+    #     "schema": {
+    #         "additionalProperties": {"type": "boolean"}
+    #     },
+    #     "data": {"foo" : true}
+    #   }'
+    # );
+    # $schema = $test_case->{schema};
+    # $input = $json->encode($test_case->{data});
+
+    # warn "input";
+    # warn Dumper($input);
+    # warn "schema";
+    # warn Dumper($schema);
+
+    # eval{$return = JSON::Schema->new($schema)->validate($input)};
+    $return = JSON::Schema->new($schema)->validate($input);
+    # warn Dumper($input) if $@;
+    # warn Dumper($input) if $@;
+    # fail $@ if $@;
+    # warn Dumper($return);
+    return $return;
+  }, {skip_tests => $skip_tests});
 
   done_testing();
 }
@@ -80,58 +115,94 @@ sub _validate {}
 sub _run_tests {
   my $self = shift;
   my $code = shift;
-  my $test = shift;
+  my $tests = shift;
+  my $skip_tests = shift;
 
-  my $test_test_cases = $test->{tests};
-  my $schema = $test->{schema};
+  my $json = JSON->new;
 
-  warn 'test test case';
-  warn Dumper($test_test_cases->[0]);
+  foreach my $test_group (@{$tests}) {
 
-  my $result = $code->($schema, $test_test_cases->[0]->{data});
+    # warn Dumper($test_group);
 
-  # warn 'results';
-  # warn Dumper($result);
+    foreach my $test_group_test (@{$test_group}){
+
+      my $test_group_cases = $test_group_test->{tests};
+      my $schema = $test_group_test->{schema};
+
+      foreach my $test (@{$test_group_cases}) {
+
+        my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
+
+        # warn Dumper(grep { $subtest_name =~ /$_/} @$skip_tests);
+
+        TODO: {
+          todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
+            if grep { $subtest_name =~ /$_/} @$skip_tests;
+
+        subtest $subtest_name, sub {
+
+          # warn 'test group';
+          # warn Dumper($test);
+
+          # warn Dumper($schema);
+          # warn Dumper($test);
+
+          # warn ($test_group_test->{description} . ' - ' . $test->{description});
+
+          # Current workaround for dealing with data which is not a json object or array
+          # https://github.com/json-schema/JSON-Schema-Test-Suite/issues/102
+
+          # warn "raw test data";
+          # warn Dumper($test->{data});
+          my $result;
+          if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
+            $result = $code->($schema, $json->encode($test->{data}));
+          } else {
+            $result = $code->($schema, $json->encode([$test->{data}]));
+          }
 
 
-  ok(_eq_bool($test_test_cases->[0]->{valid}, $result), $test->{description} . ' - ' . $test_test_cases->[0]->{description});
+          # warn 'results again';
+          # warn Dumper($result);
 
+
+            ok(_eq_bool($test->{valid}, $result), $test_group_test->{description} . ' - ' . $test->{description});
+          }
+
+        }
+      }
+    }
+  }
 }
 
 sub _load_tests {
-
 
   my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
 
   my $draft_dir = $mod_dir . '/tests/draft3/';
 
-  # opendir (my $dir, $draft_dir) ;
-  # my @tests = grep { -f "$draft_dir/$_"} readdir $dir;
-  # closedir $dir;
+  opendir (my $dir, $draft_dir) ;
+  my @test_files = grep { -f "$draft_dir/$_"} readdir $dir;
+  closedir $dir;
+  # warn Dumper(\@test_files);
 
-  # warn Dumper(\@tests);
-  # foreach my $file (@tests) {
-  #   #some stuff
-  #   # open ( my $fh, '<', $file ) or die ("Could not open schema file $fn for read");
-  # }
+  my @test_groups;
 
-  my $fn = $draft_dir . "required.json";
-  open ( my $fh, '<', $fn ) or die ("Could not open schema file $fn for read");
-  my $raw_json = '';
-  $raw_json .= $_ while (<$fh>);
-  my $parsed_json = JSON::from_json($raw_json);
+  foreach my $file (@test_files) {
+    my $fn = $draft_dir . $file;
+    open ( my $fh, '<', $fn ) or die ("Could not open schema file $fn for read");
+    my $raw_json = '';
+    $raw_json .= $_ while (<$fh>);
+    close($fh);
+    # my $parsed_json = JSON->new->allow_nonref->decode($raw_json);
+    my $parsed_json = JSON::from_json($raw_json);
 
-  warn 'the json';
-  warn Dumper($parsed_json);
+    push @test_groups, $parsed_json;
+  }
 
-  my @test_tests = @{$parsed_json};
+  # warn Dumper(\@test_groups);die;
 
-  my $test = $test_tests[0];
-  warn 'the test';
-  warn Dumper($test);
-
-  return $test;
-
+  return \@test_groups;
 }
 
 
