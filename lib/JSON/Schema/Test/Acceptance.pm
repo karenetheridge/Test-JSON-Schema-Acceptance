@@ -122,8 +122,6 @@ sub _run_tests {
 
   foreach my $test_group (@{$tests}) {
 
-    # warn Dumper($test_group);
-
     foreach my $test_group_test (@{$test_group}){
 
       my $test_group_cases = $test_group_test->{tests};
@@ -133,38 +131,20 @@ sub _run_tests {
 
         my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
 
-        # warn Dumper(grep { $subtest_name =~ /$_/} @$skip_tests);
-
         TODO: {
           todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
             if grep { $subtest_name =~ /$_/} @$skip_tests;
 
         subtest $subtest_name, sub {
-
-          # warn 'test group';
-          # warn Dumper($test);
-
-          # warn Dumper($schema);
-          # warn Dumper($test);
-
-          # warn ($test_group_test->{description} . ' - ' . $test->{description});
-
           # Current workaround for dealing with data which is not a json object or array
           # https://github.com/json-schema/JSON-Schema-Test-Suite/issues/102
 
-          # warn "raw test data";
-          # warn Dumper($test->{data});
           my $result;
           if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
             $result = $code->($schema, $json->encode($test->{data}));
           } else {
             $result = $code->($schema, $json->encode([$test->{data}]));
           }
-
-
-          # warn 'results again';
-          # warn Dumper($result);
-
 
             ok(_eq_bool($test->{valid}, $result), $test_group_test->{description} . ' - ' . $test->{description});
           }
@@ -199,8 +179,6 @@ sub _load_tests {
 
     push @test_groups, $parsed_json;
   }
-
-  # warn Dumper(\@test_groups);die;
 
   return \@test_groups;
 }
