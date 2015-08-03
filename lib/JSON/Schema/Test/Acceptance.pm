@@ -11,7 +11,7 @@ use JSON;
 use JSON::Schema;
 use Data::Dumper;
 
-use Carp::Always;
+# use Carp::Always;
 
 =head1 NAME
 
@@ -55,59 +55,6 @@ sub acceptance {
 
   $self->_run_tests($code, $tests, $skip_tests);
 
-
-  # foreach my $case (@{$self->cases}) {
-  #   my $input  = $case->{input};
-  #   my $schema = $case->{schema};
-  #   my $output = $case->{output};
-  #   my $result = $code->($input, $schema);
-  # }
-
-
-}
-
-
-sub _test_testing {
-  my $accepter = shift->new();
-
-  #Skip tests which are known not to be supported and cause problems.
-  my $skip_tests = ['multiple extends'];
-
-  $accepter->acceptance(sub{
-    my $schema = shift;
-    my $input = shift;
-    my $return;
-
-
-
-    # my $json = JSON->new;
-
-    # my $test_case = from_json('
-    #   {
-    #     "schema": {
-    #         "additionalProperties": {"type": "boolean"}
-    #     },
-    #     "data": {"foo" : true}
-    #   }'
-    # );
-    # $schema = $test_case->{schema};
-    # $input = $json->encode($test_case->{data});
-
-    # warn "input";
-    # warn Dumper($input);
-    # warn "schema";
-    # warn Dumper($schema);
-
-    # eval{$return = JSON::Schema->new($schema)->validate($input)};
-    $return = JSON::Schema->new($schema)->validate($input);
-    # warn Dumper($input) if $@;
-    # warn Dumper($input) if $@;
-    # fail $@ if $@;
-    # warn Dumper($return);
-    return $return;
-  }, {skip_tests => $skip_tests});
-
-  done_testing();
 }
 
 sub _validate {}
@@ -120,6 +67,7 @@ sub _run_tests {
 
   my $json = JSON->new;
 
+  my $test_no = 0;
   foreach my $test_group (@{$tests}) {
 
     foreach my $test_group_test (@{$test_group}){
@@ -128,27 +76,23 @@ sub _run_tests {
       my $schema = $test_group_test->{schema};
 
       foreach my $test (@{$test_group_cases}) {
-
+        $test_no++;
+        # next if $test_no != 204;
         my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
 
         TODO: {
           todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
             if grep { $subtest_name =~ /$_/} @$skip_tests;
 
-        subtest $subtest_name, sub {
-          # Current workaround for dealing with data which is not a json object or array
-          # https://github.com/json-schema/JSON-Schema-Test-Suite/issues/102
-
           my $result;
           if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
             $result = $code->($schema, $json->encode($test->{data}));
           } else {
-            $result = $code->($schema, $json->encode([$test->{data}]));
+            # $result = $code->($schema, $json->encode([$test->{data}]));
+            $result = $code->($schema, JSON->new->allow_nonref->encode($test->{data}));
           }
 
-            ok(_eq_bool($test->{valid}, $result), $test_group_test->{description} . ' - ' . $test->{description});
-          }
-
+          ok(_eq_bool($test->{valid}, $result), $test_group_test->{description} . ' - ' . $test->{description});
         }
       }
     }
@@ -174,8 +118,8 @@ sub _load_tests {
     my $raw_json = '';
     $raw_json .= $_ while (<$fh>);
     close($fh);
-    # my $parsed_json = JSON->new->allow_nonref->decode($raw_json);
-    my $parsed_json = JSON::from_json($raw_json);
+    my $parsed_json = JSON->new->allow_nonref->decode($raw_json);
+    # my $parsed_json = JSON::from_json($raw_json);
 
     push @test_groups, $parsed_json;
   }
