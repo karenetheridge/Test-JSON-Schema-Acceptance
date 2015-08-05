@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::Fatal;
 use Cwd 'abs_path';
 use JSON;
 
@@ -52,18 +53,14 @@ sub acceptance {
   my $tests = $self->_load_tests;
 
   my $skip_tests = $options->{skip_tests} // {};
+  my $only_test = $options->{only_test} // undef;
 
-  $self->_run_tests($code, $tests, $skip_tests);
+  $self->_run_tests($code, $tests, $skip_tests, $only_test);
 
 }
 
-sub _validate {}
-
 sub _run_tests {
-  my $self = shift;
-  my $code = shift;
-  my $tests = shift;
-  my $skip_tests = shift;
+  my ($self, $code, $tests, $skip_tests, $only_test) = @_;
 
   my $json = JSON->new;
 
@@ -77,7 +74,7 @@ sub _run_tests {
 
       foreach my $test (@{$test_group_cases}) {
         $test_no++;
-        # next if $test_no != 204;
+        next if defined $only_test && $test_no != $only_test;
         my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
 
         TODO: {
@@ -85,14 +82,17 @@ sub _run_tests {
             if grep { $subtest_name =~ /$_/} @$skip_tests;
 
           my $result;
+          my $exception = exception{
           if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
             $result = $code->($schema, $json->encode($test->{data}));
           } else {
             # $result = $code->($schema, $json->encode([$test->{data}]));
             $result = $code->($schema, JSON->new->allow_nonref->encode($test->{data}));
           }
+          };
 
-          ok(_eq_bool($test->{valid}, $result), $test_group_test->{description} . ' - ' . $test->{description});
+          my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
+          ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc);
         }
       }
     }
