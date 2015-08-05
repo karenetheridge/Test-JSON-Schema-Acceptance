@@ -15,26 +15,41 @@ JSON::Schema::Test::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-Version 0.01
+Version 0.0.1
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.0.1';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+This module allows the JSON Schema Test Suite tests to be used in perl to test a module that implements json-schema.
+These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
+Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
 
-Perhaps a little code snippet.
+In the JSON::Schema module, a test could look like the following
 
-    use JSON::Schema::Test::Acceptance;
+  use Test::More;
+  use JSON::Schema;
+  use JSON::Schema::Test::Acceptance;
 
-    my $foo = JSON::Schema::Test::Acceptance->new();
-    ...
+  my $accepter = JSON::Schema::Test::Acceptance->new();
+
+  #Skip tests which are known not to be supported or cause problems.
+  my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
+
+  $accepter->acceptance(sub{
+    my $schema = shift;
+    my $input = shift;
+    my $return;
+
+    $return = JSON::Schema->new($schema)->validate($input);
+    return $return;
+  }, {skip_tests => $skip_tests});
+
+  done_testing();
 
 =head1 SUBROUTINES/METHODS
-
-# =head2 function1
 
 =cut
 
@@ -42,6 +57,19 @@ sub new {
   my $class = shift;
   return bless {}, $class;
 }
+
+=head2 acceptance
+
+Accepts a sub and optional options in the form of a hash.
+The sub should return truthy or falsey depending on if the schema was valid for the input or not.
+
+=head3 options
+
+The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
+You can skip a whole section of tests or individual tests.
+Any test name that contains any of the array refs items will be skipped, using grep.
+
+=cut
 
 sub acceptance {
   my ($self, $code, $options) = @_;
@@ -78,12 +106,12 @@ sub _run_tests {
 
           my $result;
           my $exception = exception{
-          if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
-            $result = $code->($schema, $json->encode($test->{data}));
-          } else {
-            # $result = $code->($schema, $json->encode([$test->{data}]));
-            $result = $code->($schema, JSON->new->allow_nonref->encode($test->{data}));
-          }
+            if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
+              $result = $code->($schema, $json->encode($test->{data}));
+            } else {
+              # $result = $code->($schema, $json->encode([$test->{data}]));
+              $result = $code->($schema, JSON->new->allow_nonref->encode($test->{data}));
+            }
           };
 
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
@@ -134,43 +162,46 @@ Ben Hutton (@relequestual), C<< <relequest at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-json-schema-test-acceptance at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=JSON-Schema-Test-Acceptance>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
+Please report any bugs or feature requests to via github at L<https://github.com/Relequestual/JSON-Schema-Test-Acceptance/issues>.
 
 =head1 SUPPORT
 
-You can find documentation for this module with the perldoc command.
+Users' IRC: #json-schema on irc.perl.org
 
-    perldoc JSON::Schema::Test::Acceptance
+=for :html
+L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@irc.perl.org>
 
+For questions about json-schema in general IRC: #json-schema on chat.freenode.net
+
+=for :html
+L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@chat.freenode.net>
 
 You can also look for information at:
 
-=over 4
+=over 3
 
-=item * RT: CPAN's request tracker (report bugs here)
+=item * Github issues (report bugs here)
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=JSON-Schema-Test-Acceptance>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/JSON-Schema-Test-Acceptance>
+L<https://github.com/Relequestual/JSON-Schema-Test-Acceptance/issues>
 
 =item * CPAN Ratings
 
 L<http://cpanratings.perl.org/d/JSON-Schema-Test-Acceptance>
 
-=item * Search CPAN
+=item * Search Meta CPAN
 
-L<http://search.cpan.org/dist/JSON-Schema-Test-Acceptance/>
+L<http://search.cpan.org/pod/JSON::Schema::Test::Acceptance/>
 
 =back
 
 
 =head1 ACKNOWLEDGEMENTS
 
+Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
+
+Ricardo SIGNES <rjbs@cpan.org> for direction to and creation of Test::Fatal.
+
+Various others in #perl-help.
 
 =head1 LICENSE AND COPYRIGHT
 

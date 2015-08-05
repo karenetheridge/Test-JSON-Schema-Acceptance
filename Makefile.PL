@@ -18,8 +18,21 @@ WriteMakefile(
         'Test::More' => 0,
     },
     PREREQ_PM => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+        'Test::More' => 1.001,
+        'Test::Fatal' => 0.014,
+    },
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+
+        resources => {
+            repository => {
+                type => 'git',
+                url => 'git@github.com:Relequestual/JSON-Schema-Test-Acceptance.git',
+                web => 'https://github.com/Relequestual/JSON-Schema-Test-Acceptance',
+            },
+            x_IRC => 'irc://irc.perl.org/#json-schema',
+
+        },
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'JSON-Schema-Test-Acceptance-*' },
