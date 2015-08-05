@@ -9,11 +9,6 @@ use Test::Fatal;
 use Cwd 'abs_path';
 use JSON;
 
-use JSON::Schema;
-use Data::Dumper;
-
-# use Carp::Always;
-
 =head1 NAME
 
 JSON::Schema::Test::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
