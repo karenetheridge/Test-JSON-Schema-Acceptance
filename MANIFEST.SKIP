@@ -1,0 +1,7 @@
+^do.pl$       #ignore my testing file.
+^example.pl$
+.git
+/draft4/
+.bak$
+.old$
+^blib/
