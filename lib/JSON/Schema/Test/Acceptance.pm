@@ -90,7 +90,7 @@ sub _run_tests {
   my $test_no = 0;
   foreach my $test_group (@{$tests}) {
 
-    foreach my $test_group_test (@{$test_group}){
+    foreach my $test_group_test (@{$test_group->{json}}){
 
       my $test_group_cases = $test_group_test->{tests};
       my $schema = $test_group_test->{schema};
@@ -115,7 +115,12 @@ sub _run_tests {
           };
 
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
-          ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc);
+          ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
+            diag(
+              'Test file "' . $test_group->{file} . "\"\n" .
+              'Test schema - ' . $test_group_test->{description} . "\n" .
+              'Test data - ' . $test->{description} . "\n" . "\n"
+            );
         }
       }
     }
@@ -144,7 +149,7 @@ sub _load_tests {
     my $parsed_json = JSON->new->allow_nonref->decode($raw_json);
     # my $parsed_json = JSON::from_json($raw_json);
 
-    push @test_groups, $parsed_json;
+    push @test_groups, { file => $file, json => $parsed_json };
   }
 
   return \@test_groups;
