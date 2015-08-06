@@ -87,6 +87,8 @@ sub _run_tests {
 
   my $json = JSON->new;
 
+  local $Test::Builder::Level = $Test::Builder::Level + 2;
+
   my $test_no = 0;
   foreach my $test_group (@{$tests}) {
 
