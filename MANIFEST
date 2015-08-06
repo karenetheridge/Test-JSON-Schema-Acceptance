@@ -34,12 +34,8 @@ lib/JSON/Schema/Test/test_suite/tests/draft3/refRemote.json
 lib/JSON/Schema/Test/test_suite/tests/draft3/required.json
 lib/JSON/Schema/Test/test_suite/tests/draft3/type.json
 lib/JSON/Schema/Test/test_suite/tests/draft3/uniqueItems.json
-Makefile
 Makefile.PL
 MANIFEST			This list of files
-MANIFEST.SKIP
-MYMETA.json
-MYMETA.yml
 README
 t/00-load.t
 t/manifest.t
