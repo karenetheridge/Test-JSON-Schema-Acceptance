@@ -27,7 +27,7 @@ This module allows the JSON Schema Test Suite tests to be used in perl to test a
 These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
 Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
 
-In the JSON::Schema module, a test could look like the following
+In the JSON::Schema module, a test could look like the following:
 
   use Test::More;
   use JSON::Schema;
@@ -35,19 +35,19 @@ In the JSON::Schema module, a test could look like the following
 
   my $accepter = JSON::Schema::Test::Acceptance->new();
 
-  #Skip tests which are known not to be supported or cause problems.
+  # Skip tests which are known not to be supported or which cause problems.
   my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
 
-  $accepter->acceptance(sub{
-    my $schema = shift;
-    my $input = shift;
-    my $return;
-
-    $return = JSON::Schema->new($schema)->validate($input);
-    return $return;
-  }, {skip_tests => $skip_tests});
+  $accepter->acceptance( sub{
+    my ( $schema, $input ) = @_;
+    return JSON::Schema->new($schema)->validate($input);
+  }, {
+    skip_tests => $skip_tests
+  } );
 
   done_testing();
+
+This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
 
 =head1 SUBROUTINES/METHODS
 
