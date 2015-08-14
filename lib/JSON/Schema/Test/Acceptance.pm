@@ -68,6 +68,7 @@ The sub should return truthy or falsey depending on if the schema was valid for 
 The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
 You can skip a whole section of tests or individual tests.
 Any test name that contains any of the array refs items will be skipped, using grep.
+You can also skip a test by its number.
 
 =cut
 
@@ -104,7 +105,8 @@ sub _run_tests {
 
         TODO: {
           todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
-            if grep { $subtest_name =~ /$_/} @$skip_tests;
+            if (grep { $subtest_name =~ /$_/} @$skip_tests) ||
+              grep $test_no, @$skip_tests;
 
           my $result;
           my $exception = exception{
@@ -119,9 +121,11 @@ sub _run_tests {
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
           ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
             diag(
+              "#$test_no \n" .
               'Test file "' . $test_group->{file} . "\"\n" .
               'Test schema - ' . $test_group_test->{description} . "\n" .
-              'Test data - ' . $test->{description} . "\n" . "\n"
+              'Test data - ' . $test->{description} . "\n" .
+              ($exception ? "$exception " : "") . "\n"
             );
         }
       }
