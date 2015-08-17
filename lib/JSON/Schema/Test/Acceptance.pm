@@ -76,8 +76,8 @@ sub acceptance {
   my ($self, $code, $options) = @_;
   my $tests = $self->_load_tests;
 
-  my $skip_tests = $options->{skip_tests} // {};
-  my $only_test = $options->{only_test} // undef;
+  my $skip_tests = defined $options->{skip_tests} ? $options->{skip_tests} : {};
+  my $only_test = $options->{only_test};
 
   $self->_run_tests($code, $tests, $skip_tests, $only_test);
 
