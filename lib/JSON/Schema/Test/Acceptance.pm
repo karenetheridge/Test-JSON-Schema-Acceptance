@@ -106,7 +106,7 @@ sub _run_tests {
         TODO: {
           todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
             if (grep { $subtest_name =~ /$_/} @$skip_tests) ||
-              grep $test_no, @$skip_tests;
+              grep $_ == $test_no, @$skip_tests;
 
           my $result;
           my $exception = exception{
