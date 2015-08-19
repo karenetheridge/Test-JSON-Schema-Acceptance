@@ -85,7 +85,6 @@ sub acceptance {
 
 sub _run_tests {
   my ($self, $code, $tests, $skip_tests, $only_test) = @_;
-
   my $json = JSON->new;
 
   local $Test::Builder::Level = $Test::Builder::Level + 2;
@@ -106,7 +105,7 @@ sub _run_tests {
         TODO: {
           todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
             if (grep { $subtest_name =~ /$_/} @$skip_tests) ||
-              grep $_ == $test_no, @$skip_tests;
+              grep $_ eq "$test_no", @$skip_tests;
 
           my $result;
           my $exception = exception{
