@@ -49,6 +49,25 @@ In the JSON::Schema module, a test could look like the following:
 
 This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
 
+=head1 DESCRIPTION
+
+L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
+
+The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
+
+  JSON Schema defines the media type "application/schema+json",
+  a JSON based format for defining the structure of JSON data.
+  JSON Schema provides a contract for what JSON data is required
+  for a given application and how to interact with it.
+  JSON Schema is intended to define validation, documentation,
+  hyperlink navigation, and interaction control of JSON data.
+
+L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
+
+This module allows other perl modules (for example JSON::Schema) to test that they are json-schema compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
+
+You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
+
 =head1 SUBROUTINES/METHODS
 
 =cut
