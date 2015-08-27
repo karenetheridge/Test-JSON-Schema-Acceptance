@@ -1,4 +1,4 @@
-package JSON::Schema::Test::Acceptance;
+package Test::JSON::Schema::Acceptance;
 
 use 5.010;
 use strict;
@@ -11,7 +11,7 @@ use JSON;
 
 =head1 NAME
 
-JSON::Schema::Test::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
+Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
 
 =head1 VERSION
 
@@ -31,9 +31,9 @@ In the JSON::Schema module, a test could look like the following:
 
   use Test::More;
   use JSON::Schema;
-  use JSON::Schema::Test::Acceptance;
+  use Test::JSON::Schema::Acceptance;
 
-  my $accepter = JSON::Schema::Test::Acceptance->new();
+  my $accepter = Test::JSON::Schema::Acceptance->new();
 
   # Skip tests which are known not to be supported or which cause problems.
   my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
@@ -191,7 +191,7 @@ Ben Hutton (@relequestual), C<< <relequest at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to via github at L<https://github.com/Relequestual/JSON-Schema-Test-Acceptance/issues>.
+Please report any bugs or feature requests to via github at L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>.
 
 =head1 SUPPORT
 
@@ -211,15 +211,15 @@ You can also look for information at:
 
 =item * Github issues (report bugs here)
 
-L<https://github.com/Relequestual/JSON-Schema-Test-Acceptance/issues>
+L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/JSON-Schema-Test-Acceptance>
+L<http://cpanratings.perl.org/d/Test-JSON-Schema-Acceptance>
 
 =item * Search Meta CPAN
 
-L<http://search.cpan.org/pod/JSON::Schema::Test::Acceptance/>
+L<http://search.cpan.org/pod/Test::JSON::Schema::Acceptance/>
 
 =back
 
@@ -263,4 +263,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of JSON::Schema::Test::Acceptance
+1; # End of Test::JSON::Schema::Acceptance

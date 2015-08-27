@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'JSON::Schema::Test::Acceptance' ) || print "Bail out!\n";
+    use_ok( 'Test::JSON::Schema::Acceptance' ) || print "Bail out!\n";
 }
 
-diag( "Testing JSON::Schema::Test::Acceptance $JSON::Schema::Test::Acceptance::VERSION, Perl $], $^X" );
+diag( "Testing Test::JSON::Schema::Acceptance $Test::JSON::Schema::Acceptance::VERSION, Perl $], $^X" );

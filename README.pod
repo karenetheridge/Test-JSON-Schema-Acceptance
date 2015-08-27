@@ -1,4 +1,4 @@
-JSON-Schema-Test-Acceptance
+Test-JSON-Schema-Acceptance
 
 =head1 SYNOPSIS
 
@@ -10,9 +10,9 @@ In the JSON::Schema module, a test could look like the following:
 
   use Test::More;
   use JSON::Schema;
-  use JSON::Schema::Test::Acceptance;
+  use Test::JSON::Schema::Acceptance;
 
-  my $accepter = JSON::Schema::Test::Acceptance->new();
+  my $accepter = Test::JSON::Schema::Acceptance->new();
 
   # Skip tests which are known not to be supported or which cause problems.
   my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
@@ -61,18 +61,18 @@ To install this module, run the following commands:
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc JSON::Schema::Test::Acceptance
+    perldoc Test::JSON::Schema::Acceptance
 
 You can also look for information at:
 
     Github
-        https://github.com/Relequestual/JSON-Schema-Test-Acceptance
+        https://github.com/Relequestual/Test-JSON-Schema-Acceptance
 
     Github issues (report bugs here)
-        https://github.com/Relequestual/JSON-Schema-Test-Acceptance/issues
+        https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues
 
     Search MetaCPAN
-        https://metacpan.org/release/JSON-Schema-Test-Acceptance
+        https://metacpan.org/release/Test-JSON-Schema-Acceptance
 
 
 =head1 LICENSE AND COPYRIGHT
