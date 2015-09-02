@@ -125,9 +125,11 @@ sub _run_tests {
         my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
 
         TODO: {
-          todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
-            if (grep { $subtest_name =~ /$_/} @$skip_tests) ||
-              grep $_ eq "$test_no", @$skip_tests;
+          if (ref $skip_tests eq 'ARRAY'){
+            todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
+              if (grep { $subtest_name =~ /$_/} @$skip_tests) ||
+                grep $_ eq "$test_no", @$skip_tests;
+          }
 
           my $result;
           my $exception = exception{
