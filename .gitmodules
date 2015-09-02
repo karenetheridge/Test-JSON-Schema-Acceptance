@@ -1,3 +1,3 @@
-[submodule "json-schema-test-suite"]
+[submodule "lib/Test/JSON/Schema/test_suite"]
 	path = lib/Test/JSON/Schema/test_suite
 	url = git@github.com:json-schema/JSON-Schema-Test-Suite.git
