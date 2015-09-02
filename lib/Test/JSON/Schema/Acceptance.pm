@@ -33,7 +33,7 @@ In the JSON::Schema module, a test could look like the following:
   use JSON::Schema;
   use Test::JSON::Schema::Acceptance;
 
-  my $accepter = Test::JSON::Schema::Acceptance->new();
+  my $accepter = Test::JSON::Schema::Acceptance->new(3);
 
   # Skip tests which are known not to be supported or which cause problems.
   my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
@@ -68,17 +68,31 @@ This module allows other perl modules (for example JSON::Schema) to test that th
 
 You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
 
-=head1 SUBROUTINES/METHODS
-
 =cut
 
 our $draft;
+
+=head1 CONSTRUCTOR
+
+=over 1
+
+=item C<< Test::JSON::Schema::Acceptance->new($schema_version) >>
+
+Create a new instance of Test::JSON::Schema::Acceptance.
+
+Accepts optional argument of $schema_version.
+This determins the draft version of the schema to confirm compliance to.
+Default is draft 4 (current), but in the synopsis example, JSON::Schema is testing draft 3 compliance.
+
+=cut
 
 sub new {
   my $class = shift;
   $draft = shift || 4;
   return bless {}, $class;
 }
+
+=head1 SUBROUTINES/METHODS
 
 =head2 acceptance
 
