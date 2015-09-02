@@ -6,8 +6,8 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME             => 'Test::JSON::Schema::Acceptance',
     AUTHOR           => q{Ben Hutton (@relequestual) <relequest@cpan.org>},
-    VERSION_FROM     => 'lib/JSON/Schema/Test/Acceptance.pm',
-    ABSTRACT_FROM    => 'lib/JSON/Schema/Test/Acceptance.pm',
+    VERSION_FROM     => 'lib/Test/JSON/Schema/Acceptance.pm',
+    ABSTRACT_FROM    => 'lib/Test/JSON/Schema/Acceptance.pm',
     LICENSE          => 'mit',
     PL_FILES         => {},
     MIN_PERL_VERSION => 5.010,
