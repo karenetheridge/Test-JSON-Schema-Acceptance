@@ -72,8 +72,11 @@ You are unliekly to want this module, unless you are attempting to write a modul
 
 =cut
 
+our $draft;
+
 sub new {
   my $class = shift;
+  $draft = shift || 4;
   return bless {}, $class;
 }
 
@@ -155,7 +158,7 @@ sub _load_tests {
 
   my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
 
-  my $draft_dir = $mod_dir . '/tests/draft3/';
+  my $draft_dir = $mod_dir . "/tests/draft$draft/";
 
   opendir (my $dir, $draft_dir) ;
   my @test_files = grep { -f "$draft_dir/$_"} readdir $dir;
