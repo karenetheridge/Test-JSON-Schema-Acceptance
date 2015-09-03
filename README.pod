@@ -1,8 +1,17 @@
-Test-JSON-Schema-Acceptance
+=head1 NAME
+
+Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
+
+=head1 VERSION
+
+Version 0.0.1
+
+
+=cut
 
 =head1 SYNOPSIS
 
-This module allows the JSON Schema Test Suite tests to be used in perl to test a module that implements json-schema.
+This module allows the L<https://github.com/json-schema/JSON-Schema-Test-Suite|JSON Schema Test Suite> tests to be used in perl to test a module that implements json-schema.
 These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
 Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
 
@@ -12,7 +21,7 @@ In the JSON::Schema module, a test could look like the following:
   use JSON::Schema;
   use Test::JSON::Schema::Acceptance;
 
-  my $accepter = Test::JSON::Schema::Acceptance->new();
+  my $accepter = Test::JSON::Schema::Acceptance->new(3);
 
   # Skip tests which are known not to be supported or which cause problems.
   my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
@@ -47,37 +56,91 @@ This module allows other perl modules (for example JSON::Schema) to test that th
 
 You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
 
-=head1 INSTALLATION
 
-To install this module, run the following commands:
+=cut
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+=head1 CONSTRUCTOR
 
-=head1 SUPPORT AND DOCUMENTATION
+=over 1
 
-After installing, you can find documentation for this module with the
-perldoc command.
+=item C<< Test::JSON::Schema::Acceptance->new($schema_version) >>
 
-    perldoc Test::JSON::Schema::Acceptance
+Create a new instance of Test::JSON::Schema::Acceptance.
+
+Accepts optional argument of $schema_version.
+This determins the draft version of the schema to confirm compliance to.
+Default is draft 4 (current), but in the synopsis example, JSON::Schema is testing draft 3 compliance.
+
+
+=cut
+
+=head1 SUBROUTINES/METHODS
+
+=head2 acceptance
+
+Accepts a sub and optional options in the form of a hash.
+The sub should return truthy or falsey depending on if the schema was valid for the input or not.
+
+=head3 options
+
+The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
+You can skip a whole section of tests or individual tests.
+Any test name that contains any of the array refs items will be skipped, using grep.
+You can also skip a test by its number.
+
+
+=cut
+
+=head1 AUTHOR
+
+Ben Hutton (@relequestual), C<< <relequest at cpan.org> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to via github at L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>.
+
+=head1 SUPPORT
+
+Users' IRC: #json-schema on irc.perl.org
+
+=for :html
+L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@irc.perl.org>
+
+For questions about json-schema in general IRC: #json-schema on chat.freenode.net
+
+=for :html
+L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@chat.freenode.net>
 
 You can also look for information at:
 
-    Github
-        https://github.com/Relequestual/Test-JSON-Schema-Acceptance
+=over 3
 
-    Github issues (report bugs here)
-        https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues
+=item * Github issues (report bugs here)
 
-    Search MetaCPAN
-        https://metacpan.org/release/Test-JSON-Schema-Acceptance
+L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>
 
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/Test-JSON-Schema-Acceptance>
+
+=item * Search Meta CPAN
+
+L<http://search.cpan.org/pod/Test::JSON::Schema::Acceptance/>
+
+=back
+
+
+=head1 ACKNOWLEDGEMENTS
+
+Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
+
+Ricardo SIGNES <rjbs@cpan.org> for direction to and creation of Test::Fatal.
+
+Various others in #perl-help.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 Ben Hutton (@relequestual)
+Copyright 2015 Ben Hutton (@relequestual).
 
 This program is distributed under the MIT (X11) License:
 L<http://www.opensource.org/licenses/mit-license.php>
@@ -102,4 +165,8 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+=cut
 
