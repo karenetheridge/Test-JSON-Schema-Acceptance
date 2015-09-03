@@ -1,0 +1,105 @@
+Test-JSON-Schema-Acceptance
+
+=head1 SYNOPSIS
+
+This module allows the JSON Schema Test Suite tests to be used in perl to test a module that implements json-schema.
+These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
+Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
+
+In the JSON::Schema module, a test could look like the following:
+
+  use Test::More;
+  use JSON::Schema;
+  use Test::JSON::Schema::Acceptance;
+
+  my $accepter = Test::JSON::Schema::Acceptance->new();
+
+  # Skip tests which are known not to be supported or which cause problems.
+  my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
+
+  $accepter->acceptance( sub{
+    my ( $schema, $input ) = @_;
+    return JSON::Schema->new($schema)->validate($input);
+  }, {
+    skip_tests => $skip_tests
+  } );
+
+  done_testing();
+
+This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+
+=head1 DESCRIPTION
+
+L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
+
+The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
+
+  JSON Schema defines the media type "application/schema+json",
+  a JSON based format for defining the structure of JSON data.
+  JSON Schema provides a contract for what JSON data is required
+  for a given application and how to interact with it.
+  JSON Schema is intended to define validation, documentation,
+  hyperlink navigation, and interaction control of JSON data.
+
+L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
+
+This module allows other perl modules (for example JSON::Schema) to test that they are json-schema compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
+
+You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
+
+=head1 INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+=head1 SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc Test::JSON::Schema::Acceptance
+
+You can also look for information at:
+
+    Github
+        https://github.com/Relequestual/Test-JSON-Schema-Acceptance
+
+    Github issues (report bugs here)
+        https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues
+
+    Search MetaCPAN
+        https://metacpan.org/release/Test-JSON-Schema-Acceptance
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2015 Ben Hutton (@relequestual)
+
+This program is distributed under the MIT (X11) License:
+L<http://www.opensource.org/licenses/mit-license.php>
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
