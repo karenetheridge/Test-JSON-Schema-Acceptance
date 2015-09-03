@@ -23,7 +23,7 @@ our $VERSION = '0.0.1_001';
 
 =head1 SYNOPSIS
 
-This module allows the JSON Schema Test Suite tests to be used in perl to test a module that implements json-schema.
+This module allows the L<https://github.com/json-schema/JSON-Schema-Test-Suite|JSON Schema Test Suite> tests to be used in perl to test a module that implements json-schema.
 These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
 Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
 
