@@ -3,8 +3,6 @@
 
 # Ignore .git from deeper folders also!
 \.git
-# Only does draft 3 at current so ignore 4
-/draft4/
 
 # Avoid temp and backup files.
 ~$
