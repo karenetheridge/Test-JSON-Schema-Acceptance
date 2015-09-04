@@ -1,3 +1,6 @@
+=for comment
+To regenerate this readme do...
+perldoc -u -dREADME.pod -MTest::JSON::Schema::Acceptance lib/Test/JSON/Schema/Acceptance.pm
 =head1 NAME
 
 Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
