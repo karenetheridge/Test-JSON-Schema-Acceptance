@@ -15,15 +15,15 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-Version 0.0.1
+Version 0.0.2
 
 =cut
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.0.2';
 
 =head1 SYNOPSIS
 
-This module allows the L<https://github.com/json-schema/JSON-Schema-Test-Suite|JSON Schema Test Suite> tests to be used in perl to test a module that implements json-schema.
+This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements json-schema.
 These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
 Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
 
@@ -55,12 +55,14 @@ L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) whic
 
 The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
 
-  JSON Schema defines the media type "application/schema+json",
-  a JSON based format for defining the structure of JSON data.
-  JSON Schema provides a contract for what JSON data is required
-  for a given application and how to interact with it.
-  JSON Schema is intended to define validation, documentation,
-  hyperlink navigation, and interaction control of JSON data.
+=over 4
+JSON Schema defines the media type "application/schema+json",
+a JSON based format for defining the structure of JSON data.
+JSON Schema provides a contract for what JSON data is required
+for a given application and how to interact with it.
+JSON Schema is intended to define validation, documentation,
+hyperlink navigation, and interaction control of JSON data.
+=back
 
 L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
 
@@ -68,9 +70,6 @@ This module allows other perl modules (for example JSON::Schema) to test that th
 
 You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
 
-=cut
-
-our $draft;
 
 =head1 CONSTRUCTOR
 
@@ -88,8 +87,7 @@ Default is draft 4 (current), but in the synopsis example, JSON::Schema is testi
 
 sub new {
   my $class = shift;
-  $draft = shift || 4;
-  return bless {}, $class;
+  return bless { draft => shift || 4 }, $class;
 }
 
 =head1 SUBROUTINES/METHODS
@@ -171,10 +169,11 @@ sub _run_tests {
 }
 
 sub _load_tests {
+  my $self = shift;
 
   my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
 
-  my $draft_dir = $mod_dir . "/tests/draft$draft/";
+  my $draft_dir = $mod_dir . "/tests/draft" . $self->{draft} . "/";
 
   opendir (my $dir, $draft_dir) ;
   my @test_files = grep { -f "$draft_dir/$_"} readdir $dir;
