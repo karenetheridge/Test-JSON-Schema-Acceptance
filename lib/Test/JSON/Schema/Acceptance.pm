@@ -23,7 +23,7 @@ our $VERSION = '0.0.1';
 
 =head1 SYNOPSIS
 
-This module allows the L<https://github.com/json-schema/JSON-Schema-Test-Suite|JSON Schema Test Suite> tests to be used in perl to test a module that implements json-schema.
+This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements json-schema.
 These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
 Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
 
@@ -55,12 +55,14 @@ L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) whic
 
 The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
 
-  JSON Schema defines the media type "application/schema+json",
-  a JSON based format for defining the structure of JSON data.
-  JSON Schema provides a contract for what JSON data is required
-  for a given application and how to interact with it.
-  JSON Schema is intended to define validation, documentation,
-  hyperlink navigation, and interaction control of JSON data.
+=over 4
+JSON Schema defines the media type "application/schema+json",
+a JSON based format for defining the structure of JSON data.
+JSON Schema provides a contract for what JSON data is required
+for a given application and how to interact with it.
+JSON Schema is intended to define validation, documentation,
+hyperlink navigation, and interaction control of JSON data.
+=back
 
 L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
 
