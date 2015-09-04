@@ -44,12 +44,14 @@ L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) whic
 The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
 
 =over 4
+
 JSON Schema defines the media type "application/schema+json",
 a JSON based format for defining the structure of JSON data.
 JSON Schema provides a contract for what JSON data is required
 for a given application and how to interact with it.
 JSON Schema is intended to define validation, documentation,
 hyperlink navigation, and interaction control of JSON data.
+
 =back
 
 L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
@@ -59,13 +61,13 @@ This module allows other perl modules (for example JSON::Schema) to test that th
 You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
 
 
-=cut
-
 =head1 CONSTRUCTOR
 
 =over 1
 
 =item C<< Test::JSON::Schema::Acceptance->new($schema_version) >>
+
+=back
 
 Create a new instance of Test::JSON::Schema::Acceptance.
 
