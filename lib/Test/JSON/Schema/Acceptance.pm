@@ -70,9 +70,6 @@ This module allows other perl modules (for example JSON::Schema) to test that th
 
 You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
 
-=cut
-
-our $draft;
 
 =head1 CONSTRUCTOR
 
@@ -90,8 +87,7 @@ Default is draft 4 (current), but in the synopsis example, JSON::Schema is testi
 
 sub new {
   my $class = shift;
-  $draft = shift || 4;
-  return bless {}, $class;
+  return bless { draft => shift || 4 }, $class;
 }
 
 =head1 SUBROUTINES/METHODS
@@ -173,10 +169,11 @@ sub _run_tests {
 }
 
 sub _load_tests {
+  my $self = shift;
 
   my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
 
-  my $draft_dir = $mod_dir . "/tests/draft$draft/";
+  my $draft_dir = $mod_dir . "/tests/draft" . $self->{draft} . "/";
 
   opendir (my $dir, $draft_dir) ;
   my @test_files = grep { -f "$draft_dir/$_"} readdir $dir;
