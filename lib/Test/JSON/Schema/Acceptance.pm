@@ -11,7 +11,7 @@ use JSON;
 
 =head1 NAME
 
-Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
+Test::JSON::Schema::Acceptance - Acceptance testing for JSON Schema based validators such as JSON::Schema
 
 =head1 VERSION
 
@@ -23,11 +23,14 @@ our $VERSION = '0.0.2';
 
 =head1 SYNOPSIS
 
-This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements json-schema.
-These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
-Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
+This module enables the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite>
+to be run against a Perl module implementing JSON Schema. These same tests are
+used by modules (libraries, plugins, packages, etc.) to confirm compliance with
+the JSON Schema specification. This module provides confidence in the
+interoperability of code passing its tests with other code also implementing
+JSON Schema, possibly in another language.
 
-In the JSON::Schema module, a test could look like the following:
+A JSON::Schema module's test might look like this:
 
   use Test::More;
   use JSON::Schema;
@@ -47,13 +50,17 @@ In the JSON::Schema module, a test could look like the following:
 
   done_testing();
 
-This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+This would determine if JSON::Schema's C<validate> method returns the correct
+result for all of the cases in the JSON Schema Test Suite, except for those
+listed in C<$skip_tests>.
 
 =head1 DESCRIPTION
 
-L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
+L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing)
+which allows you to define the structure of JSON.
 
-The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
+The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04>
+of the specification:
 
 =over 4
 JSON Schema defines the media type "application/schema+json",
@@ -64,11 +71,13 @@ JSON Schema is intended to define validation, documentation,
 hyperlink navigation, and interaction control of JSON data.
 =back
 
-L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
+L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a Perl module created
+independantly of the specification, which aims to implement the JSON Schema
+specification.
 
-This module allows other perl modules (for example JSON::Schema) to test that they are json-schema compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
-
-You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
+This module allows other Perl modules (for example JSON::Schema) to test that
+they are JSON Schema compliant, by running the tests from the official test
+suite, without having to manually convert them to Perl tests.
 
 
 =head1 CONSTRUCTOR
@@ -95,13 +104,15 @@ sub new {
 =head2 acceptance
 
 Accepts a sub and optional options in the form of a hash.
-The sub should return truthy or falsey depending on if the schema was valid for the input or not.
+The sub should return truthy or falsey depending on if the schema was valid for
+the input or not.
 
 =head3 options
 
-The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
+The only option which is currently accepted is skip_tests, which should be an
+array ref of tests you want to skip.
 You can skip a whole section of tests or individual tests.
-Any test name that contains any of the array refs items will be skipped, using grep.
+Any test name that contains any of the array refs items will be skipped.
 You can also skip a test by its number.
 
 =cut
@@ -171,7 +182,8 @@ sub _run_tests {
 sub _load_tests {
   my $self = shift;
 
-  my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
+  # Find the modules directory...
+  my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r;
 
   my $draft_dir = $mod_dir . "/tests/draft" . $self->{draft} . "/";
 
@@ -198,7 +210,7 @@ sub _load_tests {
 }
 
 
-# Forces the two variables passed, into boolean context.
+# Compares the (first) two parameters in boolean context.
 sub _eq_bool {
   return !(shift xor shift);
 }
@@ -209,7 +221,8 @@ Ben Hutton (@relequestual), C<< <relequest at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to via github at L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>.
+Please report any bugs or feature requests on GitHub at
+L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>.
 
 =head1 SUPPORT
 
@@ -227,7 +240,7 @@ You can also look for information at:
 
 =over 3
 
-=item * Github issues (report bugs here)
+=item * GitHub issues (report bugs here)
 
 L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>
 
