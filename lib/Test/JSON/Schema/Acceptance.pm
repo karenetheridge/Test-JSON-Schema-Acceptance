@@ -47,12 +47,14 @@ L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) whic
 The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
 
 =over 4
+
 JSON Schema defines the media type "application/schema+json",
 a JSON based format for defining the structure of JSON data.
 JSON Schema provides a contract for what JSON data is required
 for a given application and how to interact with it.
 JSON Schema is intended to define validation, documentation,
 hyperlink navigation, and interaction control of JSON data.
+
 =back
 
 L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
@@ -73,6 +75,8 @@ Create a new instance of Test::JSON::Schema::Acceptance.
 Accepts optional argument of $schema_version.
 This determins the draft version of the schema to confirm compliance to.
 Default is draft 4 (current), but in the synopsis example, JSON::Schema is testing draft 3 compliance.
+
+=back
 
 =cut
 
