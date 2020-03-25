@@ -1,4 +1,7 @@
 package Test::JSON::Schema::Acceptance;
+# ABSTRACT: Acceptance testing for JSON-Schema based validators like JSON::Schema
+
+our $VERSION = '0.990';
 
 use 5.010;
 use strict;
@@ -8,18 +11,6 @@ use Test::More;
 use Test::Fatal;
 use Cwd 'abs_path';
 use JSON;
-
-=head1 NAME
-
-Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
-
-=head1 VERSION
-
-Version 0.0.2
-
-=cut
-
-our $VERSION = '0.0.2';
 
 =head1 SYNOPSIS
 
@@ -203,45 +194,6 @@ sub _eq_bool {
   return !(shift xor shift);
 }
 
-=head1 AUTHOR
-
-Ben Hutton (@relequestual), C<< <relequest at cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to via github at L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>.
-
-=head1 SUPPORT
-
-Users' IRC: #json-schema on irc.perl.org
-
-=for :html
-L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@irc.perl.org>
-
-For questions about json-schema in general IRC: #json-schema on chat.freenode.net
-
-=for :html
-L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@chat.freenode.net>
-
-You can also look for information at:
-
-=over 3
-
-=item * Github issues (report bugs here)
-
-L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Test-JSON-Schema-Acceptance>
-
-=item * Search Meta CPAN
-
-L<http://search.cpan.org/pod/Test::JSON::Schema::Acceptance/>
-
-=back
-
-
 =head1 ACKNOWLEDGEMENTS
 
 Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
@@ -249,35 +201,6 @@ Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
 Ricardo SIGNES <rjbs@cpan.org> for direction to and creation of Test::Fatal.
 
 Various others in #perl-help.
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2015 Ben Hutton (@relequestual).
-
-This program is distributed under the MIT (X11) License:
-L<http://www.opensource.org/licenses/mit-license.php>
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
 
 =cut
 
