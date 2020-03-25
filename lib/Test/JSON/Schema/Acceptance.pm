@@ -12,11 +12,13 @@ use Test::Fatal;
 use Cwd 'abs_path';
 use JSON;
 
+=for :header =for stopwords validators
+
 =head1 SYNOPSIS
 
 This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements json-schema.
-These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
-Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
+These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
+Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
 
 In the JSON::Schema module, a test could look like the following:
 
@@ -57,11 +59,11 @@ hyperlink navigation, and interaction control of JSON data.
 
 =back
 
-L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
+L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independently of the specification, which aims to implement the json-schema specification.
 
 This module allows other perl modules (for example JSON::Schema) to test that they are json-schema compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
 
-You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
+You are unlikely to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
 
 
 =head1 CONSTRUCTOR
@@ -73,7 +75,7 @@ You are unliekly to want this module, unless you are attempting to write a modul
 Create a new instance of Test::JSON::Schema::Acceptance.
 
 Accepts optional argument of $schema_version.
-This determins the draft version of the schema to confirm compliance to.
+This determines the draft version of the schema to confirm compliance to.
 Default is draft 4 (current), but in the synopsis example, JSON::Schema is testing draft 3 compliance.
 
 =back
@@ -88,6 +90,8 @@ sub new {
 =head1 SUBROUTINES/METHODS
 
 =head2 acceptance
+
+=for stopwords truthy falsey
 
 Accepts a sub and optional options in the form of a hash.
 The sub should return truthy or falsey depending on if the schema was valid for the input or not.
@@ -200,9 +204,11 @@ sub _eq_bool {
 
 =head1 ACKNOWLEDGEMENTS
 
+=for stopwords Signes
+
 Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
 
-Ricardo SIGNES <rjbs@cpan.org> for direction to and creation of Test::Fatal.
+Ricardo Signes <rjbs@cpan.org> for direction to and creation of Test::Fatal.
 
 Various others in #perl-help.
 
