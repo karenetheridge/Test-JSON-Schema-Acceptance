@@ -7,10 +7,10 @@ use 5.010;
 use strict;
 use warnings;
 
-use Test::More;
-use Test::Fatal;
-use Cwd 'abs_path';
-use JSON;
+use Test::More ();
+use Test::Fatal ();
+use Cwd ();
+use JSON ();
 
 =for :header =for stopwords validators
 
@@ -137,13 +137,13 @@ sub _run_tests {
 
         TODO: {
           if (ref $skip_tests eq 'ARRAY'){
-            todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
+              Test::More::todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
               if (grep { $subtest_name =~ /$_/} @$skip_tests) ||
                 grep $_ eq "$test_no", @$skip_tests;
           }
 
           my $result;
-          my $exception = exception{
+          my $exception = Test::Fatal::exception{
             if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
               $result = $code->($schema, $json->encode($test->{data}));
             } else {
@@ -153,8 +153,8 @@ sub _run_tests {
           };
 
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
-          ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
-            diag(
+          Test::More::ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
+            Test::More::diag(
               "#$test_no \n" .
               'Test file "' . $test_group->{file} . "\"\n" .
               'Test schema - ' . $test_group_test->{description} . "\n" .
@@ -170,7 +170,7 @@ sub _run_tests {
 sub _load_tests {
   my $self = shift;
 
-  my $mod_dir = abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
+  my $mod_dir = Cwd::abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
 
   my $draft_dir = $mod_dir . "/tests/draft" . $self->{draft} . "/";
 
