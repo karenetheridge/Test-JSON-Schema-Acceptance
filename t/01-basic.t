@@ -1,6 +1,7 @@
+# vim: set ts=8 sts=2 sw=2 tw=100 et :
 use strict;
 use warnings;
-no if "$]" >= 5.031008, feature => 'indirect';
+no if "$]" >= 5.031009, feature => 'indirect';
 
 use Test::Tester 0.108;
 use Test::More 0.88;
