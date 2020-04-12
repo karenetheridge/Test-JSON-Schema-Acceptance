@@ -10,7 +10,7 @@ use warnings;
 use Test::More ();
 use Test::Fatal ();
 use Cwd ();
-use JSON ();
+use JSON::MaybeXS;
 
 =for :header =for stopwords validators
 
@@ -118,7 +118,7 @@ sub acceptance {
 
 sub _run_tests {
   my ($self, $code, $tests, $skip_tests, $only_test) = @_;
-  my $json = JSON->new;
+  my $json = JSON::MaybeXS->new(allow_nonref => 1);
 
   local $Test::Builder::Level = $Test::Builder::Level + 2;
 
@@ -128,7 +128,6 @@ sub _run_tests {
     foreach my $test_group_test (@{$test_group->{json}}){
 
       my $test_group_cases = $test_group_test->{tests};
-      my $schema = $test_group_test->{schema};
 
       foreach my $test (@{$test_group_cases}) {
         $test_no++;
@@ -144,12 +143,7 @@ sub _run_tests {
 
           my $result;
           my $exception = Test::Fatal::exception{
-            if(ref($test->{data}) eq 'ARRAY' || ref($test->{data}) eq 'HASH'){
-              $result = $code->($schema, $json->encode($test->{data}));
-            } else {
-              # $result = $code->($schema, $json->encode([$test->{data}]));
-              $result = $code->($schema, JSON->new->allow_nonref->encode($test->{data}));
-            }
+            $result = $code->($test_group_test->{schema}, $json->encode($test->{data}));
           };
 
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
@@ -179,6 +173,7 @@ sub _load_tests {
   closedir $dir;
   # warn Dumper(\@test_files);
 
+  my $json = JSON::MaybeXS->new(allow_nonref => 1);
   my @test_groups;
 
   foreach my $file (@test_files) {
@@ -187,8 +182,7 @@ sub _load_tests {
     my $raw_json = '';
     $raw_json .= $_ while (<$fh>);
     close($fh);
-    my $parsed_json = JSON->new->allow_nonref->decode($raw_json);
-    # my $parsed_json = JSON::from_json($raw_json);
+    my $parsed_json = $json->decode($raw_json);
 
     push @test_groups, { file => $file, json => $parsed_json };
   }

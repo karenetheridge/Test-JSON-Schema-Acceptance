@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - switch from JSON.pm to JSON::MaybeXS (GH #1)
 
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging
