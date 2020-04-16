@@ -9,8 +9,9 @@ our $VERSION = '0.991';
 no if "$]" >= 5.031009, feature => 'indirect';
 use Test::More ();
 use Test::Fatal ();
-use Cwd ();
 use JSON::MaybeXS;
+use File::ShareDir 'dist_dir';
+use namespace::clean;
 
 =for :header =for stopwords validators
 
@@ -164,7 +165,7 @@ sub _run_tests {
 sub _load_tests {
   my $self = shift;
 
-  my $mod_dir = Cwd::abs_path(__FILE__) =~ s~Acceptance\.pm~/test_suite~r; # Find the modules directory... ~
+  my $mod_dir = dist_dir('Test-JSON-Schema-Acceptance');
 
   my $draft_dir = $mod_dir . "/tests/draft" . $self->{draft} . "/";
 
