@@ -13,11 +13,11 @@ use JSON::MaybeXS;
 use File::ShareDir 'dist_dir';
 use namespace::clean;
 
-=for :header =for stopwords validators
+=for :header =for stopwords validators Schemas
 
 =head1 SYNOPSIS
 
-This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements json-schema.
+This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements the JSON Schema specification ("json-schema").
 These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
 Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
 
@@ -47,25 +47,26 @@ This would determine if JSON::Schema's C<validate> method returns the right resu
 
 L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
 
-The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
+From the overview of the L<draft 2019-09 version of the
+specification|https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.3>:
 
 =over 4
 
-JSON Schema defines the media type "application/schema+json",
-a JSON based format for defining the structure of JSON data.
-JSON Schema provides a contract for what JSON data is required
-for a given application and how to interact with it.
-JSON Schema is intended to define validation, documentation,
-hyperlink navigation, and interaction control of JSON data.
+This document proposes a new media type "application/schema+json" to identify a JSON Schema for
+describing JSON data. It also proposes a further optional media type,
+"application/schema-instance+json", to provide additional integration features. JSON Schemas are
+themselves JSON documents. This, and related specifications, define keywords allowing authors to
+describe JSON data in several ways.
+
+JSON Schema uses keywords to assert constraints on JSON instances or annotate those instances with
+additional information. Additional keywords are used to apply assertions and annotations to more
+complex JSON data structures, or based on some sort of condition.
 
 =back
 
-L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independently of the specification, which aims to implement the json-schema specification.
+This module allows other perl modules (for example JSON::Schema) to test that they are JSON Schema-compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
 
-This module allows other perl modules (for example JSON::Schema) to test that they are json-schema compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
-
-You are unlikely to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
-
+You are unlikely to want this module, unless you are attempting to write a module which implements JSON Schema the specification, and want to test your compliance.
 
 =head1 CONSTRUCTOR
 
@@ -75,9 +76,9 @@ You are unlikely to want this module, unless you are attempting to write a modul
 
 Create a new instance of Test::JSON::Schema::Acceptance.
 
-Accepts optional argument of $schema_version.
+Accepts an optional argument of $schema_version.
 This determines the draft version of the schema to confirm compliance to.
-Default is draft 4 (current), but in the synopsis example, JSON::Schema is testing draft 3 compliance.
+The default is draft 4, but in the synopsis example, JSON::Schema is testing draft 3 compliance.
 
 =back
 
