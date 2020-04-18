@@ -11,11 +11,37 @@ use Test::More ();
 use Test::Fatal ();
 use JSON::MaybeXS;
 use File::ShareDir 'dist_dir';
+use Moo;
+use MooX::TypeTiny 0.002002;
+use Types::Standard qw(Str InstanceOf);
+use Path::Tiny;
 use namespace::clean;
 
-sub new {
-  my $class = shift;
-  return bless { draft => shift || 4 }, $class;
+has specification => (
+  is => 'ro',
+  isa => Str,
+  lazy => 1,
+  default => 'draft2019-09',
+);
+
+has test_dir => (
+  is => 'ro',
+  isa => InstanceOf['Path::Tiny'],
+  coerce => sub { path($_[0])->absolute('.') },
+  lazy => 1,
+  default => sub { path(dist_dir('Test-JSON-Schema-Acceptance'),'tests', $_[0]->specification) },
+);
+
+around BUILDARGS => sub {
+  my ($orig, $class, @args) = @_;
+  my %args = @args % 2 ? ( specification => 'draft'.$args[0] ) : @args;
+  $args{specification} = 'draft2019-09' if ($args{specification} // '') eq 'latest';
+  $class->$orig(\%args);
+};
+
+sub BUILD {
+  my $self = shift;
+  -d $self->test_dir or die 'test_dir does not exist: '.$self->test_dir;
 }
 
 sub acceptance {
@@ -77,9 +103,7 @@ sub _run_tests {
 sub _load_tests {
   my $self = shift;
 
-  my $mod_dir = dist_dir('Test-JSON-Schema-Acceptance');
-
-  my $draft_dir = $mod_dir . "/tests/draft" . $self->{draft} . "/";
+  my $draft_dir = $self->test_dir . "/";
 
   opendir (my $dir, $draft_dir) ;
   my @test_files = grep { -f "$draft_dir/$_"} readdir $dir;
@@ -114,7 +138,11 @@ __END__
 
 =pod
 
-=for :header =for stopwords validators Schemas
+=for :header
+=for stopwords validators Schemas
+
+=for :footer
+=for Pod::Coverage BUILDARGS BUILD
 
 =head1 SYNOPSIS
 
@@ -128,7 +156,7 @@ In the JSON::Schema module, a test could look like the following:
   use JSON::Schema;
   use Test::JSON::Schema::Acceptance;
 
-  my $accepter = Test::JSON::Schema::Acceptance->new(3);
+  my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft3');
 
   # Skip tests which are known not to be supported or which cause problems.
   my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
@@ -172,17 +200,36 @@ You are unlikely to want this module, unless you are attempting to write a modul
 
 =head1 CONSTRUCTOR
 
-=over 1
-
-=item C<< Test::JSON::Schema::Acceptance->new($schema_version) >>
+  Test::JSON::Schema::Acceptance->new(specification => $specification_version)
 
 Create a new instance of Test::JSON::Schema::Acceptance.
 
-Accepts an optional argument of $schema_version.
-This determines the draft version of the schema to confirm compliance to.
-The default is draft 4, but in the synopsis example, JSON::Schema is testing draft 3 compliance.
+Available options are:
 
-=back
+=head2 specification
+
+This determines the draft version of the schema to confirm compliance to.
+Possible values are:
+
+=for :list
+* C<draft3>
+* C<draft4>
+* C<draft6>
+* C<draft7>
+* C<draft2019-09>
+* C<latest> (alias for C<draft2019-09>)
+
+The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3 compliance.
+
+(For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which maps to
+C<draft3> through C<draft7>.)
+
+=head2 test_dir
+
+Instead of specifying a draft specification to test against, which will select the most appropriate tests,
+you can pass in the name of a directory of tests to run directly.  Files in this directory should be F<.json>
+files following the format described in
+L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
 
 =head1 SUBROUTINES/METHODS
 
