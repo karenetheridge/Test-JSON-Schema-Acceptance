@@ -1,7 +1,7 @@
 package Test::JSON::Schema::Acceptance;
 # ABSTRACT: Acceptance testing for JSON-Schema based validators like JSON::Schema
 
-our $VERSION = '0.990';
+our $VERSION = '0.991';
 
 use 5.010;
 use strict;

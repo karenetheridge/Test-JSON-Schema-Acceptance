@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging
         - updated test suite with latest tests
