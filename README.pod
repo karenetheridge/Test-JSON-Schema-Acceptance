@@ -1,19 +1,22 @@
+=pod
+
+=encoding UTF-8
+
+=for stopwords validators
+
 =head1 NAME
 
 Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
 
 =head1 VERSION
 
-Version 0.0.2
-
-
-=cut
+version 0.990
 
 =head1 SYNOPSIS
 
 This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements json-schema.
-These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-scheam.
-Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in differnet languages.
+These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
+Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
 
 In the JSON::Schema module, a test could look like the following:
 
@@ -44,22 +47,21 @@ L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) whic
 The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
 
 =over 4
+
 JSON Schema defines the media type "application/schema+json",
 a JSON based format for defining the structure of JSON data.
 JSON Schema provides a contract for what JSON data is required
 for a given application and how to interact with it.
 JSON Schema is intended to define validation, documentation,
 hyperlink navigation, and interaction control of JSON data.
+
 =back
 
-L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independantly of the specification, which aims to implement the json-schema specification.
+L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independently of the specification, which aims to implement the json-schema specification.
 
 This module allows other perl modules (for example JSON::Schema) to test that they are json-schema compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
 
-You are unliekly to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
-
-
-=cut
+You are unlikely to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
 
 =head1 CONSTRUCTOR
 
@@ -70,15 +72,16 @@ You are unliekly to want this module, unless you are attempting to write a modul
 Create a new instance of Test::JSON::Schema::Acceptance.
 
 Accepts optional argument of $schema_version.
-This determins the draft version of the schema to confirm compliance to.
+This determines the draft version of the schema to confirm compliance to.
 Default is draft 4 (current), but in the synopsis example, JSON::Schema is testing draft 3 compliance.
 
-
-=cut
+=back
 
 =head1 SUBROUTINES/METHODS
 
 =head2 acceptance
+
+=for stopwords truthy falsey
 
 Accepts a sub and optional options in the form of a hash.
 The sub should return truthy or falsey depending on if the schema was valid for the input or not.
@@ -90,85 +93,54 @@ You can skip a whole section of tests or individual tests.
 Any test name that contains any of the array refs items will be skipped, using grep.
 You can also skip a test by its number.
 
-
-=cut
-
-=head1 AUTHOR
-
-Ben Hutton (@relequestual), C<< <relequest at cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to via github at L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>.
-
-=head1 SUPPORT
-
-Users' IRC: #json-schema on irc.perl.org
-
-=for :html
-L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@irc.perl.org>
-
-For questions about json-schema in general IRC: #json-schema on chat.freenode.net
-
-=for :html
-L<(click for instant chatroom login)|http://chat.mibbit.com/#json-schema@chat.freenode.net>
-
-You can also look for information at:
-
-=over 3
-
-=item * Github issues (report bugs here)
-
-L<https://github.com/Relequestual/Test-JSON-Schema-Acceptance/issues>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Test-JSON-Schema-Acceptance>
-
-=item * Search Meta CPAN
-
-L<http://search.cpan.org/pod/Test::JSON::Schema::Acceptance/>
-
-=back
-
-
 =head1 ACKNOWLEDGEMENTS
+
+=for stopwords Signes
 
 Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
 
-Ricardo SIGNES <rjbs@cpan.org> for direction to and creation of Test::Fatal.
+Ricardo Signes <rjbs@cpan.org> for direction to and creation of Test::Fatal.
 
 Various others in #perl-help.
 
-=head1 LICENSE AND COPYRIGHT
+=head1 SUPPORT
 
-Copyright 2015 Ben Hutton (@relequestual).
+bugs may be submitted through L<https://github.com/karenetheridge/Test-JSON-Schema-Acceptance/issues>.
 
-This program is distributed under the MIT (X11) License:
-L<http://www.opensource.org/licenses/mit-license.php>
+=head1 AUTHOR
 
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
+Ben Hutton (@relequestual) <relequest@cpan.org>
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
+=head1 CONTRIBUTORS
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+=for stopwords Ben Hutton Karen Etheridge Daniel Perrett
 
+=over 4
 
+=item *
+
+Ben Hutton <bh7@sanger.ac.uk>
+
+=item *
+
+Karen Etheridge <ether@cpan.org>
+
+=item *
+
+Ben Hutton <relequestual@gmail.com>
+
+=item *
+
+Daniel Perrett <dp13@sanger.ac.uk>
+
+=back
+
+=head1 COPYRIGHT AND LICENCE
+
+This software is Copyright (c) 2015 by Ben Hutton.
+
+This is free software, licensed under:
+
+  The MIT (X11) License
 
 =cut
-
