@@ -3,7 +3,7 @@ use warnings;
 package SchemaParser;
 
 use feature 'state';
-use JSON::MaybeXS 'is_bool';
+use JSON::MaybeXS 1.002004 'is_bool';
 
 sub new {
     return bless {}, __PACKAGE__;
