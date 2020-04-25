@@ -28,7 +28,7 @@ my ($premature, @results) = run_tests(
 cmp_deeply(
   [ grep $_->{name} =~ /^boolean type matches booleans/, @results ],
   array_each(superhashof({ ok => 1 })),
-  'tests pass for checking schemas that testing for boolean type',
+  'tests pass for checking schemas that test for boolean type',
 );
 
 done_testing;
