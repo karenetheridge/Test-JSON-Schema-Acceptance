@@ -19,8 +19,8 @@ my $parser = SchemaParser->new;
 my ($premature, @results) = run_tests(
     sub {
         $accepter->acceptance(sub {
-            my ($schema, $input) = @_;
-            return $parser->validate($input, $schema);
+            my ($schema, $data_string) = @_;
+            return $parser->validate_json_string($data_string, $schema);
         });
     }
 );
