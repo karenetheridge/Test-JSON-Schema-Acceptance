@@ -13,7 +13,7 @@ use JSON::MaybeXS;
 use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
-use Types::Standard qw(Str InstanceOf);
+use Types::Standard qw(Str InstanceOf ArrayRef HashRef Dict Any);
 use Path::Tiny;
 use namespace::clean;
 
@@ -46,7 +46,7 @@ sub BUILD {
 
 sub acceptance {
   my ($self, $code, $options) = @_;
-  my $tests = $self->_load_tests;
+  my $tests = $self->_test_data;
 
   my $skip_tests = $options->{skip_tests} // {};
   my $only_test = $options->{only_test} // undef;
@@ -100,7 +100,24 @@ sub _run_tests {
   }
 }
 
-sub _load_tests {
+has _test_data => (
+  is => 'lazy',
+  isa => ArrayRef[
+          Dict[
+            file => Str,
+            json => ArrayRef[Dict[
+              description => Str,
+              schema => InstanceOf['JSON::PP::Boolean']|HashRef,
+              tests => ArrayRef[Dict[
+                data => Any,
+                description => Str,
+                valid => InstanceOf['JSON::PP::Boolean'],
+              ]],
+            ]],
+           ]],
+);
+
+sub _build__test_data {
   my $self = shift;
 
   my $draft_dir = $self->test_dir . "/";
