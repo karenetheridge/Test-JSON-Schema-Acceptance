@@ -13,99 +13,10 @@ use JSON::MaybeXS;
 use File::ShareDir 'dist_dir';
 use namespace::clean;
 
-=for :header =for stopwords validators Schemas
-
-=head1 SYNOPSIS
-
-This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements the JSON Schema specification ("json-schema").
-These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
-Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
-
-In the JSON::Schema module, a test could look like the following:
-
-  use Test::More;
-  use JSON::Schema;
-  use Test::JSON::Schema::Acceptance;
-
-  my $accepter = Test::JSON::Schema::Acceptance->new(3);
-
-  # Skip tests which are known not to be supported or which cause problems.
-  my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
-
-  $accepter->acceptance( sub{
-    my ( $schema, $input ) = @_;
-    return JSON::Schema->new($schema)->validate($input);
-  }, {
-    skip_tests => $skip_tests
-  } );
-
-  done_testing();
-
-This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
-
-=head1 DESCRIPTION
-
-L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
-
-From the overview of the L<draft 2019-09 version of the
-specification|https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.3>:
-
-=over 4
-
-This document proposes a new media type "application/schema+json" to identify a JSON Schema for
-describing JSON data. It also proposes a further optional media type,
-"application/schema-instance+json", to provide additional integration features. JSON Schemas are
-themselves JSON documents. This, and related specifications, define keywords allowing authors to
-describe JSON data in several ways.
-
-JSON Schema uses keywords to assert constraints on JSON instances or annotate those instances with
-additional information. Additional keywords are used to apply assertions and annotations to more
-complex JSON data structures, or based on some sort of condition.
-
-=back
-
-This module allows other perl modules (for example JSON::Schema) to test that they are JSON Schema-compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
-
-You are unlikely to want this module, unless you are attempting to write a module which implements JSON Schema the specification, and want to test your compliance.
-
-=head1 CONSTRUCTOR
-
-=over 1
-
-=item C<< Test::JSON::Schema::Acceptance->new($schema_version) >>
-
-Create a new instance of Test::JSON::Schema::Acceptance.
-
-Accepts an optional argument of $schema_version.
-This determines the draft version of the schema to confirm compliance to.
-The default is draft 4, but in the synopsis example, JSON::Schema is testing draft 3 compliance.
-
-=back
-
-=cut
-
 sub new {
   my $class = shift;
   return bless { draft => shift || 4 }, $class;
 }
-
-=head1 SUBROUTINES/METHODS
-
-=head2 acceptance
-
-=for stopwords truthy falsey
-
-Accepts a sub and optional options in the form of a hash.
-The sub should return truthy or falsey depending on if the schema was valid for the input or not.
-
-=head3 options
-
-The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
-You can skip a whole section of tests or individual tests.
-Any test name that contains any of the array refs items will be skipped, using grep.
-You can also skip a test by its number.
-
-=cut
 
 sub acceptance {
   my ($self, $code, $options) = @_;
@@ -198,6 +109,97 @@ sub _eq_bool {
   return !(shift xor shift);
 }
 
+1;
+__END__
+
+=pod
+
+=for :header =for stopwords validators Schemas
+
+=head1 SYNOPSIS
+
+This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements the JSON Schema specification ("json-schema").
+These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
+Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
+
+In the JSON::Schema module, a test could look like the following:
+
+  use Test::More;
+  use JSON::Schema;
+  use Test::JSON::Schema::Acceptance;
+
+  my $accepter = Test::JSON::Schema::Acceptance->new(3);
+
+  # Skip tests which are known not to be supported or which cause problems.
+  my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
+
+  $accepter->acceptance( sub{
+    my ( $schema, $input ) = @_;
+    return JSON::Schema->new($schema)->validate($input);
+  }, {
+    skip_tests => $skip_tests
+  } );
+
+  done_testing();
+
+This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+
+=head1 DESCRIPTION
+
+L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
+
+From the overview of the L<draft 2019-09 version of the
+specification|https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.3>:
+
+=over 4
+
+This document proposes a new media type "application/schema+json" to identify a JSON Schema for
+describing JSON data. It also proposes a further optional media type,
+"application/schema-instance+json", to provide additional integration features. JSON Schemas are
+themselves JSON documents. This, and related specifications, define keywords allowing authors to
+describe JSON data in several ways.
+
+JSON Schema uses keywords to assert constraints on JSON instances or annotate those instances with
+additional information. Additional keywords are used to apply assertions and annotations to more
+complex JSON data structures, or based on some sort of condition.
+
+=back
+
+
+This module allows other perl modules (for example JSON::Schema) to test that they are JSON Schema-compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
+
+You are unlikely to want this module, unless you are attempting to write a module which implements JSON Schema the specification, and want to test your compliance.
+
+=head1 CONSTRUCTOR
+
+=over 1
+
+=item C<< Test::JSON::Schema::Acceptance->new($schema_version) >>
+
+Create a new instance of Test::JSON::Schema::Acceptance.
+
+Accepts an optional argument of $schema_version.
+This determines the draft version of the schema to confirm compliance to.
+The default is draft 4, but in the synopsis example, JSON::Schema is testing draft 3 compliance.
+
+=back
+
+=head1 SUBROUTINES/METHODS
+
+=head2 acceptance
+
+=for stopwords truthy falsey
+
+Accepts a sub and optional options in the form of a hash.
+The sub should return truthy or falsey depending on if the schema was valid for the input or not.
+
+=head3 options
+
+The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
+You can skip a whole section of tests or individual tests.
+Any test name that contains any of the array refs items will be skipped, using grep.
+You can also skip a test by its number.
+
 =head1 ACKNOWLEDGEMENTS
 
 =for stopwords Signes
@@ -209,5 +211,3 @@ Ricardo Signes <rjbs@cpan.org> for direction to and creation of Test::Fatal.
 Various others in #perl-help.
 
 =cut
-
-1; # End of Test::JSON::Schema::Acceptance
