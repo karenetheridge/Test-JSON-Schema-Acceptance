@@ -61,41 +61,42 @@ sub acceptance {
 sub _run_tests {
   my ($self, $tests, $options) = @_;
 
-  local $Test::Builder::Level = $Test::Builder::Level + 2;
-
-  foreach my $test_group (@{$tests}) {
-
-    foreach my $test_group_test (@{$test_group->{json}}){
-
-      my $test_group_cases = $test_group_test->{tests};
-
-      foreach my $test (@{$test_group_cases}) {
-        my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
-
-        TODO: {
-          if (ref $options->{skip_tests} eq 'ARRAY'){
-              Test::More::todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
-              if (grep { $subtest_name =~ /$_/} @{$options->{skip_tests}});
-          }
-
-          my $result;
-          my $exception = Test::Fatal::exception{
-            $result = $options->{validate_data}
-              ? $options->{validate_data}->($test_group_test->{schema}, $test->{data})
-              : $options->{validate_json_string}->($test_group_test->{schema}, $self->_json_decoder->encode($test->{data}));
-          };
-
-          my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
-          Test::More::ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
-            Test::More::diag(
-              'Test file "' . $test_group->{file} . "\"\n" .
-              'Test schema - ' . $test_group_test->{description} . "\n" .
-              'Test data - ' . $test->{description} . "\n" .
-              ($exception ? "$exception " : "") . "\n"
-            );
-        }
+  foreach my $one_file (@$tests) {
+    foreach my $test_group (@{$one_file->{json}}){
+      foreach my $test (@{$test_group->{tests}}) {
+        $self->_run_test($one_file, $test_group, $test, $options);
       }
     }
+  }
+}
+
+sub _run_test {
+  my ($self, $one_file, $test_group, $test, $options) = @_;
+
+  local $Test::Builder::Level = $Test::Builder::Level + 3;
+
+  TODO: {
+    my $subtest_name = $test_group->{description} . ' - ' . $test->{description};
+    if (ref $options->{skip_tests} eq 'ARRAY'){
+        Test::More::todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
+        if (grep { $subtest_name =~ /$_/} @{$options->{skip_tests}});
+    }
+
+    my $result;
+    my $exception = Test::Fatal::exception{
+      $result = $options->{validate_data}
+        ? $options->{validate_data}->($test_group->{schema}, $test->{data})
+        : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
+    };
+
+    my $test_desc = $test_group->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
+    Test::More::ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
+      Test::More::diag(
+        'Test file "' . $one_file->{file} . "\"\n" .
+        'Test schema - ' . $test_group->{description} . "\n" .
+        'Test data - ' . $test->{description} . "\n" .
+        ($exception ? "$exception " : "") . "\n"
+      );
   }
 }
 
