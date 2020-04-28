@@ -54,16 +54,12 @@ sub acceptance {
   die 'cannot provide both "validate_data" and "validate_json_string"'
     if $options->{validate_data} and $options->{validate_json_string};
 
-  my $tests = $self->_test_data;
-
-  my $skip_tests = $options->{skip_tests} // {};
-
-  $self->_run_tests(@{$options}{qw(validate_data validate_json_string)}, $tests, $skip_tests);
+  $self->_run_tests($self->_test_data, $options);
 
 }
 
 sub _run_tests {
-  my ($self, $validate_data_code, $validate_json_string_code, $tests, $skip_tests) = @_;
+  my ($self, $tests, $options) = @_;
 
   local $Test::Builder::Level = $Test::Builder::Level + 2;
 
@@ -77,16 +73,16 @@ sub _run_tests {
         my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
 
         TODO: {
-          if (ref $skip_tests eq 'ARRAY'){
+          if (ref $options->{skip_tests} eq 'ARRAY'){
               Test::More::todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
-              if (grep { $subtest_name =~ /$_/} @$skip_tests);
+              if (grep { $subtest_name =~ /$_/} @{$options->{skip_tests}});
           }
 
           my $result;
           my $exception = Test::Fatal::exception{
-            $result = $validate_data_code
-              ? $validate_data_code->($test_group_test->{schema}, $test->{data})
-              : $validate_json_string_code->($test_group_test->{schema}, $self->_json_decoder->encode($test->{data}));
+            $result = $options->{validate_data}
+              ? $options->{validate_data}->($test_group_test->{schema}, $test->{data})
+              : $options->{validate_json_string}->($test_group_test->{schema}, $self->_json_decoder->encode($test->{data}));
           };
 
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
