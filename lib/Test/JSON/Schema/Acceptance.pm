@@ -13,7 +13,7 @@ use JSON::MaybeXS;
 use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
-use Types::Standard qw(Str InstanceOf ArrayRef HashRef Dict Any);
+use Types::Standard qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods);
 use Path::Tiny;
 use namespace::clean;
 
@@ -65,7 +65,6 @@ sub acceptance {
 
 sub _run_tests {
   my ($self, $validate_data_code, $validate_json_string_code, $tests, $skip_tests, $only_test) = @_;
-  my $json = JSON::MaybeXS->new(allow_nonref => 1);
 
   local $Test::Builder::Level = $Test::Builder::Level + 2;
 
@@ -92,7 +91,7 @@ sub _run_tests {
           my $exception = Test::Fatal::exception{
             $result = $validate_data_code
               ? $validate_data_code->($test_group_test->{schema}, $test->{data})
-              : $validate_json_string_code->($test_group_test->{schema}, $json->encode($test->{data}));
+              : $validate_json_string_code->($test_group_test->{schema}, $self->_json_decoder->encode($test->{data}));
           };
 
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
@@ -109,6 +108,13 @@ sub _run_tests {
     }
   }
 }
+
+has _json_decoder => (
+  is => 'ro',
+  isa => HasMethods[qw(encode decode)],
+  lazy => 1,
+  default => sub { JSON::MaybeXS->new(allow_nonref => 1) },
+);
 
 has _test_data => (
   is => 'lazy',
@@ -137,7 +143,6 @@ sub _build__test_data {
   closedir $dir;
   # warn Dumper(\@test_files);
 
-  my $json = JSON::MaybeXS->new(allow_nonref => 1);
   my @test_groups;
 
   foreach my $file (@test_files) {
@@ -148,7 +153,7 @@ sub _build__test_data {
     my $raw_json = '';
     $raw_json .= $_ while (<$fh>);
     close($fh);
-    my $parsed_json = $json->decode($raw_json);
+    my $parsed_json = $self->_json_decoder->decode($raw_json);
 
     push @test_groups, { file => $file, json => $parsed_json };
   }
