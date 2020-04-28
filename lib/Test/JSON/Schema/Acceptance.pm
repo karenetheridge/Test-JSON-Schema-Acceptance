@@ -57,18 +57,16 @@ sub acceptance {
   my $tests = $self->_test_data;
 
   my $skip_tests = $options->{skip_tests} // {};
-  my $only_test = $options->{only_test} // undef;
 
-  $self->_run_tests(@{$options}{qw(validate_data validate_json_string)}, $tests, $skip_tests, $only_test);
+  $self->_run_tests(@{$options}{qw(validate_data validate_json_string)}, $tests, $skip_tests);
 
 }
 
 sub _run_tests {
-  my ($self, $validate_data_code, $validate_json_string_code, $tests, $skip_tests, $only_test) = @_;
+  my ($self, $validate_data_code, $validate_json_string_code, $tests, $skip_tests) = @_;
 
   local $Test::Builder::Level = $Test::Builder::Level + 2;
 
-  my $test_no = 0;
   foreach my $test_group (@{$tests}) {
 
     foreach my $test_group_test (@{$test_group->{json}}){
@@ -76,15 +74,12 @@ sub _run_tests {
       my $test_group_cases = $test_group_test->{tests};
 
       foreach my $test (@{$test_group_cases}) {
-        $test_no++;
-        next if defined $only_test && $test_no != $only_test;
         my $subtest_name = $test_group_test->{description} . ' - ' . $test->{description};
 
         TODO: {
           if (ref $skip_tests eq 'ARRAY'){
               Test::More::todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
-              if (grep { $subtest_name =~ /$_/} @$skip_tests) ||
-                grep $_ eq "$test_no", @$skip_tests;
+              if (grep { $subtest_name =~ /$_/} @$skip_tests);
           }
 
           my $result;
@@ -97,7 +92,6 @@ sub _run_tests {
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
           Test::More::ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
             Test::More::diag(
-              "#$test_no \n" .
               'Test file "' . $test_group->{file} . "\"\n" .
               'Test schema - ' . $test_group_test->{description} . "\n" .
               'Test data - ' . $test->{description} . "\n" .
@@ -306,7 +300,6 @@ Optional.
 This should be an array ref of tests you want to skip.
 You can skip a whole section of tests or individual tests.
 Any test name that contains any of the array refs items will be skipped, using grep.
-You can also skip a test by its number.
 
 =head1 ACKNOWLEDGEMENTS
 

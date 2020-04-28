@@ -7,6 +7,8 @@ Revision history for Test-JSON-Schema-Acceptance
         - add options "validate_data" and "validate_json_string", to
           accomodate the JSON Schema backend preferring either inflated data or a
           JSON-encoded string. (GH #4)
+        - remove undocumented "only_test" option, and ability to skip test by
+          number (GH #10, GH #11)
 
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging
