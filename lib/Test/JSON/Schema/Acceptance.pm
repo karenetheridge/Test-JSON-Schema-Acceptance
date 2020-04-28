@@ -45,18 +45,26 @@ sub BUILD {
 }
 
 sub acceptance {
-  my ($self, $code, $options) = @_;
+  my $self = shift;
+  my $options = +{ ref $_[0] eq 'CODE' ? (validate_json_string => @_) : @_ };
+
+  die 'require one or the other of "validate_data", "validate_json_string"'
+    if not $options->{validate_data} and not $options->{validate_json_string};
+
+  die 'cannot provide both "validate_data" and "validate_json_string"'
+    if $options->{validate_data} and $options->{validate_json_string};
+
   my $tests = $self->_test_data;
 
   my $skip_tests = $options->{skip_tests} // {};
   my $only_test = $options->{only_test} // undef;
 
-  $self->_run_tests($code, $tests, $skip_tests, $only_test);
+  $self->_run_tests(@{$options}{qw(validate_data validate_json_string)}, $tests, $skip_tests, $only_test);
 
 }
 
 sub _run_tests {
-  my ($self, $code, $tests, $skip_tests, $only_test) = @_;
+  my ($self, $validate_data_code, $validate_json_string_code, $tests, $skip_tests, $only_test) = @_;
   my $json = JSON::MaybeXS->new(allow_nonref => 1);
 
   local $Test::Builder::Level = $Test::Builder::Level + 2;
@@ -82,7 +90,9 @@ sub _run_tests {
 
           my $result;
           my $exception = Test::Fatal::exception{
-            $result = $code->($test_group_test->{schema}, $json->encode($test->{data}));
+            $result = $validate_data_code
+              ? $validate_data_code->($test_group_test->{schema}, $test->{data})
+              : $validate_json_string_code->($test_group_test->{schema}, $json->encode($test->{data}));
           };
 
           my $test_desc = $test_group_test->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
@@ -180,12 +190,13 @@ In the JSON::Schema module, a test could look like the following:
   # Skip tests which are known not to be supported or which cause problems.
   my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
 
-  $accepter->acceptance( sub{
-    my ( $schema, $input ) = @_;
-    return JSON::Schema->new($schema)->validate($input);
-  }, {
-    skip_tests => $skip_tests
-  } );
+  $accepter->acceptance(
+    validate_data => sub {
+      my ($schema, $input_data) = @_;
+      return JSON::Schema->new($schema)->validate($input_data);
+    },
+    skip_tests => $skip_tests,
+  );
 
   done_testing();
 
@@ -256,12 +267,38 @@ L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.m
 
 =for stopwords truthy falsey
 
-Accepts a sub and optional options in the form of a hash.
-The sub should return truthy or falsey depending on if the schema was valid for the input or not.
+Accepts a hash of options as its arguments.
 
-=head3 options
+(Backwards-compatibility mode: accepts a subroutine which is used as C<validate_json_string>,
+and a hashref of arguments.)
 
-The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
+Available options are:
+
+=head3 validate_data
+
+A subroutine reference, which is passed two arguments: the JSON Schema, and the B<inflated> data
+structure to be validated.
+
+The subroutine should return truthy or falsey depending on if the schema was valid for the input or
+not.
+
+Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 validate_json_string
+
+A subroutine reference, which is passed two arguments: the JSON Schema, and the B<JSON string>
+containing the data to be validated.
+
+The subroutine should return truthy or falsey depending on if the schema was valid for the input or
+not.
+
+Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 skip_tests
+
+Optional.
+
+This should be an array ref of tests you want to skip.
 You can skip a whole section of tests or individual tests.
 Any test name that contains any of the array refs items will be skipped, using grep.
 You can also skip a test by its number.

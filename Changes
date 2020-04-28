@@ -4,6 +4,9 @@ Revision history for Test-JSON-Schema-Acceptance
         - switch from JSON.pm to JSON::MaybeXS (GH #1)
         - package the submodule of test cases in a sharedir (GH #2)
         - additional constructor options, including use of a custom directory
+        - add options "validate_data" and "validate_json_string", to
+          accomodate the JSON Schema backend preferring either inflated data or a
+          JSON-encoded string. (GH #4)
 
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging

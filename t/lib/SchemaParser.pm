@@ -27,9 +27,7 @@ sub validate_data {
 sub validate_json_string {
     my ($self, $data_string, $schema) = @_;
 
-    # apparently the data is passed as a json string?!
     state $decoder = JSON::MaybeXS->new(utf8 => 1, allow_nonref => 1);
-
     return $self->validate_data($decoder->decode($data_string), $schema);
 }
 

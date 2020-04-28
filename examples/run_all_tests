@@ -14,9 +14,11 @@ use SchemaParser;
 my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft7');
 
 my $parser = SchemaParser->new;
-$accepter->acceptance(sub {
-    my ($schema, $data_string) = @_;
-    return $parser->validate_json_string($data_string, $schema);
-});
+$accepter->acceptance(
+  validate_data => sub {
+    my ($schema, $input_data) = @_;
+    return $parser->validate_data($input_data, $schema);
+  },
+);
 
 Test::More::done_testing;
