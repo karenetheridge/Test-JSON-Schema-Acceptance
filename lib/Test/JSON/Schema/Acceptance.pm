@@ -61,6 +61,8 @@ sub acceptance {
 sub _run_tests {
   my ($self, $tests, $options) = @_;
 
+  Test::More::note('running tests in '.$self->test_dir.'...');
+
   foreach my $one_file (@$tests) {
     foreach my $test_group (@{$one_file->{json}}){
       foreach my $test (@{$test_group->{tests}}) {
@@ -89,14 +91,11 @@ sub _run_test {
         : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
     };
 
-    my $test_desc = $test_group->{description} . ' - ' . $test->{description} . ($exception ? ' - and died!!' : '');
-    Test::More::ok(!$exception && _eq_bool($test->{valid}, $result), $test_desc) or
-      Test::More::diag(
-        'Test file "' . $one_file->{file} . "\"\n" .
-        'Test schema - ' . $test_group->{description} . "\n" .
-        'Test data - ' . $test->{description} . "\n" .
-        ($exception ? "$exception " : "") . "\n"
-      );
+    my $got = $result ? 'true' : 'false';
+    my $expected = $test->{valid} ? 'true' : 'false';
+
+    Test::More::is($got, $expected, $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"');
+    Test::More::fail($exception) if $exception;
   }
 }
 
@@ -150,12 +149,6 @@ sub _build__test_data {
   }
 
   return \@test_groups;
-}
-
-
-# Forces the two variables passed, into boolean context.
-sub _eq_bool {
-  return !(shift xor shift);
 }
 
 1;

@@ -9,6 +9,7 @@ Revision history for Test-JSON-Schema-Acceptance
           JSON-encoded string. (GH #4)
         - remove undocumented "only_test" option, and ability to skip test by
           number (GH #10, GH #11)
+        - clearer labels for each test
 
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging
