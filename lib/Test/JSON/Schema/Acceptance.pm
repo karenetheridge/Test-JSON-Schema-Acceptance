@@ -64,8 +64,23 @@ sub _run_tests {
   Test::More::note('running tests in '.$self->test_dir.'...');
 
   foreach my $one_file (@$tests) {
+    next if $options->{tests} and $options->{tests}{file}
+      and not grep $_ eq $one_file->{file},
+        (ref $options->{tests}{file} eq 'ARRAY'
+          ? @{$options->{tests}{file}} : $options->{tests}{file});
+
     foreach my $test_group (@{$one_file->{json}}){
+      next if $options->{tests} and $options->{tests}{group_description}
+        and not grep $_ eq $test_group->{description},
+          (ref $options->{tests}{group_description} eq 'ARRAY'
+            ? @{$options->{tests}{group_description}} : $options->{tests}{group_description});
+
       foreach my $test (@{$test_group->{tests}}) {
+        next if $options->{tests} and $options->{tests}{test_description}
+          and not grep $_ eq $test->{description},
+            (ref $options->{tests}{test_description} eq 'ARRAY'
+              ? @{$options->{tests}{test_description}} : $options->{tests}{test_description});
+
         $self->_run_test($one_file, $test_group, $test, $options);
       }
     }
@@ -157,7 +172,7 @@ __END__
 =pod
 
 =for :header
-=for stopwords validators Schemas
+=for stopwords validators Schemas ANDed ORed
 
 =for :footer
 =for Pod::Coverage BUILDARGS BUILD
@@ -282,6 +297,43 @@ The subroutine should return truthy or falsey depending on if the schema was val
 not.
 
 Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 tests
+
+Optional.  Restricts tests to just those mentioned (the conditions are ANDed together, not ORed).
+The syntax can take one of many forms:
+
+  # run tests in this file
+  tests => { file => 'dependencies.json' }
+
+  # run tests in these files
+  tests => { file => [ 'dependencies.json', 'refRemote.json' ] }
+
+  # run tests in this file with this group description
+  tests => {
+    file => 'refRemote.json',
+    group_description => 'remote ref',
+  }
+
+  # run tests in this file with these group descriptions
+  tests => {
+    file => 'const.json',
+    group_description => [ 'const validation', 'const with object' ],
+  }
+
+  # run tests in this file with this group description and test description
+  tests => {
+    file => 'const.json',
+    group_description => 'const validation',
+    test_description => 'another type is invalid',
+  }
+
+  # run tests in this file with this group description and these test descriptions
+  tests => {
+    file => 'const.json',
+    group_description => 'const validation',
+    test_description => [ 'same value is valid', 'another type is invalid' ],
+  }
 
 =head3 skip_tests
 
