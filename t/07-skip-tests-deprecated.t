@@ -17,19 +17,19 @@ my $parser = SchemaParser->new;
 
 foreach my $test (
   # match tests by group description
-  { skip_count => 3+3, skip_tests => [ 'true schema' ] },
-  { skip_count => 2*(3+3), skip_tests => [ 'true schema', 'false schema' ] },
+  { todo_count => 3+3, skip_tests => [ 'true schema' ] },
+  { todo_count => 2*(3+3), skip_tests => [ 'true schema', 'false schema' ] },
 
   # match tests by regexp on test description
-  { skip_count => 2*(3+3), skip_tests => [ '(true|false) schema' ] },
+  { todo_count => 2*(3+3), skip_tests => [ '(true|false) schema' ] },
 
   # match tests on both descriptions
-  { skip_count => 2*(1+3+1) + 1, skip_tests => [ 'false' ] },
+  { todo_count => 2*(1+3+1) + 1, skip_tests => [ 'false' ] },
 
   # match tests on group description and test description
-  { skip_count => 3*2, skip_tests => [ 'empty schema.*boolean' ] },
+  { todo_count => 3*2, skip_tests => [ 'empty schema.*boolean' ] },
 ) {
-  my $skip_count = delete $test->{skip_count};
+  my $todo_count = delete $test->{todo_count};
   my @warnings;
   my ($premature, @results) = run_tests(
     sub {
@@ -45,7 +45,9 @@ foreach my $test (
     }
   );
 
-  is(scalar(grep $_->{type} eq 'todo_skip', @results), $skip_count, 'skipped the right number of tests');
+  is(scalar(grep $_->{type} eq 'skip', @results), 0, 'skipped no tests');
+  is(scalar(grep $_->{type} eq 'todo_skip', @results), 0, 'todo_skipped no tests');
+  is(scalar(grep $_->{type} eq 'todo', @results), $todo_count, $todo_count.' tests marked TODO');
 
   cmp_deeply(
     \@warnings,

@@ -15,6 +15,7 @@ use Moo;
 use MooX::TypeTiny 0.002002;
 use Types::Standard qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods);
 use Path::Tiny;
+use List::Util 'any';
 use namespace::clean;
 
 has specification => (
@@ -83,6 +84,18 @@ sub _run_tests {
             (ref $options->{tests}{test_description} eq 'ARRAY'
               ? @{$options->{tests}{test_description}} : $options->{tests}{test_description});
 
+        local $::TODO = 'Test marked TODO via "todo_tests"'
+          if $options->{todo_tests} and
+            any {
+              my $o = $_;
+              (not $o->{file} or grep $_ eq $one_file->{file}, (ref $o->{file} eq 'ARRAY' ? @{$o->{file}} : $o->{file}))
+                and
+              (not $o->{group_description} or grep $_ eq $test_group->{description}, (ref $o->{group_description} eq 'ARRAY' ? @{$o->{group_description}} : $o->{group_description}))
+                and
+              (not $o->{test_description} or grep $_ eq $test->{description}, (ref $o->{test_description} eq 'ARRAY' ? @{$o->{test_description}} : $o->{test_description}))
+            }
+            @{$options->{todo_tests}};
+
         $self->_run_test($one_file, $test_group, $test, $options);
       }
     }
@@ -95,11 +108,9 @@ sub _run_test {
   local $Test::Builder::Level = $Test::Builder::Level + 3;
 
   TODO: {
-    my $subtest_name = $test_group->{description} . ' - ' . $test->{description};
-    if (ref $options->{skip_tests} eq 'ARRAY'){
-        Test::More::todo_skip 'Test explicitly skipped. - '  . $subtest_name, 1
-        if (grep { $subtest_name =~ /$_/} @{$options->{skip_tests}});
-    }
+    local $::TODO = 'Test marked TODO via "skip_tests"'
+      if ref $options->{skip_tests} eq 'ARRAY' and
+        grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/), @{$options->{skip_tests}};
 
     my $result;
     my $exception = Test::Fatal::exception{
@@ -174,7 +185,7 @@ __END__
 =pod
 
 =for :header
-=for stopwords validators Schemas ANDed ORed
+=for stopwords validators Schemas ANDed ORed TODO
 
 =for :footer
 =for Pod::Coverage BUILDARGS BUILD
@@ -193,15 +204,12 @@ In the JSON::Schema module, a test could look like the following:
 
   my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft3');
 
-  # Skip tests which are known not to be supported or which cause problems.
-  my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
-
   $accepter->acceptance(
     validate_data => sub {
       my ($schema, $input_data) = @_;
       return JSON::Schema->new($schema)->validate($input_data);
     },
-    skip_tests => $skip_tests,
+    todo_tests => [ { file => 'dependencies.json' } ],
   );
 
   done_testing();
@@ -336,6 +344,19 @@ The syntax can take one of many forms:
     group_description => 'const validation',
     test_description => [ 'same value is valid', 'another type is invalid' ],
   }
+
+=head3 todo_tests
+
+Optional. Mentioned tests will run as L<"TODO"|Test::More/TODO: BLOCK>. Uses arrayrefs of
+the same hashref structure as L</tests> above, which are ORed together.
+
+  todo_tests => [
+    # all tests in this file are TODO
+    { file => 'dependencies.json' },
+    # just some tests in this file are TODO
+    { file => 'boolean_schema.json', test_description => 'array is invalid' },
+    # .. etc
+  ]
 
 =head1 ACKNOWLEDGEMENTS
 

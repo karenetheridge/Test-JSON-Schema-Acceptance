@@ -12,6 +12,8 @@ Revision history for Test-JSON-Schema-Acceptance
         - clearer labels for each test
         - new "tests" option, for restricting the tests that are run (GH #7)
         - deprecated "skip_tests" option
+        - new "todo_tests" option, for acknowledging that certain tests do not
+          pass yet (GH #6)
 
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging
