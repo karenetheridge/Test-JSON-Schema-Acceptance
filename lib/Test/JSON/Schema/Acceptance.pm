@@ -63,6 +63,8 @@ sub _run_tests {
 
   Test::More::note('running tests in '.$self->test_dir.'...');
 
+  warn "'skip_tests' option is deprecated" if $options->{skip_tests};
+
   foreach my $one_file (@$tests) {
     next if $options->{tests} and $options->{tests}{file}
       and not grep $_ eq $one_file->{file},
@@ -334,14 +336,6 @@ The syntax can take one of many forms:
     group_description => 'const validation',
     test_description => [ 'same value is valid', 'another type is invalid' ],
   }
-
-=head3 skip_tests
-
-Optional.
-
-This should be an array ref of tests you want to skip.
-You can skip a whole section of tests or individual tests.
-Any test name that contains any of the array refs items will be skipped, using grep.
 
 =head1 ACKNOWLEDGEMENTS
 
