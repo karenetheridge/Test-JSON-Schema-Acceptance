@@ -131,6 +131,8 @@ sub _build__test_data {
   my @test_groups;
 
   foreach my $file (@test_files) {
+    next if $file !~ /\.json$/;
+
     my $fn = $draft_dir . $file;
     open ( my $fh, '<', $fn ) or die ("Could not open schema file $fn for read");
     my $raw_json = '';
