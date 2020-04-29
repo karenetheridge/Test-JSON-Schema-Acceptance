@@ -15,7 +15,7 @@ sub new {
 sub validate_data {
     my ($self, $data, $schema) = @_;
 
-    return $schema if not ref $schema;
+    return $schema if ref $schema eq 'JSON::PP::Boolean';
     die 'unrecognized schema type '.ref $schema if ref $schema ne 'HASH';
 
     return 1 if not exists $schema->{type} or ref $schema->{type} eq 'HASH';
