@@ -15,6 +15,7 @@ Revision history for Test-JSON-Schema-Acceptance
         - new "todo_tests" option, for acknowledging that certain tests do not
           pass yet (GH #6)
         - non-ascii characters are not corrupted during decoding (GH #13)
+        - always read test data files in sorted order, for consistent results
 
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging

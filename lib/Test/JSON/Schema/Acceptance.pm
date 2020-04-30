@@ -153,27 +153,17 @@ has _test_data => (
 
 sub _build__test_data {
   my $self = shift;
-
-  my $draft_dir = $self->test_dir . "/";
-
-  opendir (my $dir, $draft_dir) ;
-  my @test_files = grep { -f "$draft_dir/$_"} readdir $dir;
-  closedir $dir;
-  # warn Dumper(\@test_files);
-
   my @test_groups;
 
-  foreach my $file (@test_files) {
+  # note that we do not recurse into subdirs by default.
+  foreach my $file (sort $self->test_dir->children) {
+    next if not $file->is_file;
     next if $file !~ /\.json$/;
 
-    my $fn = $draft_dir . $file;
-    open ( my $fh, '<', $fn ) or die ("Could not open schema file $fn for read");
-    my $raw_json = '';
-    $raw_json .= $_ while (<$fh>);
-    close($fh);
-    my $parsed_json = $self->_json_decoder->decode($raw_json);
-
-    push @test_groups, { file => $file, json => $parsed_json };
+    push @test_groups, {
+      file => $file->basename,
+      json => $self->_json_decoder->decode($file->slurp_raw),
+    };
   }
 
   return \@test_groups;

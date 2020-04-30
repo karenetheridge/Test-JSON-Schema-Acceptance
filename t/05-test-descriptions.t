@@ -48,7 +48,7 @@ cmp_deeply(
         my $group = $_;
         map $file.'.json: "'.$group.'" - "'.$_.'"', 'integer', 'boolean false', 'boolean true'
       } 'empty schema', 'false schema', 'true schema'
-    } qw(foo bar)
+    } qw(bar foo)
   ],
   'test names are shown correctly',
 );
