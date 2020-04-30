@@ -136,19 +136,18 @@ has _json_decoder => (
 
 has _test_data => (
   is => 'lazy',
-  isa => ArrayRef[
-          Dict[
-            file => Str,
-            json => ArrayRef[Dict[
-              description => Str,
-              (schema => InstanceOf['JSON::PP::Boolean']|HashRef),
-              tests => ArrayRef[Dict[
-                data => Any,
-                description => Str,
-                valid => InstanceOf['JSON::PP::Boolean'],
-              ]],
-            ]],
+  isa => ArrayRef[Dict[
+           file => Str,
+           json => ArrayRef[Dict[
+             description => Str,
+             (schema => InstanceOf['JSON::PP::Boolean']|HashRef),
+             tests => ArrayRef[Dict[
+               data => Any,
+               description => Str,
+               valid => InstanceOf['JSON::PP::Boolean'],
+             ]],
            ]],
+          ]],
 );
 
 sub _build__test_data {
