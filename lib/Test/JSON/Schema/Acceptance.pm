@@ -131,7 +131,7 @@ has _json_decoder => (
   is => 'ro',
   isa => HasMethods[qw(encode decode)],
   lazy => 1,
-  default => sub { JSON::MaybeXS->new(allow_nonref => 1) },
+  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1) },
 );
 
 has _test_data => (

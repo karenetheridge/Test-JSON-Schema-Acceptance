@@ -14,6 +14,7 @@ Revision history for Test-JSON-Schema-Acceptance
         - deprecated "skip_tests" option
         - new "todo_tests" option, for acknowledging that certain tests do not
           pass yet (GH #6)
+        - non-ascii characters are not corrupted during decoding (GH #13)
 
 0.990     2020-04-23 18:00:40Z
         - updated distribution packaging
