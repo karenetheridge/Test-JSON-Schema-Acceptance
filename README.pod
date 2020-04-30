@@ -2,7 +2,7 @@
 
 =encoding UTF-8
 
-=for stopwords validators
+=for stopwords validators Schemas ANDed ORed TODO
 
 =head1 NAME
 
@@ -10,11 +10,11 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 0.990
+version 0.991
 
 =head1 SYNOPSIS
 
-This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements json-schema.
+This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements the JSON Schema specification ("json-schema").
 These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
 Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
 
@@ -24,17 +24,15 @@ In the JSON::Schema module, a test could look like the following:
   use JSON::Schema;
   use Test::JSON::Schema::Acceptance;
 
-  my $accepter = Test::JSON::Schema::Acceptance->new(3);
+  my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft3');
 
-  # Skip tests which are known not to be supported or which cause problems.
-  my $skip_tests = ['multiple extends', 'dependencies', 'ref'];
-
-  $accepter->acceptance( sub{
-    my ( $schema, $input ) = @_;
-    return JSON::Schema->new($schema)->validate($input);
-  }, {
-    skip_tests => $skip_tests
-  } );
+  $accepter->acceptance(
+    validate_data => sub {
+      my ($schema, $input_data) = @_;
+      return JSON::Schema->new($schema)->validate($input_data);
+    },
+    todo_tests => [ { file => 'dependencies.json' } ],
+  );
 
   done_testing();
 
@@ -44,38 +42,79 @@ This would determine if JSON::Schema's C<validate> method returns the right resu
 
 L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
 
-The abstract from L<draft 4|https://tools.ietf.org/html/draft-zyp-json-schema-04> of the specification:
+From the overview of the L<draft 2019-09 version of the
+specification|https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.3>:
 
 =over 4
 
-JSON Schema defines the media type "application/schema+json",
-a JSON based format for defining the structure of JSON data.
-JSON Schema provides a contract for what JSON data is required
-for a given application and how to interact with it.
-JSON Schema is intended to define validation, documentation,
-hyperlink navigation, and interaction control of JSON data.
+This document proposes a new media type "application/schema+json" to identify a JSON Schema for
+describing JSON data. It also proposes a further optional media type,
+"application/schema-instance+json", to provide additional integration features. JSON Schemas are
+themselves JSON documents. This, and related specifications, define keywords allowing authors to
+describe JSON data in several ways.
+
+JSON Schema uses keywords to assert constraints on JSON instances or annotate those instances with
+additional information. Additional keywords are used to apply assertions and annotations to more
+complex JSON data structures, or based on some sort of condition.
 
 =back
 
-L<JSON::Schema|https://metacpan.org/pod/JSON::Schema> is a perl module created independently of the specification, which aims to implement the json-schema specification.
+This module allows other perl modules (for example JSON::Schema) to test that they are JSON Schema-compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
 
-This module allows other perl modules (for example JSON::Schema) to test that they are json-schema compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
-
-You are unlikely to want this module, unless you are attempting to write a module which implements json-schema the specification, and want to test your compliance.
+You are unlikely to want this module, unless you are attempting to write a module which implements JSON Schema the specification, and want to test your compliance.
 
 =head1 CONSTRUCTOR
 
-=over 1
-
-=item C<< Test::JSON::Schema::Acceptance->new($schema_version) >>
+  Test::JSON::Schema::Acceptance->new(specification => $specification_version)
 
 Create a new instance of Test::JSON::Schema::Acceptance.
 
-Accepts optional argument of $schema_version.
+Available options are:
+
+=head2 specification
+
 This determines the draft version of the schema to confirm compliance to.
-Default is draft 4 (current), but in the synopsis example, JSON::Schema is testing draft 3 compliance.
+Possible values are:
+
+=over 4
+
+=item *
+
+C<draft3>
+
+=item *
+
+C<draft4>
+
+=item *
+
+C<draft6>
+
+=item *
+
+C<draft7>
+
+=item *
+
+C<draft2019-09>
+
+=item *
+
+C<latest> (alias for C<draft2019-09>)
 
 =back
+
+The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3 compliance.
+
+(For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which maps to
+C<draft3> through C<draft7>.)
+
+=head2 test_dir
+
+Instead of specifying a draft specification to test against, which will select the most appropriate tests,
+you can pass in the name of a directory of tests to run directly.  Files in this directory should be F<.json>
+files following the format described in
+L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
 
 =head1 SUBROUTINES/METHODS
 
@@ -83,19 +122,86 @@ Default is draft 4 (current), but in the synopsis example, JSON::Schema is testi
 
 =for stopwords truthy falsey
 
-Accepts a sub and optional options in the form of a hash.
-The sub should return truthy or falsey depending on if the schema was valid for the input or not.
+Accepts a hash of options as its arguments.
 
-=head3 options
+(Backwards-compatibility mode: accepts a subroutine which is used as C<validate_json_string>,
+and a hashref of arguments.)
 
-The only option which is currently accepted is skip_tests, which should be an array ref of tests you want to skip.
-You can skip a whole section of tests or individual tests.
-Any test name that contains any of the array refs items will be skipped, using grep.
-You can also skip a test by its number.
+Available options are:
+
+=head3 validate_data
+
+A subroutine reference, which is passed two arguments: the JSON Schema, and the B<inflated> data
+structure to be validated.
+
+The subroutine should return truthy or falsey depending on if the schema was valid for the input or
+not.
+
+Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 validate_json_string
+
+A subroutine reference, which is passed two arguments: the JSON Schema, and the B<JSON string>
+containing the data to be validated.
+
+The subroutine should return truthy or falsey depending on if the schema was valid for the input or
+not.
+
+Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 tests
+
+Optional.  Restricts tests to just those mentioned (the conditions are ANDed together, not ORed).
+The syntax can take one of many forms:
+
+  # run tests in this file
+  tests => { file => 'dependencies.json' }
+
+  # run tests in these files
+  tests => { file => [ 'dependencies.json', 'refRemote.json' ] }
+
+  # run tests in this file with this group description
+  tests => {
+    file => 'refRemote.json',
+    group_description => 'remote ref',
+  }
+
+  # run tests in this file with these group descriptions
+  tests => {
+    file => 'const.json',
+    group_description => [ 'const validation', 'const with object' ],
+  }
+
+  # run tests in this file with this group description and test description
+  tests => {
+    file => 'const.json',
+    group_description => 'const validation',
+    test_description => 'another type is invalid',
+  }
+
+  # run tests in this file with this group description and these test descriptions
+  tests => {
+    file => 'const.json',
+    group_description => 'const validation',
+    test_description => [ 'same value is valid', 'another type is invalid' ],
+  }
+
+=head3 todo_tests
+
+Optional. Mentioned tests will run as L<"TODO"|Test::More/TODO: BLOCK>. Uses arrayrefs of
+the same hashref structure as L</tests> above, which are ORed together.
+
+  todo_tests => [
+    # all tests in this file are TODO
+    { file => 'dependencies.json' },
+    # just some tests in this file are TODO
+    { file => 'boolean_schema.json', test_description => 'array is invalid' },
+    # .. etc
+  ]
 
 =head1 ACKNOWLEDGEMENTS
 
-=for stopwords Signes
+=for stopwords Perrett Signes
 
 Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
 
@@ -119,15 +225,11 @@ Ben Hutton (@relequestual) <relequest@cpan.org>
 
 =item *
 
-Ben Hutton <bh7@sanger.ac.uk>
+Ben Hutton <relequestual@gmail.com>
 
 =item *
 
 Karen Etheridge <ether@cpan.org>
-
-=item *
-
-Ben Hutton <relequestual@gmail.com>
 
 =item *
 
@@ -142,5 +244,7 @@ This software is Copyright (c) 2015 by Ben Hutton.
 This is free software, licensed under:
 
   The MIT (X11) License
+
+=for Pod::Coverage BUILDARGS BUILD
 
 =cut
