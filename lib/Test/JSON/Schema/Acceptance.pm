@@ -360,7 +360,7 @@ the same hashref structure as L</tests> above, which are ORed together.
 
 =head1 ACKNOWLEDGEMENTS
 
-=for stopwords Signes
+=for stopwords Perrett Signes
 
 Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
 
