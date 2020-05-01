@@ -30,7 +30,7 @@ has test_dir => (
   isa => InstanceOf['Path::Tiny'],
   coerce => sub { path($_[0])->absolute('.') },
   lazy => 1,
-  default => sub { path(dist_dir('Test-JSON-Schema-Acceptance'),'tests', $_[0]->specification) },
+  default => sub { path(dist_dir('Test-JSON-Schema-Acceptance'), 'tests', $_[0]->specification) },
 );
 
 around BUILDARGS => sub {
@@ -72,7 +72,7 @@ sub _run_tests {
         (ref $options->{tests}{file} eq 'ARRAY'
           ? @{$options->{tests}{file}} : $options->{tests}{file});
 
-    foreach my $test_group (@{$one_file->{json}}){
+    foreach my $test_group (@{$one_file->{json}}) {
       next if $options->{tests} and $options->{tests}{group_description}
         and not grep $_ eq $test_group->{description},
           (ref $options->{tests}{group_description} eq 'ARRAY'
@@ -111,7 +111,7 @@ sub _run_test {
         grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/), @{$options->{skip_tests}};
 
     my $result;
-    my $exception = Test::Fatal::exception{
+    my $exception = Test::Fatal::exception {
       $result = $options->{validate_data}
         ? $options->{validate_data}->($test_group->{schema}, $test->{data})
         : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
@@ -259,7 +259,7 @@ C<draft3> through C<draft7>.)
 =head2 test_dir
 
 Instead of specifying a draft specification to test against, which will select the most appropriate tests,
-you can pass in the name of a directory of tests to run directly.  Files in this directory should be F<.json>
+you can pass in the name of a directory of tests to run directly. Files in this directory should be F<.json>
 files following the format described in
 L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
 
@@ -298,7 +298,7 @@ Either C<validate_data> or C<validate_json_string> is required.
 
 =head3 tests
 
-Optional.  Restricts tests to just those mentioned (the conditions are ANDed together, not ORed).
+Optional. Restricts tests to just those mentioned (the conditions are ANDed together, not ORed).
 The syntax can take one of many forms:
 
   # run tests in this file
