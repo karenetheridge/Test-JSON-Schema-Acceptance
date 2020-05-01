@@ -15,7 +15,7 @@ use Moo;
 use MooX::TypeTiny 0.002002;
 use Types::Standard qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods);
 use Path::Tiny;
-use List::Util 'any';
+use List::Util 1.33 'any';
 use namespace::clean;
 
 has specification => (
