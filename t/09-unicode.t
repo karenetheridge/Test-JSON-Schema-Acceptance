@@ -6,11 +6,9 @@ use utf8;
 use open ':std', ':encoding(UTF-8)'; # force stdin, stdout, stderr into utf8
 
 use Test::More 0.88;
-use Test::Fatal;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
 use Test::JSON::Schema::Acceptance;
-use List::Util 'first';
 use lib 't/lib';
 use SchemaParser;
 
