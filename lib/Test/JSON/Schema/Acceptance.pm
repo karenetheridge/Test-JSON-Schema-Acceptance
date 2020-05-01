@@ -9,7 +9,7 @@ our $VERSION = '0.992';
 no if "$]" >= 5.031009, feature => 'indirect';
 use Test::More ();
 use Test::Fatal ();
-use JSON::MaybeXS;
+use JSON::MaybeXS 1.004001;
 use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
