@@ -105,8 +105,6 @@ sub _run_tests {
 sub _run_test {
   my ($self, $one_file, $test_group, $test, $options) = @_;
 
-  local $Test::Builder::Level = $Test::Builder::Level + 3;
-
   TODO: {
     local $::TODO = 'Test marked TODO via "skip_tests"'
       if ref $options->{skip_tests} eq 'ARRAY' and
@@ -122,6 +120,7 @@ sub _run_test {
     my $got = $result ? 'true' : 'false';
     my $expected = $test->{valid} ? 'true' : 'false';
 
+    local $Test::Builder::Level = $Test::Builder::Level + 3;
     Test::More::is($got, $expected, $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"');
     Test::More::fail($exception) if $exception;
   }

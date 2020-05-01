@@ -25,7 +25,6 @@ $accepter->acceptance(
   },
   validate_data => sub {
     my ($schema, $data) = @_;
-    local $Test::Builder::Level = 1;
     note 'validate_data passed data "'.$data.'", schema "'.$schema->{const}.'"';
 
     is(index($schema->{const}, 'Les hivers de mon enfance étaient'), 0,
@@ -45,7 +44,6 @@ $accepter->acceptance(
   },
   validate_data => sub {
     my ($schema, $data) = @_;
-    local $Test::Builder::Level = 1;
     note 'validate_data passed data "'.$data.'", schema "'.$schema->{const}.'"';
 
     is($schema->{const}, 'ಠ_ಠ', 'schema was decoded from data file correctly')
@@ -65,7 +63,6 @@ $accepter->acceptance(
   },
   validate_json_string => sub {
     my ($schema, $data) = @_;
-    local $Test::Builder::Level = 1;
     note 'validate_data passed data "'.$data.'", schema "'.$schema->{const}.'"';
 
     is(index($schema->{const}, 'Les hivers de mon enfance étaient'), 0,
@@ -87,7 +84,6 @@ $accepter->acceptance(
   },
   validate_json_string => sub {
     my ($schema, $data) = @_;
-    local $Test::Builder::Level = 1;
     note 'validate_data passed data "'.$data.'", schema "'.$schema->{const}.'"';
 
     is($schema->{const}, 'ಠ_ಠ', 'schema was decoded from data file correctly')
