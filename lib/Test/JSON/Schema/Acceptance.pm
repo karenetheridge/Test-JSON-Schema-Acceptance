@@ -13,7 +13,7 @@ use JSON::MaybeXS 1.004001;
 use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
-use Types::Standard qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods);
+use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods);
 use Path::Tiny;
 use List::Util 1.33 'any';
 use namespace::clean;
@@ -139,7 +139,7 @@ has _test_data => (
            file => Str,
            json => ArrayRef[Dict[
              description => Str,
-             (schema => InstanceOf['JSON::PP::Boolean']|HashRef),
+             schema => InstanceOf['JSON::PP::Boolean']|HashRef,
              tests => ArrayRef[Dict[
                data => Any,
                description => Str,
