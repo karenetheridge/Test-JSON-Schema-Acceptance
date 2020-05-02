@@ -4,6 +4,7 @@ Revision history for Test-JSON-Schema-Acceptance
         - fix minimum declared version for List::Util (RT#132461)
         - increase minimum version for JSON::MaybeXS, to ensure that booleans
           are JSON::PP::Boolean, not JSON::XS::Boolean
+        - include tabular results of passes, fails for each test file (GH #3)
 
 0.991     2020-04-30 23:56:50Z
         - switch from JSON.pm to JSON::MaybeXS (GH #1)

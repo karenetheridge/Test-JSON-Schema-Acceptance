@@ -66,6 +66,8 @@ sub _run_tests {
 
   warn "'skip_tests' option is deprecated" if $options->{skip_tests};
 
+  my %results; # results by file
+
   foreach my $one_file (@$tests) {
     next if $options->{tests} and $options->{tests}{file}
       and not grep $_ eq $one_file->{file},
@@ -96,10 +98,18 @@ sub _run_tests {
             }
             @{$options->{todo_tests}};
 
-        $self->_run_test($one_file, $test_group, $test, $options);
+        my $result = $self->_run_test($one_file, $test_group, $test, $options);
+        ++$results{$one_file->{file}}->{ $result ? 'pass' : 'fail' };
       }
     }
   }
+
+  Test::More::note '';
+  Test::More::note sprintf('%-25s pass  fail', 'filename');
+  Test::More::note '-'x36;
+  Test::More::note sprintf('%-25s  %3d   %3d', $_, $results{$_}{pass} // 0, $results{$_}{fail} // 0)
+    foreach sort keys %results;
+  Test::More::note '';
 }
 
 sub _run_test {
@@ -121,8 +131,12 @@ sub _run_test {
     my $expected = $test->{valid} ? 'true' : 'false';
 
     local $Test::Builder::Level = $Test::Builder::Level + 3;
-    Test::More::is($got, $expected, $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"');
-    Test::More::fail($exception) if $exception;
+
+    my $pass = Test::More::is($got, $expected,
+      $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"');
+    $pass = Test::More::fail($exception) if $exception;
+
+    return $pass;
   }
 }
 
