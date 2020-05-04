@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 0.992     2020-05-04 22:40:44Z
         - fix minimum declared version for List::Util (RT#132461)
         - increase minimum version for JSON::MaybeXS, to ensure that booleans
