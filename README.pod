@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 0.991
+version 0.992
 
 =head1 SYNOPSIS
 
@@ -112,7 +112,7 @@ C<draft3> through C<draft7>.)
 =head2 test_dir
 
 Instead of specifying a draft specification to test against, which will select the most appropriate tests,
-you can pass in the name of a directory of tests to run directly.  Files in this directory should be F<.json>
+you can pass in the name of a directory of tests to run directly. Files in this directory should be F<.json>
 files following the format described in
 L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
 
@@ -151,7 +151,7 @@ Either C<validate_data> or C<validate_json_string> is required.
 
 =head3 tests
 
-Optional.  Restricts tests to just those mentioned (the conditions are ANDed together, not ORed).
+Optional. Restricts tests to just those mentioned (the conditions are ANDed together, not ORed).
 The syntax can take one of many forms:
 
   # run tests in this file
@@ -211,7 +211,7 @@ Various others in #perl-help.
 
 =head1 SUPPORT
 
-bugs may be submitted through L<https://github.com/karenetheridge/Test-JSON-Schema-Acceptance/issues>.
+Bugs may be submitted through L<https://github.com/karenetheridge/Test-JSON-Schema-Acceptance/issues>.
 
 =head1 AUTHOR
 
@@ -219,17 +219,17 @@ Ben Hutton (@relequestual) <relequest@cpan.org>
 
 =head1 CONTRIBUTORS
 
-=for stopwords Ben Hutton Karen Etheridge Daniel Perrett
+=for stopwords Karen Etheridge Ben Hutton Daniel Perrett
 
 =over 4
 
 =item *
 
-Ben Hutton <relequestual@gmail.com>
+Karen Etheridge <ether@cpan.org>
 
 =item *
 
-Karen Etheridge <ether@cpan.org>
+Ben Hutton <relequestual@cpan.org>
 
 =item *
 
