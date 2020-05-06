@@ -163,7 +163,7 @@ has _test_data => (
                valid => $json_bool,
              ]],
            ]],
-          ]],
+         ]],
 );
 
 sub _build__test_data {
