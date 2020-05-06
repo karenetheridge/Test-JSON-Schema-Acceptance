@@ -15,7 +15,7 @@ use Moo;
 use MooX::TypeTiny 0.002002;
 use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods);
 use Path::Tiny;
-use List::Util 1.33 'any';
+use List::Util 1.33 qw(any max);
 use namespace::clean;
 
 has specification => (
@@ -104,10 +104,13 @@ sub _run_tests {
     }
   }
 
+  my $length = max(map length $_->{file}, @$tests);
   Test::More::note '';
-  Test::More::note sprintf('%-25s pass  fail', 'filename');
-  Test::More::note '-'x36;
-  Test::More::note sprintf('%-25s  %3d   %3d', $_, $results{$_}{pass} // 0, $results{$_}{fail} // 0)
+  my $length = max(map length $_->{file}, @$tests);
+  Test::More::note sprintf('%-'.$length.'s  pass  fail', 'filename');
+  Test::More::note '-'x($length + 12);
+  Test::More::note sprintf('%-'.$length.'s   %3d   %3d',
+      $_, $results{$_}{pass} // 0, $results{$_}{fail} // 0)
     foreach sort keys %results;
   Test::More::note '';
 }
