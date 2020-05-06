@@ -147,17 +147,20 @@ has _json_decoder => (
   default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1) },
 );
 
+# see JSON::MaybeXS::is_bool
+my $json_bool = InstanceOf[qw(JSON::XS::Boolean Cpanel::JSON::XS::Boolean JSON::PP::Boolean)];
+
 has _test_data => (
   is => 'lazy',
   isa => ArrayRef[Dict[
            file => Str,
            json => ArrayRef[Dict[
              description => Str,
-             schema => InstanceOf['JSON::PP::Boolean']|HashRef,
+             schema => $json_bool|HashRef,
              tests => ArrayRef[Dict[
                data => Any,
                description => Str,
-               valid => InstanceOf['JSON::PP::Boolean'],
+               valid => $json_bool,
              ]],
            ]],
           ]],
