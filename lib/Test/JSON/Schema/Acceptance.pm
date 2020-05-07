@@ -13,7 +13,7 @@ use JSON::MaybeXS 1.004001;
 use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
-use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods);
+use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool);
 use Path::Tiny;
 use List::Util 1.33 qw(any max);
 use namespace::clean;
@@ -31,6 +31,12 @@ has test_dir => (
   coerce => sub { path($_[0])->absolute('.') },
   lazy => 1,
   default => sub { path(dist_dir('Test-JSON-Schema-Acceptance'), 'tests', $_[0]->specification) },
+);
+
+has verbose => (
+  is => 'ro',
+  isa => Bool,
+  default => 0,
 );
 
 around BUILDARGS => sub {
@@ -104,22 +110,24 @@ sub _run_tests {
     }
   }
 
-  Test::More::note "\n\n".'Results using '.ref($self).' '.$self->VERSION;
+  my $diag = sub { Test::More->builder->${\ ($self->verbose ? 'diag' : 'note') }(@_) };
+
+  $diag->("\n\n".'Results using '.ref($self).' '.$self->VERSION);
   my $submodule_status = path($self->test_dir)->parent->parent->child('submodule_status');
   if ($submodule_status->exists) {
     chomp(my ($commit, $url) = $submodule_status->lines);
-    Test::More::note 'with commit '.$commit;
-    Test::More::note 'from '.$url.':';
+    $diag->('with commit '.$commit);
+    $diag->('from '.$url.':');
   }
 
-  Test::More::note '';
+  $diag->('');
   my $length = max(map length $_->{file}, @$tests);
-  Test::More::note sprintf('%-'.$length.'s  pass  fail', 'filename');
-  Test::More::note '-'x($length + 12);
-  Test::More::note sprintf('%-'.$length.'s   %3d   %3d',
-      $_, $results{$_}{pass} // 0, $results{$_}{fail} // 0)
+  $diag->(sprintf('%-'.$length.'s  pass  fail', 'filename'));
+  $diag->('-'x($length + 12));
+  $diag->(sprintf('%-'.$length.'s   %3d   %3d',
+      $_, $results{$_}{pass} // 0, $results{$_}{fail} // 0))
     foreach sort keys %results;
-  Test::More::note '';
+  $diag->('');
 }
 
 sub _run_test {
@@ -322,6 +330,11 @@ The subroutine should return truthy or falsey depending on if the schema was val
 not.
 
 Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 verbose
+
+Optional. When true, prints version information and test result table such that it is visible
+during C<make test> or C<prove>.
 
 =head3 tests
 
