@@ -104,7 +104,14 @@ sub _run_tests {
     }
   }
 
-  my $length = max(map length $_->{file}, @$tests);
+  Test::More::note "\n\n".'Results using '.ref($self).' '.$self->VERSION;
+  my $submodule_status = path($self->test_dir)->parent->parent->child('submodule_status');
+  if ($submodule_status->exists) {
+    chomp(my ($commit, $url) = $submodule_status->lines);
+    Test::More::note 'with commit '.$commit;
+    Test::More::note 'from '.$url.':';
+  }
+
   Test::More::note '';
   my $length = max(map length $_->{file}, @$tests);
   Test::More::note sprintf('%-'.$length.'s  pass  fail', 'filename');
