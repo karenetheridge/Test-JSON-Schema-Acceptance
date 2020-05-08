@@ -134,7 +134,7 @@ sub _run_test {
   my ($self, $one_file, $test_group, $test, $options) = @_;
 
   TODO: {
-    local $::TODO = 'Test marked TODO via "skip_tests"'
+    local $::TODO = 'Test marked TODO via deprecated "skip_tests"'
       if ref $options->{skip_tests} eq 'ARRAY' and
         grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/), @{$options->{skip_tests}};
 
