@@ -297,6 +297,11 @@ you can pass in the name of a directory of tests to run directly. Files in this 
 files following the format described in
 L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
 
+=head2 verbose
+
+Optional. When true, prints version information and test result table such that it is visible
+during C<make test> or C<prove>.
+
 =head1 SUBROUTINES/METHODS
 
 =head2 acceptance
@@ -329,11 +334,6 @@ The subroutine should return truthy or falsey depending on if the schema was val
 not.
 
 Either C<validate_data> or C<validate_json_string> is required.
-
-=head3 verbose
-
-Optional. When true, prints version information and test result table such that it is visible
-during C<make test> or C<prove>.
 
 =head3 tests
 
