@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 0.992
+version 0.993
 
 =head1 SYNOPSIS
 
@@ -148,6 +148,11 @@ The subroutine should return truthy or falsey depending on if the schema was val
 not.
 
 Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 verbose
+
+Optional. When true, prints version information and test result table such that it is visible
+during C<make test> or C<prove>.
 
 =head3 tests
 

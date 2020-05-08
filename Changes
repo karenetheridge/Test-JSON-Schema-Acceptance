@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+0.993     2020-05-08 16:55:43Z
         - soften type constraints so as to tolerate older Cpanel::JSON::XS,
           which inflates booleans to different types
         - print information about this module's version, and the commit and
