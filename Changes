@@ -8,6 +8,7 @@ Revision history for Test-JSON-Schema-Acceptance
         - new "verbose" option, for more helpful output when running under
           "make test" or "prove"
         - improved handling of exceptions from the tested implementation
+        - updated test suite to commit 9d0e0eb31d6be6bebd3bacdd6be119a8841e9999
 
 0.992     2020-05-04 22:40:44Z
         - fix minimum declared version for List::Util (RT#132461)
