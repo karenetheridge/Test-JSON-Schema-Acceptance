@@ -138,6 +138,8 @@ sub _run_test {
       if ref $options->{skip_tests} eq 'ARRAY' and
         grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/), @{$options->{skip_tests}};
 
+    my $test_name = $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"';
+
     my $result;
     my $exception = Test::Fatal::exception {
       $result = $options->{validate_data}
@@ -150,11 +152,8 @@ sub _run_test {
 
     local $Test::Builder::Level = $Test::Builder::Level + 3;
 
-    my $pass = Test::More::is($got, $expected,
-      $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"');
-    $pass = Test::More::fail($exception) if $exception;
-
-    return $pass;
+    return Test::More::fail($test_name.' died: '.$exception) if $exception;
+    return Test::More::is($got, $expected, $test_name);
   }
 }
 
