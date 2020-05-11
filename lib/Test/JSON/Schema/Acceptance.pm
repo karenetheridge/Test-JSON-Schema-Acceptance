@@ -222,9 +222,12 @@ __END__
 
 =head1 SYNOPSIS
 
-This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements the JSON Schema specification ("json-schema").
-These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
-Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
+This module allows the
+L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in
+perl to test a module that implements the JSON Schema specification ("json-schema"). These are the
+same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of
+json-schema. Using this module to confirm support gives assurance of interoperability with other
+modules that run the same tests in different languages.
 
 In the JSON::Schema module, a test could look like the following:
 
@@ -244,11 +247,13 @@ In the JSON::Schema module, a test could look like the following:
 
   done_testing();
 
-This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+This would determine if JSON::Schema's C<validate> method returns the right result for all of the
+cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
 
 =head1 DESCRIPTION
 
-L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
+L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to
+define the structure of JSON.
 
 From the overview of the L<draft 2019-09 version of the
 specification|https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.3>:
@@ -267,10 +272,12 @@ complex JSON data structures, or based on some sort of condition.
 
 =back
 
+This module allows other perl modules (for example JSON::Schema) to test that they are JSON
+Schema-compliant, by running the tests from the official test suite, without having to manually
+convert them to perl tests.
 
-This module allows other perl modules (for example JSON::Schema) to test that they are JSON Schema-compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
-
-You are unlikely to want this module, unless you are attempting to write a module which implements JSON Schema the specification, and want to test your compliance.
+You are unlikely to want this module, unless you are attempting to write a module which implements
+JSON Schema the specification, and want to test your compliance.
 
 =head1 CONSTRUCTOR
 
@@ -293,16 +300,17 @@ Possible values are:
 * C<draft2019-09>
 * C<latest> (alias for C<draft2019-09>)
 
-The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3 compliance.
+The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3
+compliance.
 
-(For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which maps to
-C<draft3> through C<draft7>.)
+(For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which
+maps to C<draft3> through C<draft7>.)
 
 =head2 test_dir
 
-Instead of specifying a draft specification to test against, which will select the most appropriate tests,
-you can pass in the name of a directory of tests to run directly. Files in this directory should be F<.json>
-files following the format described in
+Instead of specifying a draft specification to test against, which will select the most appropriate
+tests, you can pass in the name of a directory of tests to run directly. Files in this directory
+should be F<.json> files following the format described in
 L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
 
 =head2 additional_resources
