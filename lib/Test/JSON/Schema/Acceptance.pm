@@ -278,7 +278,7 @@ You are unlikely to want this module, unless you are attempting to write a modul
 
 Create a new instance of Test::JSON::Schema::Acceptance.
 
-Available options are:
+Available options (which are also available as accessor methods on the object) are:
 
 =head2 specification
 
