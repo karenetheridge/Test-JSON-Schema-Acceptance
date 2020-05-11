@@ -33,6 +33,14 @@ has test_dir => (
   default => sub { path(dist_dir('Test-JSON-Schema-Acceptance'), 'tests', $_[0]->specification) },
 );
 
+has additional_resources => (
+  is => 'ro',
+  isa => InstanceOf['Path::Tiny'],
+  coerce => sub { path($_[0])->absolute('.') },
+  lazy => 1,
+  default => sub { $_[0]->test_dir->parent->parent->child('remotes') },
+);
+
 has verbose => (
   is => 'ro',
   isa => Bool,
@@ -296,6 +304,13 @@ Instead of specifying a draft specification to test against, which will select t
 you can pass in the name of a directory of tests to run directly. Files in this directory should be F<.json>
 files following the format described in
 L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
+
+=head2 additional_resources
+
+A directory of additional resources which should be made available to the implementation under the
+base URI C<http://localhost:1234>. This is automatically provided if you did not override
+C</test_dir>; otherwise, you need to supply it yourself, if any tests require it (for example by
+containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>).
 
 =head2 verbose
 
