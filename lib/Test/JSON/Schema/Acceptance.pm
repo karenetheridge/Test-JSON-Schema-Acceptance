@@ -13,7 +13,7 @@ use JSON::MaybeXS 1.004001;
 use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
-use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool);
+use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional);
 use Path::Tiny;
 use List::Util 1.33 qw(any max);
 use namespace::clean;
@@ -42,6 +42,12 @@ has additional_resources => (
 );
 
 has verbose => (
+  is => 'ro',
+  isa => Bool,
+  default => 0,
+);
+
+has include_optional => (
   is => 'ro',
   isa => Bool,
   default => 0,
@@ -80,9 +86,11 @@ sub _run_tests {
 
   warn "'skip_tests' option is deprecated" if $options->{skip_tests};
 
-  my %results; # results by file
+  # [ { file => .., pass => .., fail => .. }, ... ]
+  my @results;
 
   foreach my $one_file (@$tests) {
+    my %results;
     next if $options->{tests} and $options->{tests}{file}
       and not grep $_ eq $one_file->{file},
         (ref $options->{tests}{file} eq 'ARRAY'
@@ -113,9 +121,11 @@ sub _run_tests {
             @{$options->{todo_tests}};
 
         my $result = $self->_run_test($one_file, $test_group, $test, $options);
-        ++$results{$one_file->{file}}->{ $result ? 'pass' : 'fail' };
+        ++$results{ $result ? 'pass' : 'fail' };
       }
     }
+
+    push @results, { file => $one_file->{file}, %results };
   }
 
   my $diag = sub { Test::More->builder->${\ ($self->verbose ? 'diag' : 'note') }(@_) };
@@ -132,9 +142,8 @@ sub _run_tests {
   my $length = max(map length $_->{file}, @$tests);
   $diag->(sprintf('%-'.$length.'s  pass  fail', 'filename'));
   $diag->('-'x($length + 12));
-  $diag->(sprintf('%-'.$length.'s   %3d   %3d',
-      $_, $results{$_}{pass} // 0, $results{$_}{fail} // 0))
-    foreach sort keys %results;
+  $diag->(sprintf('%-'.$length.'s   %3d   %3d', $_->{file}, $_->{pass} // 0, $_->{fail} // 0))
+    foreach @results;
   $diag->('');
 }
 
@@ -178,9 +187,10 @@ my $json_bool = InstanceOf[qw(JSON::XS::Boolean Cpanel::JSON::XS::Boolean JSON::
 has _test_data => (
   is => 'lazy',
   isa => ArrayRef[Dict[
-           file => Str,
+           file => InstanceOf['Path::Tiny'],
            json => ArrayRef[Dict[
              description => Str,
+             comment => Optional[Str],
              schema => $json_bool|HashRef,
              tests => ArrayRef[Dict[
                data => Any,
@@ -195,18 +205,28 @@ sub _build__test_data {
   my $self = shift;
   my @test_groups;
 
-  # note that we do not recurse into subdirs by default.
-  foreach my $file (sort $self->test_dir->children) {
-    next if not $file->is_file;
-    next if $file !~ /\.json$/;
+  $self->test_dir->visit(
+    sub {
+      my ($path) = @_;
+      return if not $path->is_file;
+      return if $path !~ /\.json$/;
+      my $file = $path->relative($self->test_dir);
+      push @test_groups, [
+        scalar(()= split('/', $file)),
+        {
+          file => $file,
+          json => $self->_json_decoder->decode($path->slurp_raw),
+        },
+      ];
+    },
+    { recurse => $self->include_optional },
+  );
 
-    push @test_groups, {
-      file => $file->basename,
-      json => $self->_json_decoder->decode($file->slurp_raw),
-    };
-  }
-
-  return \@test_groups;
+  return [
+    map $_->[1],
+      sort { $a->[0] <=> $b->[0] || $a->[1]{file} cmp $b->[1]{file} }
+      @test_groups
+  ];
 }
 
 1;
@@ -324,6 +344,10 @@ containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>).
 
 Optional. When true, prints version information and test result table such that it is visible
 during C<make test> or C<prove>.
+
+=head2 include_optional
+
+Optional. When true, tests in subdirectories (most notably F<optional/> are also included.
 
 =head1 SUBROUTINES/METHODS
 
