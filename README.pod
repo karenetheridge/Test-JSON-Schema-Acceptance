@@ -10,13 +10,16 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 0.993
+version 0.994
 
 =head1 SYNOPSIS
 
-This module allows the L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in perl to test a module that implements the JSON Schema specification ("json-schema").
-These are the same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of json-schema.
-Using this module to confirm support gives assurance of interoperability with other modules that run the same tests in different languages.
+This module allows the
+L<JSON Schema Test Suite|https://github.com/json-schema/JSON-Schema-Test-Suite> tests to be used in
+perl to test a module that implements the JSON Schema specification ("json-schema"). These are the
+same tests that many modules (libraries, plugins, packages, etc.) use to confirm support of
+json-schema. Using this module to confirm support gives assurance of interoperability with other
+modules that run the same tests in different languages.
 
 In the JSON::Schema module, a test could look like the following:
 
@@ -36,11 +39,13 @@ In the JSON::Schema module, a test could look like the following:
 
   done_testing();
 
-This would determine if JSON::Schema's C<validate> method returns the right result for all of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+This would determine if JSON::Schema's C<validate> method returns the right result for all of the
+cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
 
 =head1 DESCRIPTION
 
-L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to define the structure of JSON.
+L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to
+define the structure of JSON.
 
 From the overview of the L<draft 2019-09 version of the
 specification|https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.3>:
@@ -59,9 +64,12 @@ complex JSON data structures, or based on some sort of condition.
 
 =back
 
-This module allows other perl modules (for example JSON::Schema) to test that they are JSON Schema-compliant, by running the tests from the official test suite, without having to manually convert them to perl tests.
+This module allows other perl modules (for example JSON::Schema) to test that they are JSON
+Schema-compliant, by running the tests from the official test suite, without having to manually
+convert them to perl tests.
 
-You are unlikely to want this module, unless you are attempting to write a module which implements JSON Schema the specification, and want to test your compliance.
+You are unlikely to want this module, unless you are attempting to write a module which implements
+JSON Schema the specification, and want to test your compliance.
 
 =head1 CONSTRUCTOR
 
@@ -69,7 +77,7 @@ You are unlikely to want this module, unless you are attempting to write a modul
 
 Create a new instance of Test::JSON::Schema::Acceptance.
 
-Available options are:
+Available options (which are also available as accessor methods on the object) are:
 
 =head2 specification
 
@@ -104,17 +112,34 @@ C<latest> (alias for C<draft2019-09>)
 
 =back
 
-The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3 compliance.
+The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3
+compliance.
 
-(For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which maps to
-C<draft3> through C<draft7>.)
+(For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which
+maps to C<draft3> through C<draft7>.)
 
 =head2 test_dir
 
-Instead of specifying a draft specification to test against, which will select the most appropriate tests,
-you can pass in the name of a directory of tests to run directly. Files in this directory should be F<.json>
-files following the format described in
+Instead of specifying a draft specification to test against, which will select the most appropriate
+tests, you can pass in the name of a directory of tests to run directly. Files in this directory
+should be F<.json> files following the format described in
 L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
+
+=head2 additional_resources
+
+A directory of additional resources which should be made available to the implementation under the
+base URI C<http://localhost:1234>. This is automatically provided if you did not override
+C</test_dir>; otherwise, you need to supply it yourself, if any tests require it (for example by
+containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>).
+
+=head2 verbose
+
+Optional. When true, prints version information and test result table such that it is visible
+during C<make test> or C<prove>.
+
+=head2 include_optional
+
+Optional. When true, tests in subdirectories (most notably F<optional/> are also included.
 
 =head1 SUBROUTINES/METHODS
 
@@ -148,11 +173,6 @@ The subroutine should return truthy or falsey depending on if the schema was val
 not.
 
 Either C<validate_data> or C<validate_json_string> is required.
-
-=head3 verbose
-
-Optional. When true, prints version information and test result table such that it is visible
-during C<make test> or C<prove>.
 
 =head3 tests
 
@@ -203,6 +223,27 @@ the same hashref structure as L</tests> above, which are ORed together.
     { file => 'boolean_schema.json', test_description => 'array is invalid' },
     # .. etc
   ]
+
+=head2 results
+
+After calling L</acceptance>, a list of test results are provided here. It is an arrayref of
+hashrefs with three keys:
+
+=over 4
+
+=item *
+
+file - the filename
+
+=item *
+
+pass - the number of pass results for that file
+
+=item *
+
+fail - the number of fail results for that file (including TODO tests)
+
+=back
 
 =head1 ACKNOWLEDGEMENTS
 
