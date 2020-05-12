@@ -14,8 +14,8 @@ my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft2019-0
 cmp_deeply(
   $accepter->_test_data,
   supersetof(
-    superhashof({ file => 'optional/bignum.json' }),
-    superhashof({ file => 'optional/format/uri.json' }),
+    superhashof({ file => str('optional/bignum.json') }),
+    superhashof({ file => str('optional/format/uri.json') }),
   ),
   'picked up optional files in test_data',
 );

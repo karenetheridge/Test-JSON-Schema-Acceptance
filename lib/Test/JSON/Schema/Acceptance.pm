@@ -14,6 +14,7 @@ use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
 use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional);
+use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny;
 use List::Util 1.33 qw(any max);
 use namespace::clean;
@@ -51,6 +52,16 @@ has include_optional => (
   is => 'ro',
   isa => Bool,
   default => 0,
+);
+
+has results => (
+  is => 'rwp',
+  init_arg => undef,
+  isa => ArrayRef[Dict[
+           file => InstanceOf['Path::Tiny'],
+           pass => PositiveOrZeroInt,
+           fail => PositiveOrZeroInt,
+         ]],
 );
 
 around BUILDARGS => sub {
@@ -125,8 +136,10 @@ sub _run_tests {
       }
     }
 
-    push @results, { file => $one_file->{file}, %results };
+    push @results, { file => $one_file->{file}, pass => 0, fail => 0, %results };
   }
+
+  $self->_set_results(\@results);
 
   my $diag = sub { Test::More->builder->${\ ($self->verbose ? 'diag' : 'note') }(@_) };
 
@@ -142,7 +155,7 @@ sub _run_tests {
   my $length = max(map length $_->{file}, @$tests);
   $diag->(sprintf('%-'.$length.'s  pass  fail', 'filename'));
   $diag->('-'x($length + 12));
-  $diag->(sprintf('%-'.$length.'s   %3d   %3d', $_->{file}, $_->{pass} // 0, $_->{fail} // 0))
+  $diag->(sprintf('%-'.$length.'s   %3d   %3d', @{$_}{qw(file pass fail)}))
     foreach @results;
   $diag->('');
 }
@@ -431,6 +444,16 @@ the same hashref structure as L</tests> above, which are ORed together.
     { file => 'boolean_schema.json', test_description => 'array is invalid' },
     # .. etc
   ]
+
+=head2 results
+
+After calling L</acceptance>, a list of test results are provided here. It is an arrayref of
+hashrefs with three keys:
+
+=for :list
+* file - the filename
+* pass - the number of pass results for that file
+* fail - the number of fail results for that file (including TODO tests)
 
 =head1 ACKNOWLEDGEMENTS
 
