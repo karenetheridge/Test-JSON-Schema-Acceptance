@@ -15,7 +15,7 @@ use Moo;
 use MooX::TypeTiny 0.002002;
 use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional);
 use Types::Common::Numeric 'PositiveOrZeroInt';
-use Path::Tiny;
+use Path::Tiny 0.062;
 use List::Util 1.33 qw(any max);
 use namespace::clean;
 
