@@ -223,12 +223,14 @@ sub _build__test_data {
       my ($path) = @_;
       return if not $path->is_file;
       return if $path !~ /\.json$/;
+      my $data = $self->_json_decoder->decode($path->slurp_raw);
+      return if not @$data; # placeholder files for renamed tests
       my $file = $path->relative($self->test_dir);
       push @test_groups, [
         scalar(()= split('/', $file)),
         {
           file => $file,
-          json => $self->_json_decoder->decode($path->slurp_raw),
+          json => $data,
         },
       ];
     },
