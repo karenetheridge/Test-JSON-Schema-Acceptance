@@ -19,6 +19,9 @@ perl:
   - "5.12"
   - "5.10"
 matrix:
+  allow_failures:
+    - perl: "5.12"
+    - perl: "5.10"  # "Use of implicit split to @_ is deprecated" warning
   fast_finish: 1
 env:
   global:

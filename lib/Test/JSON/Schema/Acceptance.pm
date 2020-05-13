@@ -227,7 +227,7 @@ sub _build__test_data {
       return if not @$data; # placeholder files for renamed tests
       my $file = $path->relative($self->test_dir);
       push @test_groups, [
-        scalar(()= split('/', $file)),
+        scalar(split('/', $file)),
         {
           file => $file,
           json => $data,
@@ -239,7 +239,7 @@ sub _build__test_data {
 
   return [
     map $_->[1],
-      sort { $a->[0] <=> $b->[0] && $a->[1]{file} cmp $b->[1]{file} }
+      sort { $a->[0] <=> $b->[0] || $a->[1]{file} cmp $b->[1]{file} }
       @test_groups
   ];
 }
