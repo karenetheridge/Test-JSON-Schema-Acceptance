@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 0.995     2020-05-13 17:11:29Z
         - fix sorting of results table so tests in subdirectories appear last
         - fix minimum declared version for Path::Tiny
