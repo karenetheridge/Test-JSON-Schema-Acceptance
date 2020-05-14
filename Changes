@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 0.996     2020-05-14 19:33:09Z
         - work around problem when files in the test suite are renamed
         - really fix sorting of results table this time
