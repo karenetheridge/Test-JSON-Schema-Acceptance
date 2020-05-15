@@ -17,12 +17,14 @@ perl:
   - "5.16"
   - "5.14"
   - "5.12"
-  - "5.10"
-matrix:
+jobs:
   allow_failures:
     - perl: "5.12"
     - perl: "5.10"  # "Use of implicit split to @_ is deprecated" warning
   fast_finish: 1
+  include:
+    - perl: "5.10"
+      env: AUTHOR_TESTING=0
 env:
   global:
     - PERL_USE_UNSAFE_INC=0

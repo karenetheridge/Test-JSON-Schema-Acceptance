@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - fix test that warns on 5.10
 
 0.996     2020-05-14 19:33:09Z
         - work around problem when files in the test suite are renamed
