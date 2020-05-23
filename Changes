@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - fix warning when the test directory is empty
 
 0.997     2020-05-19 23:24:07Z
         - fix test that warns on 5.10

@@ -152,7 +152,7 @@ sub _run_tests {
   }
 
   $diag->('');
-  my $length = max(map length $_->{file}, @$tests);
+  my $length = max(10, map length $_->{file}, @$tests);
   $diag->(sprintf('%-'.$length.'s  pass  fail', 'filename'));
   $diag->('-'x($length + 12));
   $diag->(sprintf('%-'.$length.'s   %3d   %3d', @{$_}{qw(file pass fail)}))
