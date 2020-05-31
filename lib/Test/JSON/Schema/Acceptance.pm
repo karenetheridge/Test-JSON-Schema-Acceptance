@@ -144,8 +144,9 @@ sub _run_tests {
   my $diag = sub { Test::More->builder->${\ ($self->verbose ? 'diag' : 'note') }(@_) };
 
   $diag->("\n\n".'Results using '.ref($self).' '.$self->VERSION);
-  my $submodule_status = path($self->test_dir)->parent->parent->child('submodule_status');
-  if ($submodule_status->exists) {
+
+  my $submodule_status = path(dist_dir('Test-JSON-Schema-Acceptance'), 'submodule_status');
+  if ($submodule_status->exists and $submodule_status->parent->subsumes($self->test_dir)) {
     chomp(my ($commit, $url) = $submodule_status->lines);
     $diag->('with commit '.$commit);
     $diag->('from '.$url.':');
