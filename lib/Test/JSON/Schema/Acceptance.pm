@@ -119,18 +119,6 @@ sub _run_tests {
             (ref $options->{tests}{test_description} eq 'ARRAY'
               ? @{$options->{tests}{test_description}} : $options->{tests}{test_description});
 
-        local $::TODO = 'Test marked TODO via "todo_tests"'
-          if $options->{todo_tests} and
-            any {
-              my $o = $_;
-              (not $o->{file} or grep $_ eq $one_file->{file}, (ref $o->{file} eq 'ARRAY' ? @{$o->{file}} : $o->{file}))
-                and
-              (not $o->{group_description} or grep $_ eq $test_group->{description}, (ref $o->{group_description} eq 'ARRAY' ? @{$o->{group_description}} : $o->{group_description}))
-                and
-              (not $o->{test_description} or grep $_ eq $test->{description}, (ref $o->{test_description} eq 'ARRAY' ? @{$o->{test_description}} : $o->{test_description}))
-            }
-            @{$options->{todo_tests}};
-
         my $result = $self->_run_test($one_file, $test_group, $test, $options);
         ++$results{ $result ? 'pass' : 'fail' };
       }
@@ -168,6 +156,18 @@ sub _run_test {
     local $::TODO = 'Test marked TODO via deprecated "skip_tests"'
       if ref $options->{skip_tests} eq 'ARRAY' and
         grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/), @{$options->{skip_tests}};
+
+    local $::TODO = 'Test marked TODO via "todo_tests"'
+      if $options->{todo_tests} and
+        any {
+          my $o = $_;
+          (not $o->{file} or grep $_ eq $one_file->{file}, (ref $o->{file} eq 'ARRAY' ? @{$o->{file}} : $o->{file}))
+            and
+          (not $o->{group_description} or grep $_ eq $test_group->{description}, (ref $o->{group_description} eq 'ARRAY' ? @{$o->{group_description}} : $o->{group_description}))
+            and
+          (not $o->{test_description} or grep $_ eq $test->{description}, (ref $o->{test_description} eq 'ARRAY' ? @{$o->{test_description}} : $o->{test_description}))
+        }
+        @{$options->{todo_tests}};
 
     my $test_name = $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"';
 
