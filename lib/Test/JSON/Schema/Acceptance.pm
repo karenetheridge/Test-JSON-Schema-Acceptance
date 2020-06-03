@@ -154,12 +154,13 @@ sub _run_test {
 
   TODO: {
     local $::TODO = 'Test marked TODO via deprecated "skip_tests"'
-      if ref $options->{skip_tests} eq 'ARRAY' and
-        grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/), @{$options->{skip_tests}};
+      if ref $options->{skip_tests} eq 'ARRAY'
+        and grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/),
+          @{$options->{skip_tests}};
 
     local $::TODO = 'Test marked TODO via "todo_tests"'
-      if $options->{todo_tests} and
-        any {
+      if $options->{todo_tests}
+        and any {
           my $o = $_;
           (not $o->{file} or grep $_ eq $one_file->{file}, (ref $o->{file} eq 'ARRAY' ? @{$o->{file}} : $o->{file}))
             and
