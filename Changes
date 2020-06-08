@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 0.999     2020-06-08 23:31:40Z
         - fix type constraint for test data, and add a test to verify it
 
