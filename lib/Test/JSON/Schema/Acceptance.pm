@@ -204,12 +204,15 @@ has _test_data => (
   isa => ArrayRef[Dict[
            file => InstanceOf['Path::Tiny'],
            json => ArrayRef[Dict[
+             # id => Optional[Str],
              description => Str,
              comment => Optional[Str],
              schema => $json_bool|HashRef,
              tests => ArrayRef[Dict[
+               # id => Optional[Str],
                data => Any,
                description => Str,
+               comment => Optional[Str],
                valid => $json_bool,
              ]],
            ]],

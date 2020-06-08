@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - fix type constraint for test data, and add a test to verify it
 
 0.998     2020-06-08 23:05:33Z
         - fix warning when the test directory is empty
