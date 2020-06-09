@@ -86,16 +86,10 @@ sub acceptance {
   die 'cannot provide both "validate_data" and "validate_json_string"'
     if $options->{validate_data} and $options->{validate_json_string};
 
-  $self->_run_tests($self->_test_data, $options);
-
-}
-
-sub _run_tests {
-  my ($self, $tests, $options) = @_;
+  warn "'skip_tests' option is deprecated" if $options->{skip_tests};
 
   Test::More::note('running tests in '.$self->test_dir.'...');
-
-  warn "'skip_tests' option is deprecated" if $options->{skip_tests};
+  my $tests = $self->_test_data;
 
   # [ { file => .., pass => .., fail => .. }, ... ]
   my @results;
@@ -182,7 +176,7 @@ sub _run_test {
     my $got = $result ? 'true' : 'false';
     my $expected = $test->{valid} ? 'true' : 'false';
 
-    local $Test::Builder::Level = $Test::Builder::Level + 3;
+    local $Test::Builder::Level = $Test::Builder::Level + 2;
 
     return Test::More::fail($test_name.' died: '.$exception) if $exception;
     return Test::More::is($got, $expected, $test_name);
