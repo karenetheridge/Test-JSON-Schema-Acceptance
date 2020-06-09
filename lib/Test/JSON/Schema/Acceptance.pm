@@ -88,6 +88,22 @@ sub acceptance {
 
   warn "'skip_tests' option is deprecated" if $options->{skip_tests};
 
+  if ($options->{add_resource}) {
+    my $base = 'http://localhost:1234'; # TODO? make this customizable
+    Test::More::note('adding resources under '.$base.'...');
+    $self->additional_resources->visit(
+      sub {
+        my ($path) = @_;
+        return if not $path->is_file or $path !~ /\.json$/;
+        my $data = $self->_json_decoder->decode($path->slurp_raw);
+        my $file = $path->relative($self->additional_resources);
+        my $uri = $base.'/'.$file;
+        $options->{add_resource}->($uri => $data);
+      },
+      { recurse => 1 },
+    );
+  }
+
   Test::More::note('running tests in '.$self->test_dir.'...');
   my $tests = $self->_test_data;
 
@@ -352,7 +368,8 @@ L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.m
 A directory of additional resources which should be made available to the implementation under the
 base URI C<http://localhost:1234>. This is automatically provided if you did not override
 C</test_dir>; otherwise, you need to supply it yourself, if any tests require it (for example by
-containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>).
+containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>). If you supply an
+L</add_resource> value to L</acceptance> (see below), this will be done for you.
 
 =head2 verbose
 
@@ -395,6 +412,14 @@ The subroutine should return truthy or falsey depending on if the schema was val
 not.
 
 Either C<validate_data> or C<validate_json_string> is required.
+
+=head3 add_resource
+
+Optional. A subroutine reference, which will be called at the start of L</acceptance> multiple
+times, with two arguments: a URI (string), and a data structure containing schema data to be
+associated with that URI, for use in some tests that use additional resources (see above). If you do
+not provide this option, you will be responsible for ensuring that those additional resources are
+made available to your implementation for the successful execution of the tests that rely on them.
 
 =head3 tests
 
