@@ -6,6 +6,7 @@ package Test::JSON::Schema::Acceptance;
 
 our $VERSION = '1.000';
 
+use 5.014;
 no if "$]" >= 5.031009, feature => 'indirect';
 use Test::More ();
 use Test::Fatal ();
