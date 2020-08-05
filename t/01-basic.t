@@ -25,8 +25,10 @@ my ($premature, @results) = run_tests(
   }
 );
 
+my @bool_tests = grep $_->{name} =~ /boolean type matches booleans/, @results;
+is(@bool_tests, 10, 'found all the tests that check for boolean type');
 cmp_deeply(
-  [ grep $_->{name} =~ /^boolean type matches booleans/, @results ],
+  \@bool_tests,
   array_each(superhashof({
     ok => 1,
     depth => 1,
