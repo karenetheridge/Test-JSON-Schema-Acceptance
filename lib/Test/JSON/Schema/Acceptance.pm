@@ -8,8 +8,10 @@ our $VERSION = '1.000';
 
 use 5.014;
 no if "$]" >= 5.031009, feature => 'indirect';
-use Test::More ();
-use Test::Fatal ();
+use Test2::API ();
+use Test2::Todo;
+use Test2::Tools::Compare ();
+use Try::Tiny;
 use JSON::MaybeXS 1.004001;
 use File::ShareDir 'dist_dir';
 use Moo;
@@ -89,9 +91,11 @@ sub acceptance {
 
   warn "'skip_tests' option is deprecated" if $options->{skip_tests};
 
+  my $ctx = Test2::API::context;
+
   if ($options->{add_resource}) {
     my $base = 'http://localhost:1234'; # TODO? make this customizable
-    Test::More::note('adding resources under '.$base.'...');
+    $ctx->note('adding resources under '.$base.'...');
     $self->additional_resources->visit(
       sub {
         my ($path) = @_;
@@ -105,7 +109,7 @@ sub acceptance {
     );
   }
 
-  Test::More::note('running tests in '.$self->test_dir.'...');
+  $ctx->note('running tests in '.$self->test_dir.'...');
   my $tests = $self->_test_data;
 
   # [ { file => .., pass => .., fail => .. }, ... ]
@@ -118,7 +122,7 @@ sub acceptance {
         (ref $options->{tests}{file} eq 'ARRAY'
           ? @{$options->{tests}{file}} : $options->{tests}{file});
 
-    Test::More::note('');
+    $ctx->note('');
 
     foreach my $test_group (@{$one_file->{json}}) {
       next if $options->{tests} and $options->{tests}{group_description}
@@ -142,64 +146,72 @@ sub acceptance {
 
   $self->_set_results(\@results);
 
-  my $diag = sub { Test::More->builder->${\ ($self->verbose ? 'diag' : 'note') }(@_) };
+  my $diag = $self->verbose ? 'diag' : 'note';
 
-  $diag->("\n\n".'Results using '.ref($self).' '.$self->VERSION);
+  $ctx->$diag("\n\n".'Results using '.ref($self).' '.$self->VERSION);
 
   my $submodule_status = path(dist_dir('Test-JSON-Schema-Acceptance'), 'submodule_status');
   if ($submodule_status->exists and $submodule_status->parent->subsumes($self->test_dir)) {
     chomp(my ($commit, $url) = $submodule_status->lines);
-    $diag->('with commit '.$commit);
-    $diag->('from '.$url.':');
+    $ctx->$diag('with commit '.$commit);
+    $ctx->$diag('from '.$url.':');
   }
 
-  $diag->('');
+  $ctx->$diag('');
   my $length = max(10, map length $_->{file}, @$tests);
-  $diag->(sprintf('%-'.$length.'s  pass  fail', 'filename'));
-  $diag->('-'x($length + 12));
-  $diag->(sprintf('%-'.$length.'s   %3d   %3d', @{$_}{qw(file pass fail)}))
+  $ctx->$diag(sprintf('%-'.$length.'s  pass  fail', 'filename'));
+  $ctx->$diag('-'x($length + 12));
+  $ctx->$diag(sprintf('%-'.$length.'s   %3d   %3d', @{$_}{qw(file pass fail)}))
     foreach @results;
-  $diag->('');
+  $ctx->$diag('');
+
+  $ctx->release;
 }
 
 sub _run_test {
   my ($self, $one_file, $test_group, $test, $options) = @_;
 
-  TODO: {
-    local $::TODO = 'Test marked TODO via deprecated "skip_tests"'
-      if ref $options->{skip_tests} eq 'ARRAY'
-        and grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/),
-          @{$options->{skip_tests}};
+  my $todo;
+  $todo = Test2::Todo->new(reason => 'Test marked TODO via deprecated "skip_tests"')
+    if ref $options->{skip_tests} eq 'ARRAY'
+      and grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/),
+        @{$options->{skip_tests}};
 
-    local $::TODO = 'Test marked TODO via "todo_tests"'
-      if $options->{todo_tests}
-        and any {
-          my $o = $_;
-          (not $o->{file} or grep $_ eq $one_file->{file}, (ref $o->{file} eq 'ARRAY' ? @{$o->{file}} : $o->{file}))
-            and
-          (not $o->{group_description} or grep $_ eq $test_group->{description}, (ref $o->{group_description} eq 'ARRAY' ? @{$o->{group_description}} : $o->{group_description}))
-            and
-          (not $o->{test_description} or grep $_ eq $test->{description}, (ref $o->{test_description} eq 'ARRAY' ? @{$o->{test_description}} : $o->{test_description}))
-        }
-        @{$options->{todo_tests}};
+  $todo = Test2::Todo->new(reason => 'Test marked TODO via "todo_tests"')
+    if $options->{todo_tests}
+      and any {
+        my $o = $_;
+        (not $o->{file} or grep $_ eq $one_file->{file}, (ref $o->{file} eq 'ARRAY' ? @{$o->{file}} : $o->{file}))
+          and
+        (not $o->{group_description} or grep $_ eq $test_group->{description}, (ref $o->{group_description} eq 'ARRAY' ? @{$o->{group_description}} : $o->{group_description}))
+          and
+        (not $o->{test_description} or grep $_ eq $test->{description}, (ref $o->{test_description} eq 'ARRAY' ? @{$o->{test_description}} : $o->{test_description}))
+      }
+      @{$options->{todo_tests}};
 
-    my $test_name = $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"';
+  my $test_name = $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"';
 
-    my $result;
-    my $exception = Test::Fatal::exception {
-      $result = $options->{validate_data}
-        ? $options->{validate_data}->($test_group->{schema}, $test->{data})
-        : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
-    };
-
-    my $got = $result ? 'true' : 'false';
-    my $expected = $test->{valid} ? 'true' : 'false';
-
-    local $Test::Builder::Level = $Test::Builder::Level + 2;
-
-    return Test::More::fail($test_name.' died: '.$exception) if $exception;
-    return Test::More::is($got, $expected, $test_name);
+  my ($result, $exception);
+  try {
+    $result = $options->{validate_data}
+      ? $options->{validate_data}->($test_group->{schema}, $test->{data})
+      : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
   }
+  catch {
+    chomp($exception = $_);
+  };
+
+  my $got = $result ? 'true' : 'false';
+  my $expected = $test->{valid} ? 'true' : 'false';
+
+  my $ctx = Test2::API::context;
+
+  my $pass = $exception
+    ? $ctx->fail($test_name.' died: '.$exception)
+    : Test2::Tools::Compare::is($got, $expected, $test_name);
+
+  $ctx->release;
+  return $pass;
 }
 
 has _json_decoder => (
