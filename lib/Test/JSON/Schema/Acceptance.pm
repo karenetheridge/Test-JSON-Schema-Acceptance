@@ -118,6 +118,8 @@ sub acceptance {
         (ref $options->{tests}{file} eq 'ARRAY'
           ? @{$options->{tests}{file}} : $options->{tests}{file});
 
+    Test::More::note('');
+
     foreach my $test_group (@{$one_file->{json}}) {
       next if $options->{tests} and $options->{tests}{group_description}
         and not grep $_ eq $test_group->{description},
