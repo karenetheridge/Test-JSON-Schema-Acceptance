@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no if "$]" >= 5.031009, feature => 'indirect';
 
-use Test::Tester 0.108;
+use Test2::API 'intercept';
 use Test::More 0.88;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::Deep;
@@ -11,7 +11,7 @@ use Test::JSON::Schema::Acceptance;
 
 my $accepter = Test::JSON::Schema::Acceptance->new(test_dir => 't/tests/bad');
 
-my ($premature, @results) = run_tests(
+my $events = intercept(
   sub {
     $accepter->acceptance(
       validate_data => sub {
@@ -25,23 +25,23 @@ my ($premature, @results) = run_tests(
 );
 
 cmp_deeply(
-  \@results,
+  [ map exists $_->{assert} ? $_->{assert} : (), map $_->facet_data, @$events ],
   [
     superhashof({
-      name => 'invalid-schema.json: "exception handling" - "no exception; expect invalid: want test failure"',
-      ok => 0,
+      details => 'invalid-schema.json: "exception handling" - "no exception; expect invalid: want test failure"',
+      pass => 0,
     }),
     superhashof({
-      name => 'invalid-schema.json: "exception handling" - "no exception; expect valid: want test pass"',
-      ok => 1,
+      details => 'invalid-schema.json: "exception handling" - "no exception; expect valid: want test pass"',
+      pass => 1,
     }),
     superhashof({
-      name => re(qr/^\Qinvalid-schema.json: "exception handling" - "exception; expect invalid: want test failure (via exception)" died: ach I am slain\E/),
-      ok => 0,
+      details => re(qr/^\Qinvalid-schema.json: "exception handling" - "exception; expect invalid: want test failure (via exception)" died: ach I am slain\E/),
+      pass => 0,
     }),
     superhashof({
-      name => re(qr/^\Qinvalid-schema.json: "exception handling" - "exception; expect valid: want test failure (via exception)" died: ach I am slain\E/),
-      ok => 0,
+      details => re(qr/^\Qinvalid-schema.json: "exception handling" - "exception; expect valid: want test failure (via exception)" died: ach I am slain\E/),
+      pass => 0,
     }),
   ],
   'four tests, all with correct results',
