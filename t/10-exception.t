@@ -25,24 +25,55 @@ my $events = intercept(
 );
 
 cmp_deeply(
-  [ map exists $_->{assert} ? $_->{assert} : (), map $_->facet_data, @$events ],
+  [ map exists $_->{parent}
+      ? {
+          details => $_->{assert}{details},
+          pass => $_->{assert}{pass},
+          children => [ map exists $_->{assert} ? $_->{assert} : (), @{$_->{parent}{children}} ],
+        }
+      : (),
+      map $_->facet_data, @$events ],
   [
-    superhashof({
+    {
       details => 'invalid-schema.json: "exception handling" - "no exception; expect invalid: want test failure"',
       pass => 0,
-    }),
-    superhashof({
+      children => [
+        superhashof({
+          details => 'result is invalid',
+          pass => 0,
+        }),
+      ],
+    },
+    {
       details => 'invalid-schema.json: "exception handling" - "no exception; expect valid: want test pass"',
       pass => 1,
-    }),
-    superhashof({
-      details => re(qr/^\Qinvalid-schema.json: "exception handling" - "exception; expect invalid: want test failure (via exception)" died: ach I am slain\E/),
+      children => [
+        superhashof({
+          details => 'result is valid',
+          pass => 1,
+        }),
+      ],
+    },
+    {
+      details => 'invalid-schema.json: "exception handling" - "exception; expect invalid: want test failure (via exception)"',
       pass => 0,
-    }),
-    superhashof({
-      details => re(qr/^\Qinvalid-schema.json: "exception handling" - "exception; expect valid: want test failure (via exception)" died: ach I am slain\E/),
+      children => [
+        superhashof({
+          details => re(qr/^died: ach I am slain /),
+          pass => 0,
+        }),
+      ],
+    },
+    {
+      details => 'invalid-schema.json: "exception handling" - "exception; expect valid: want test failure (via exception)"',
       pass => 0,
-    }),
+      children => [
+        superhashof({
+          details => re(qr/^died: ach I am slain /),
+          pass => 0,
+        }),
+      ],
+    },
   ],
   'four tests, all with correct results',
 );

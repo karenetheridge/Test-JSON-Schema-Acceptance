@@ -206,9 +206,16 @@ sub _run_test {
 
   my $ctx = Test2::API::context;
 
-  my $pass = $exception
-    ? $ctx->fail($test_name.' died: '.$exception)
-    : Test2::Tools::Compare::is($got, $expected, $test_name);
+  my $pass = Test2::API::run_subtest($test_name,
+    sub {
+      my $ctx = Test2::API::context;
+      $exception
+        ? $ctx->fail('died: '.$exception)
+        : Test2::Tools::Compare::is($got, $expected, 'result is '.($test->{valid}?'':'in').'valid');
+      $ctx->release;
+    },
+    { buffered => 1, inherit_trace => 1 },
+  );
 
   $ctx->release;
   return $pass;
