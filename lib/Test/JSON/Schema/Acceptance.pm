@@ -13,6 +13,7 @@ use Test2::Todo;
 use Test2::Tools::Compare ();
 use Try::Tiny;
 use JSON::MaybeXS 1.004001;
+use Storable 3.00 ();
 use File::ShareDir 'dist_dir';
 use Moo;
 use MooX::TypeTiny 0.002002;
@@ -191,11 +192,23 @@ sub _run_test {
 
   my $test_name = $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"';
 
-  my ($result, $exception);
+  my ($result, $exception, $schema_before, $data_before, $schema_after, $data_after);
   try {
+    {
+      local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
+      ($schema_before, $data_before) = map Storable::freeze(\$_),
+        $test_group->{schema}, $test->{data};
+    }
+
     $result = $options->{validate_data}
       ? $options->{validate_data}->($test_group->{schema}, $test->{data})
       : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
+
+    {
+      local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
+      ($schema_after, $data_after) = map Storable::freeze(\$_),
+        $test_group->{schema}, $test->{data};
+    }
   }
   catch {
     chomp($exception = $_);
@@ -212,6 +225,12 @@ sub _run_test {
       $exception
         ? $ctx->fail('died: '.$exception)
         : Test2::Tools::Compare::is($got, $expected, 'result is '.($test->{valid}?'':'in').'valid');
+
+      Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data')
+        if not $exception and $data_before ne $data_after;
+      Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema')
+        if not $exception and $schema_before ne $schema_after;
+
       $ctx->release;
     },
     { buffered => 1, inherit_trace => 1 },
