@@ -19,7 +19,7 @@ my $accepter = Test::JSON::Schema::Acceptance->new(
 
 $accepter->acceptance(
   validate_data => sub {
-    my ($schema, $data_string) = @_;
+    my ($schema, $data) = @_;
     return 1; # all schemas evaluate to true here
   },
   add_resource => sub {

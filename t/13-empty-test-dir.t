@@ -18,8 +18,8 @@ is(@{$accepter->_test_data}, 0, 'an empty test directory means no test data');
 
 my $parser = SchemaParser->new;
 $accepter->acceptance(sub {
-  my ($schema, $data_string) = @_;
-  return $parser->validate_data($data_string, $schema);
+  my ($schema, $data) = @_;
+  return $parser->validate_data($data, $schema);
 });
 
 is(Test::Builder->new->current_test, 1, 'no tests run when test directory is empty');
