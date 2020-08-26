@@ -222,14 +222,18 @@ sub _run_test {
   my $pass = Test2::API::run_subtest($test_name,
     sub {
       my $ctx = Test2::API::context;
-      $exception
-        ? $ctx->fail('died: '.$exception)
-        : Test2::Tools::Compare::is($got, $expected, 'result is '.($test->{valid}?'':'in').'valid');
 
-      Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data')
-        if not $exception and $data_before ne $data_after;
-      Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema')
-        if not $exception and $schema_before ne $schema_after;
+      if ($exception) {
+        $ctx->fail('died: '.$exception);
+      }
+      else {
+        Test2::Tools::Compare::is($got, $expected, 'result is '.($test->{valid}?'':'in').'valid');
+
+        Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data')
+          if $data_before ne $data_after;
+        Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema')
+          if $schema_before ne $schema_after;
+      }
 
       $ctx->release;
     },
