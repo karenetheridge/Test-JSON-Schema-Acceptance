@@ -90,6 +90,7 @@ foreach my $test (
         $count->[$_] ? +{
           file => str([ qw(bar.json baz.json foo.json) ]->[$_]),
           pass => ($_ ? 0+$count->[$_] : 0),
+          todo_fail => 0,
           fail => ($_ ? 0 : 0+$count->[$_]),
         } : ()
       ), (0..2)
