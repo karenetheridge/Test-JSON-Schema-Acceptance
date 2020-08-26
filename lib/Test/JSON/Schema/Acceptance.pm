@@ -20,7 +20,7 @@ use MooX::TypeTiny 0.002002;
 use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional);
 use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny 0.062;
-use List::Util 1.33 qw(any max);
+use List::Util 1.33 qw(any max sum0);
 use namespace::clean;
 
 has specification => (
@@ -180,8 +180,12 @@ sub acceptance {
   my $length = max(10, map length $_->{file}, @$tests);
   $ctx->$diag(sprintf('%-'.$length.'s  pass  todo-fail  fail', 'filename'));
   $ctx->$diag('-'x($length + 23));
-  $ctx->$diag(sprintf('%-'.$length.'s   %3d        %3d   %3d', @{$_}{qw(file pass todo_fail fail)}))
+  $ctx->$diag(sprintf('%-'.$length.'s % 5d       % 4d  % 4d', @{$_}{qw(file pass todo_fail fail)}))
     foreach @results;
+
+  my $total = +{ map { my $type = $_; $type => sum0(map $_->{$type}, @results) } qw(pass todo_fail fail) };
+  $ctx->$diag('-'x($length + 23));
+  $ctx->$diag(sprintf('%-'.$length.'s % 5d      % 5d % 5d', 'TOTAL', @{$total}{qw(pass todo_fail fail)}));
   $ctx->$diag('');
 
   $ctx->release;
