@@ -95,7 +95,7 @@ sub acceptance {
 
   if ($options->{add_resource}) {
     my $base = 'http://localhost:1234'; # TODO? make this customizable
-    $ctx->note('adding resources under '.$base.'...');
+    $ctx->note('adding resources from '.$self->additional_resources.' with the base URI "'.$base.'"...');
     $self->additional_resources->visit(
       sub {
         my ($path) = @_;
