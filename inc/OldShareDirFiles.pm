@@ -5,6 +5,7 @@ use Moose;
 with 'Dist::Zilla::Role::FileGatherer', 'Dist::Zilla::Role::BeforeRelease';
 use Dist::Zilla::File::InMemory;
 use Capture::Tiny 'capture_stdout';
+use Path::Tiny;
 use namespace::autoclean;
 
 # for every file leaving the test suite, we must replace it with an empty file so ->_test_data can
@@ -18,7 +19,11 @@ sub gather_files {
   my $self = shift;
 
   foreach my $filename (@{$self->removed}) {
-    $self->add_file(Dist::Zilla::File::InMemory->new({ name => $filename, content => '[]' }))
+    my $content = path('share/tests')->subsumes($filename) ? '[]'
+      : path('share/remotes')->subsumes($filename) ? '{}'
+      : die "don't know how to handle filename '$filename'";
+
+    $self->add_file(Dist::Zilla::File::InMemory->new({ name => $filename, content => $content }))
   }
   return;
 }
