@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.000
+version 1.001
 
 =head1 SYNOPSIS
 
@@ -236,7 +236,7 @@ the same hashref structure as L</tests> above, which are ORed together.
 =head2 results
 
 After calling L</acceptance>, a list of test results are provided here. It is an arrayref of
-hashrefs with three keys:
+hashrefs with four keys:
 
 =over 4
 
@@ -250,7 +250,11 @@ pass - the number of pass results for that file
 
 =item *
 
-fail - the number of fail results for that file (including TODO tests)
+todo_fail - the number of fail results for that file that were marked TODO
+
+=item *
+
+fail - the number of fail results for that file (not including TODO tests)
 
 =back
 
@@ -274,17 +278,13 @@ Ben Hutton (@relequestual) <relequest@cpan.org>
 
 =head1 CONTRIBUTORS
 
-=for stopwords Karen Etheridge Ben Hutton Daniel Perrett
+=for stopwords Karen Etheridge Daniel Perrett
 
 =over 4
 
 =item *
 
 Karen Etheridge <ether@cpan.org>
-
-=item *
-
-Ben Hutton <relequestual@cpan.org>
 
 =item *
 
