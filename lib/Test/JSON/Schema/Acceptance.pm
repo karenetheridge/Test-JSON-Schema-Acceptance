@@ -28,6 +28,7 @@ has specification => (
   isa => Str,
   lazy => 1,
   default => 'draft2019-09',
+  predicate => '_has_specification',
 );
 
 has test_dir => (
@@ -175,6 +176,13 @@ sub acceptance {
     $ctx->$diag('with commit '.$commit);
     $ctx->$diag('from '.$url.':');
   }
+  if ($self->_has_specification) {
+    $ctx->$diag('specification version: '.$self->specification);
+  }
+  else {
+    $ctx->$diag('using custom test directory: '.$self->test_dir);
+  }
+  $ctx->$diag('optional tests included: '.($self->include_optional ? 'yes' : 'no'));
 
   $ctx->$diag('');
   my $length = max(10, map length $_->{file}, @$tests);
