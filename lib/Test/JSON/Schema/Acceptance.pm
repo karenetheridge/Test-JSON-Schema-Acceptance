@@ -208,6 +208,7 @@ sub _run_test {
   try {
     {
       local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
+      local $Storable::canonical = 1;
       ($schema_before, $data_before) = map Storable::freeze(\$_),
         $test_group->{schema}, $test->{data};
     }
@@ -218,6 +219,7 @@ sub _run_test {
 
     {
       local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
+      local $Storable::canonical = 1;
       ($schema_after, $data_after) = map Storable::freeze(\$_),
         $test_group->{schema}, $test->{data};
     }
