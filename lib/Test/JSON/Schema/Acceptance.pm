@@ -226,10 +226,8 @@ sub _run_test {
   }
   catch {
     chomp($exception = $_);
-  };
 
-  my $got = $result ? 'true' : 'false';
-  my $expected = $test->{valid} ? 'true' : 'false';
+  };
 
   my $ctx = Test2::API::context;
 
@@ -243,7 +241,17 @@ sub _run_test {
         $ctx->fail('died: '.$exception);
       }
       else {
-        $pass = Test2::Tools::Compare::is($got, $expected, 'result is '.($test->{valid}?'':'in').'valid');
+        # skip the ugly matrix comparison
+        if ($result xor $test->{valid}) {
+          my $got = $result ? 'true' : 'false';
+          my $expected = $test->{valid} ? 'true' : 'false';
+          $ctx->fail('test failed', 'expected '.$expected.'; got '.$got);
+          $pass = 0;
+        }
+        else {
+          $ctx->ok(1, 'test passes');
+          $pass = 1;
+        }
 
         $pass &&= Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data')
           if $data_before ne $data_after;

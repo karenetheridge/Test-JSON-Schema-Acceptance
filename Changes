@@ -3,6 +3,7 @@ Revision history for Test-JSON-Schema-Acceptance
 {{$NEXT}}
         - include more data in the summary header
         - fix minimum declared version for Path::Tiny
+        - make the output look a little nicer on failure
 
 1.001     2020-10-16 18:28:56Z
         - also display TODO-failures in results summary table
