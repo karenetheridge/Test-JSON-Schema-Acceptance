@@ -204,43 +204,31 @@ sub _run_test {
 
   my $test_name = $one_file->{file}.': "'.$test_group->{description}.'" - "'.$test->{description}.'"';
 
-  my ($result, $exception, $schema_before, $data_before, $schema_after, $data_after);
-  try {
-    {
-      local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
-      local $Storable::canonical = 1;
-      ($schema_before, $data_before) = map Storable::freeze(\$_),
-        $test_group->{schema}, $test->{data};
-    }
-
-    $result = $options->{validate_data}
-      ? $options->{validate_data}->($test_group->{schema}, $test->{data})
-      : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
-
-    {
-      local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
-      local $Storable::canonical = 1;
-      ($schema_after, $data_after) = map Storable::freeze(\$_),
-        $test_group->{schema}, $test->{data};
-    }
-  }
-  catch {
-    chomp($exception = $_);
-
-  };
-
-  my $ctx = Test2::API::context;
-
   my $pass; # ignores TODO status
 
   Test2::API::run_subtest($test_name,
     sub {
       my $ctx = Test2::API::context;
+      my ($result, $schema_before, $data_before, $schema_after, $data_after);
+      try {
+        {
+          local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
+          local $Storable::canonical = 1;
+          ($schema_before, $data_before) = map Storable::freeze(\$_),
+            $test_group->{schema}, $test->{data};
+        }
 
-      if ($exception) {
-        $ctx->fail('died: '.$exception);
-      }
-      else {
+        $result = $options->{validate_data}
+          ? $options->{validate_data}->($test_group->{schema}, $test->{data})
+          : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
+
+        {
+          local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
+          local $Storable::canonical = 1;
+          ($schema_after, $data_after) = map Storable::freeze(\$_),
+            $test_group->{schema}, $test->{data};
+        }
+
         # skip the ugly matrix comparison
         if ($result xor $test->{valid}) {
           my $got = $result ? 'true' : 'false';
@@ -258,13 +246,16 @@ sub _run_test {
         $pass &&= Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema')
           if $schema_before ne $schema_after;
       }
+      catch {
+        chomp(my $exception = $_);
+        $ctx->fail('died: '.$exception);
+      };
 
       $ctx->release;
     },
     { buffered => 1, inherit_trace => 1 },
   );
 
-  $ctx->release;
   return $pass;
 }
 
