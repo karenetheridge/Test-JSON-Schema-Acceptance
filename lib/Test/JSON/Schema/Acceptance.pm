@@ -490,6 +490,8 @@ associated with that URI, for use in some tests that use additional resources (s
 not provide this option, you will be responsible for ensuring that those additional resources are
 made available to your implementation for the successful execution of the tests that rely on them.
 
+For more information, see <https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.8.2.4.5>.
+
 =head3 tests
 
 Optional. Restricts tests to just those mentioned (the conditions are ANDed together, not ORed).
