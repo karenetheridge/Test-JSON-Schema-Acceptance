@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.002     2020-11-24 17:56:27Z
         - include more data in the summary header
         - fix minimum declared version for Path::Tiny
         - make the output look a little nicer on failure
