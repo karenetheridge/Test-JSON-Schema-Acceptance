@@ -208,7 +208,6 @@ sub _run_test {
 
   Test2::API::run_subtest($test_name,
     sub {
-      my $ctx = Test2::API::context;
       my ($result, $schema_before, $data_before, $schema_after, $data_after);
       try {
         {
@@ -229,6 +228,8 @@ sub _run_test {
             $test_group->{schema}, $test->{data};
         }
 
+        my $ctx = Test2::API::context;
+
         # skip the ugly matrix comparison
         if ($result xor $test->{valid}) {
           my $got = $result ? 'true' : 'false';
@@ -245,13 +246,16 @@ sub _run_test {
           if $data_before ne $data_after;
         $pass &&= Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema')
           if $schema_before ne $schema_after;
+
+        $ctx->release;
       }
       catch {
         chomp(my $exception = $_);
+        my $ctx = Test2::API::context;
         $ctx->fail('died: '.$exception);
+        $ctx->release;
       };
 
-      $ctx->release;
     },
     { buffered => 1, inherit_trace => 1 },
   );
