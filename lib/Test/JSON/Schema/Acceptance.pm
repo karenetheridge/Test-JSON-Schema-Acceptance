@@ -4,7 +4,7 @@ package Test::JSON::Schema::Acceptance;
 # vim: set ts=8 sts=2 sw=2 tw=100 et :
 # ABSTRACT: Acceptance testing for JSON-Schema based validators like JSON::Schema
 
-our $VERSION = '1.003';
+our $VERSION = '1.004';
 
 use 5.014;
 no if "$]" >= 5.031009, feature => 'indirect';
