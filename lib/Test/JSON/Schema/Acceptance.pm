@@ -231,14 +231,14 @@ sub _run_test {
         my $ctx = Test2::API::context;
 
         # skip the ugly matrix comparison
+        my $expected = $test->{valid} ? 'true' : 'false';
         if ($result xor $test->{valid}) {
           my $got = $result ? 'true' : 'false';
-          my $expected = $test->{valid} ? 'true' : 'false';
           $ctx->fail('test failed', 'expected '.$expected.'; got '.$got);
           $pass = 0;
         }
         else {
-          $ctx->ok(1, 'test passes');
+          $ctx->ok(1, 'test passes: data is valid: '.$expected);
           $pass = 1;
         }
 
