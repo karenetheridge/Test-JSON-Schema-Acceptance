@@ -255,7 +255,6 @@ sub _run_test {
         $ctx->fail('died: '.$exception);
         $ctx->release;
       };
-
     },
     { buffered => 1, inherit_trace => 1 },
   );
