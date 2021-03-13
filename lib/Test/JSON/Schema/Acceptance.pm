@@ -59,6 +59,14 @@ has include_optional => (
   default => 0,
 );
 
+has skip_dir => (
+  is => 'ro',
+  isa => ArrayRef[Str],
+  coerce => sub { ref($_[0]) ? $_[0] : [ $_[0] ] },
+  lazy => 1,
+  default => sub { [] },
+);
+
 has results => (
   is => 'rwp',
   init_arg => undef,
@@ -299,6 +307,7 @@ sub _build__test_data {
   $self->test_dir->visit(
     sub {
       my ($path) = @_;
+      return if any { $self->test_dir->child($_)->subsumes($path) } @{ $self->skip_dir };
       return if not $path->is_file;
       return if $path !~ /\.json$/;
       my $data = $self->_json_decoder->decode($path->slurp_raw);
@@ -442,6 +451,13 @@ during C<make test> or C<prove>.
 =head2 include_optional
 
 Optional. When true, tests in subdirectories (most notably F<optional/> are also included.
+
+=head2 skip_dir
+
+Optional. Pass a string or arrayref consisting of relative path name(s) to indicate directories
+(within the test directory as specified above with C<specification> or C<test_dir>) which will be
+skipped. Note that this is only useful currently with C<include_optional => 1>, as otherwise all
+subdirectories would be skipped anyway.
 
 =head1 SUBROUTINES/METHODS
 
