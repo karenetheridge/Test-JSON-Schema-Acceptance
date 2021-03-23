@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.003
+version 1.004
 
 =head1 SYNOPSIS
 
@@ -141,6 +141,13 @@ during C<make test> or C<prove>.
 =head2 include_optional
 
 Optional. When true, tests in subdirectories (most notably F<optional/> are also included.
+
+=head2 skip_dir
+
+Optional. Pass a string or arrayref consisting of relative path name(s) to indicate directories
+(within the test directory as specified above with C<specification> or C<test_dir>) which will be
+skipped. Note that this is only useful currently with C<include_optional => 1>, as otherwise all
+subdirectories would be skipped anyway.
 
 =head1 SUBROUTINES/METHODS
 
