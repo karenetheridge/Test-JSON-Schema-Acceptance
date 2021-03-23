@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - specification => latest now uses draft2020-12
 
 1.004     2021-03-23 20:37:27Z
         - new "skip_dir" option, to be used in conjunction with include_optional => 1

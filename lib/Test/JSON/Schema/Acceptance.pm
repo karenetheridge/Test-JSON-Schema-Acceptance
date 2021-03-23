@@ -27,7 +27,7 @@ has specification => (
   is => 'ro',
   isa => Str,
   lazy => 1,
-  default => 'draft2019-09',
+  default => 'draft2020-12',
   predicate => '_has_specification',
 );
 
@@ -79,7 +79,7 @@ has results => (
 around BUILDARGS => sub {
   my ($orig, $class, @args) = @_;
   my %args = @args % 2 ? ( specification => 'draft'.$args[0] ) : @args;
-  $args{specification} = 'draft2019-09' if ($args{specification} // '') eq 'latest';
+  $args{specification} = 'draft2020-12' if ($args{specification} // '') eq 'latest';
   $class->$orig(\%args);
 };
 
@@ -377,8 +377,8 @@ cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
 L<JSON Schema|http://json-schema.org> is an IETF draft (at time of writing) which allows you to
 define the structure of JSON.
 
-From the overview of the L<draft 2019-09 version of the
-specification|https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.3>:
+From the overview of the L<draft 2020-12 version of the
+specification|https://json-schema.org/draft/2020-12/json-schema-core.html#rfc.section.3>:
 
 =over 4
 
@@ -420,7 +420,8 @@ Possible values are:
 * C<draft6>
 * C<draft7>
 * C<draft2019-09>
-* C<latest> (alias for C<draft2019-09>)
+* C<draft2020-12>
+* C<latest> (alias for C<draft2020-12>)
 
 The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3
 compliance.
@@ -500,7 +501,7 @@ associated with that URI, for use in some tests that use additional resources (s
 not provide this option, you will be responsible for ensuring that those additional resources are
 made available to your implementation for the successful execution of the tests that rely on them.
 
-For more information, see <https://json-schema.org/draft/2019-09/json-schema-core.html#rfc.section.8.2.4.5>.
+For more information, see <https://json-schema.org/draft/2020-12/json-schema-core.html#rfc.section.9.1.2>.
 
 =head3 tests
 
