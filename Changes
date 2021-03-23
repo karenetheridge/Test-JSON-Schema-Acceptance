@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.005     2021-03-23 21:24:15Z
         - specification => latest now uses draft2020-12
 
 1.004     2021-03-23 20:37:27Z
