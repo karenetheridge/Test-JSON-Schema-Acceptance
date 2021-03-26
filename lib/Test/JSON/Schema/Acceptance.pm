@@ -191,6 +191,7 @@ sub acceptance {
     $ctx->$diag('using custom test directory: '.$self->test_dir);
   }
   $ctx->$diag('optional tests included: '.($self->include_optional ? 'yes' : 'no'));
+  $ctx->$diag('skipping directory: '.$_) foreach @{ $self->skip_dir };
 
   $ctx->$diag('');
   my $length = max(10, map length $_->{file}, @$tests);
