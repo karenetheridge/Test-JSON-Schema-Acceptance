@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.005
+version 1.006
 
 =head1 SYNOPSIS
 
