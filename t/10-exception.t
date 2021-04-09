@@ -39,7 +39,7 @@ cmp_deeply(
       pass => 0,
       children => [
         superhashof({
-          details => 'test failed',
+          details => 'evaluation result is incorrect',
           pass => 0,
         }),
       ],

@@ -243,7 +243,7 @@ sub _run_test {
         my $expected = $test->{valid} ? 'true' : 'false';
         if ($result xor $test->{valid}) {
           my $got = $result ? 'true' : 'false';
-          $ctx->fail('test failed', 'expected '.$expected.'; got '.$got);
+          $ctx->fail('evaluation result is incorrect', 'expected '.$expected.'; got '.$got);
           $pass = 0;
         }
         else {
