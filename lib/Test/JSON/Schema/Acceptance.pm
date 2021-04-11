@@ -185,6 +185,18 @@ sub acceptance {
   my $diag = $self->verbose ? 'diag' : 'note';
   $ctx->$diag("\n\n".$self->results_text);
   $ctx->$diag('');
+
+  if ($self->test_dir !~ /optional/
+      and grep +($_->{file} !~ m{^optional/} && $_->{todo_fail} + $_->{fail}), @results) {
+    # non-optional test failures will always be visible, even when not in verbose mode.
+    $ctx->diag('WARNING: some non-optional tests are failing! This implementation is not fully compliant with the specification!');
+    $ctx->diag('');
+  }
+  else {
+    $ctx->$diag('Congratulations, all non-optional tests are passing!');
+    $ctx->$diag('');
+  }
+
   $ctx->release;
 }
 
