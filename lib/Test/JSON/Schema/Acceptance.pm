@@ -76,6 +76,14 @@ has results => (
          ]],
 );
 
+has results_text => (
+  is => 'ro',
+  init_arg => undef,
+  isa => Str,
+  lazy => 1,
+  builder => '_build_results_text',
+);
+
 around BUILDARGS => sub {
   my ($orig, $class, @args) = @_;
   my %args = @args % 2 ? ( specification => 'draft'.$args[0] ) : @args;
@@ -175,36 +183,8 @@ sub acceptance {
   $self->_set_results(\@results);
 
   my $diag = $self->verbose ? 'diag' : 'note';
-
-  $ctx->$diag("\n\n".'Results using '.ref($self).' '.$self->VERSION);
-
-  my $submodule_status = path(dist_dir('Test-JSON-Schema-Acceptance'), 'submodule_status');
-  if ($submodule_status->exists and $submodule_status->parent->subsumes($self->test_dir)) {
-    chomp(my ($commit, $url) = $submodule_status->lines);
-    $ctx->$diag('with commit '.$commit);
-    $ctx->$diag('from '.$url.':');
-  }
-  if ($self->_has_specification) {
-    $ctx->$diag('specification version: '.$self->specification);
-  }
-  else {
-    $ctx->$diag('using custom test directory: '.$self->test_dir);
-  }
-  $ctx->$diag('optional tests included: '.($self->include_optional ? 'yes' : 'no'));
-  $ctx->$diag('skipping directory: '.$_) foreach @{ $self->skip_dir };
-
+  $ctx->$diag("\n\n".$self->results_text);
   $ctx->$diag('');
-  my $length = max(10, map length $_->{file}, @$tests);
-  $ctx->$diag(sprintf('%-'.$length.'s  pass  todo-fail  fail', 'filename'));
-  $ctx->$diag('-'x($length + 23));
-  $ctx->$diag(sprintf('%-'.$length.'s % 5d       % 4d  % 4d', @{$_}{qw(file pass todo_fail fail)}))
-    foreach @results;
-
-  my $total = +{ map { my $type = $_; $type => sum0(map $_->{$type}, @results) } qw(pass todo_fail fail) };
-  $ctx->$diag('-'x($length + 23));
-  $ctx->$diag(sprintf('%-'.$length.'s % 5d      % 5d % 5d', 'TOTAL', @{$total}{qw(pass todo_fail fail)}));
-  $ctx->$diag('');
-
   $ctx->release;
 }
 
@@ -330,6 +310,42 @@ sub _build__test_data {
       sort { $a->[0] <=> $b->[0] || $a->[1]{file} cmp $b->[1]{file} }
       @test_groups
   ];
+}
+
+sub _build_results_text {
+  my $self = shift;
+
+  my @lines;
+  push @lines, 'Results using '.ref($self).' '.$self->VERSION;
+
+  my $submodule_status = path(dist_dir('Test-JSON-Schema-Acceptance'), 'submodule_status');
+  if ($submodule_status->exists and $submodule_status->parent->subsumes($self->test_dir)) {
+    chomp(my ($commit, $url) = $submodule_status->lines);
+    push @lines, 'with commit '.$commit;
+    push @lines, 'from '.$url.':';
+  }
+  if ($self->_has_specification) {
+    push @lines, 'specification version: '.$self->specification;
+  }
+  else {
+    push @lines, 'using custom test directory: '.$self->test_dir;
+  }
+  push @lines, 'optional tests included: '.($self->include_optional ? 'yes' : 'no');
+  push @lines, map 'skipping directory: '.$_, @{ $self->skip_dir };
+
+  push @lines, '';
+  my $length = max(10, map length $_->{file}, @{$self->results});
+
+  push @lines, sprintf('%-'.$length.'s  pass  todo-fail  fail', 'filename');
+  push @lines, '-'x($length + 23);
+  push @lines, map sprintf('%-'.$length.'s % 5d       % 4d  % 4d', @{$_}{qw(file pass todo_fail fail)}),
+    @{$self->results};
+
+  my $total = +{ map { my $type = $_; $type => sum0(map $_->{$type}, @{$self->results}) } qw(pass todo_fail fail) };
+  push @lines, '-'x($length + 23);
+  push @lines, sprintf('%-'.$length.'s % 5d      % 5d % 5d', 'TOTAL', @{$total}{qw(pass todo_fail fail)});
+
+  return join("\n", @lines, '');
 }
 
 1;
@@ -564,6 +580,11 @@ hashrefs with four keys:
 * pass - the number of pass results for that file
 * todo_fail - the number of fail results for that file that were marked TODO
 * fail - the number of fail results for that file (not including TODO tests)
+
+=head2 results_text
+
+After calling L</acceptance>, a text string tabulating the test results are provided here. This is
+the same table that is printed at the end of the test run.
 
 =head1 ACKNOWLEDGEMENTS
 
