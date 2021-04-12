@@ -8,6 +8,9 @@ our $VERSION = '1.007';
 
 use 5.014;
 no if "$]" >= 5.031009, feature => 'indirect';
+no if "$]" >= 5.033001, feature => 'multidimensional';
+no if "$]" >= 5.033006, feature => 'bareword_filehandles';
+use strictures 2;
 use Test2::API ();
 use Test2::Todo;
 use Test2::Tools::Compare ();
