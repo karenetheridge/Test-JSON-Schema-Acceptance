@@ -6,7 +6,7 @@ package Test::JSON::Schema::Acceptance;
 
 our $VERSION = '1.007';
 
-use 5.014;
+use 5.016;
 no if "$]" >= 5.031009, feature => 'indirect';
 no if "$]" >= 5.033001, feature => 'multidimensional';
 no if "$]" >= 5.033006, feature => 'bareword_filehandles';
@@ -14,11 +14,11 @@ use strictures 2;
 use Test2::API ();
 use Test2::Todo;
 use Test2::Tools::Compare ();
-use Try::Tiny;
 use JSON::MaybeXS 1.004001;
 use Storable 3.00 ();
 use File::ShareDir 'dist_dir';
 use Moo;
+use Feature::Compat::Try;
 use MooX::TypeTiny 0.002002;
 use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional);
 use Types::Common::Numeric 'PositiveOrZeroInt';
@@ -253,8 +253,8 @@ sub _run_test {
 
         $ctx->release;
       }
-      catch {
-        chomp(my $exception = $_);
+      catch ($e) {
+        chomp(my $exception = $e);
         my $ctx = Test2::API::context;
         $ctx->fail('died: '.$exception);
         $ctx->release;
