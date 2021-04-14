@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.006
+version 1.007
 
 =head1 SYNOPSIS
 
@@ -270,6 +270,11 @@ todo_fail - the number of fail results for that file that were marked TODO
 fail - the number of fail results for that file (not including TODO tests)
 
 =back
+
+=head2 results_text
+
+After calling L</acceptance>, a text string tabulating the test results are provided here. This is
+the same table that is printed at the end of the test run.
 
 =head1 ACKNOWLEDGEMENTS
 
