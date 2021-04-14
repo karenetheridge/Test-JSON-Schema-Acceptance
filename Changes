@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 1.007     2021-04-14 00:17:32Z
         - new "results_text" attribute, containing the textual table printed
           at the end of the tests
