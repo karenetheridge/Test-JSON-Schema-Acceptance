@@ -31,7 +31,6 @@ has specification => (
   isa => Str,
   lazy => 1,
   default => 'draft2020-12',
-  predicate => '_has_specification',
 );
 
 has test_dir => (
@@ -40,6 +39,7 @@ has test_dir => (
   coerce => sub { path($_[0])->absolute('.') },
   lazy => 1,
   default => sub { path(dist_dir('Test-JSON-Schema-Acceptance'), 'tests', $_[0]->specification) },
+  predicate => '_has_test_dir',
 );
 
 has additional_resources => (
@@ -339,11 +339,11 @@ sub _build_results_text {
     push @lines, 'with commit '.$commit;
     push @lines, 'from '.$url.':';
   }
-  if ($self->_has_specification) {
-    push @lines, 'specification version: '.$self->specification;
+  if ($self->_has_test_dir) {
+    push @lines, 'using custom test directory: '.$self->test_dir;
   }
   else {
-    push @lines, 'using custom test directory: '.$self->test_dir;
+    push @lines, 'specification version: '.$self->specification;
   }
   push @lines, 'optional tests included: '.($self->include_optional ? 'yes' : 'no');
   push @lines, map 'skipping directory: '.$_, @{ $self->skip_dir };
