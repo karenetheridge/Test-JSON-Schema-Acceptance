@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - clean up the results output when printing a custom test_dir
 
 1.007     2021-04-14 00:17:32Z
         - new "results_text" attribute, containing the textual table printed

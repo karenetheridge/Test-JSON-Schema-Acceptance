@@ -38,9 +38,10 @@ has test_dir => (
   isa => InstanceOf['Path::Tiny'],
   coerce => sub { path($_[0])->absolute('.') },
   lazy => 1,
-  default => sub { path(dist_dir('Test-JSON-Schema-Acceptance'), 'tests', $_[0]->specification) },
+  builder => '_build_test_dir',
   predicate => '_has_test_dir',
 );
+sub _build_test_dir { path(dist_dir('Test-JSON-Schema-Acceptance'), 'tests', $_[0]->specification) };
 
 has additional_resources => (
   is => 'ro',
@@ -339,8 +340,17 @@ sub _build_results_text {
     push @lines, 'with commit '.$commit;
     push @lines, 'from '.$url.':';
   }
-  if ($self->_has_test_dir) {
-    push @lines, 'using custom test directory: '.$self->test_dir;
+
+  my $test_dir = $self->test_dir;
+  my $orig_dir = $self->_build_test_dir;
+  if ($test_dir ne $orig_dir) {
+    if ($orig_dir->subsumes($test_dir)) {
+      $test_dir = '<base test directory>/'.substr($test_dir, length($orig_dir)+1);
+    }
+    elsif (Path::Tiny->cwd->subsumes($test_dir)) {
+      $test_dir = $test_dir->relative;
+    }
+    push @lines, 'using custom test directory: '.$test_dir;
   }
   else {
     push @lines, 'specification version: '.$self->specification;
