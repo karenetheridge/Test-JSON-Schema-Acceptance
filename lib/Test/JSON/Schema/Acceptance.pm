@@ -33,6 +33,15 @@ has specification => (
   default => 'draft2020-12',
 );
 
+# specification version => metaschema URI
+use constant METASCHEMA => {
+  'draft2020-12'  => 'https://json-schema.org/draft/2020-12/schema',
+  'draft2019-09'  => 'https://json-schema.org/draft/2019-09/schema',
+  'draft7'        => 'http://json-schema.org/draft-07/schema#',
+  'draft6'        => 'http://json-schema.org/draft-06/schema#',
+  'draft4'        => 'http://json-schema.org/draft-04/schema#',
+};
+
 has test_dir => (
   is => 'ro',
   isa => InstanceOf['Path::Tiny'],
@@ -69,6 +78,11 @@ has skip_dir => (
   coerce => sub { ref($_[0]) ? $_[0] : [ $_[0] ] },
   lazy => 1,
   default => sub { [] },
+);
+
+has test_schemas => (
+  is => 'ro',
+  isa => Bool,
 );
 
 has results => (
@@ -150,6 +164,33 @@ sub acceptance {
         and not grep $_ eq $test_group->{description},
           (ref $options->{tests}{group_description} eq 'ARRAY'
             ? @{$options->{tests}{group_description}} : $options->{tests}{group_description});
+
+      my $todo;
+      $todo = Test2::Todo->new(reason => 'Test marked TODO via "todo_tests"')
+        if $options->{todo_tests}
+          and any {
+            my $o = $_;
+            (not $o->{file} or grep $_ eq $one_file->{file}, (ref $o->{file} eq 'ARRAY' ? @{$o->{file}} : $o->{file}))
+              and
+            (not $o->{group_description} or grep $_ eq $test_group->{description}, (ref $o->{group_description} eq 'ARRAY' ? @{$o->{group_description}} : $o->{group_description}))
+              and not $o->{test_description}
+          }
+          @{$options->{todo_tests}};
+
+      if ($self->test_schemas) {
+        die 'specification_version unknown: cannot evaluate schema against metaschema'
+          if not $self->specification;
+
+        my $metaspec_uri = METASCHEMA->{$self->specification};
+        my $result = $options->{validate_data}
+          ? $options->{validate_data}->($metaspec_uri, $test_group->{schema})
+          # we use the decoder here so we don't prettify the string
+          : $options->{validate_json_string}->($metaspec_uri, $self->_json_decoder->encode($test_group->{schema}));
+        if (not $result) {
+          $ctx->fail('schema for '.$one_file->{file}.': "'.$test_group->{description}.'" fails to validate against '.$metaspec_uri.':');
+          $ctx->note($self->_json_encoder->encode($result));
+        }
+      }
 
       foreach my $test (@{$test_group->{tests}}) {
         next if $options->{tests} and $options->{tests}{test_description}
@@ -530,6 +571,17 @@ hashrefs with four keys:
 
 After calling L</acceptance>, a text string tabulating the test results are provided here. This is
 the same table that is printed at the end of the test run.
+
+=head2 test_schemas
+
+=for stopwords metaschema
+
+Optional. A boolean that, when true, will test every schema against its
+specification metaschema. (When set, C<specification> must also be set.)
+
+This normally should not be set as the official test suite has already been
+sanity-tested, but you may want to set this in development environments if you
+are using your own test files.
 
 =head1 SUBROUTINES/METHODS
 
