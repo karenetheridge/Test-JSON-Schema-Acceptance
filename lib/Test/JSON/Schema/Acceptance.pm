@@ -502,6 +502,22 @@ Optional. Pass a string or arrayref consisting of relative path name(s) to indic
 skipped. Note that this is only useful currently with C<include_optional => 1>, as otherwise all
 subdirectories would be skipped anyway.
 
+=head2 results
+
+After calling L</acceptance>, a list of test results are provided here. It is an arrayref of
+hashrefs with four keys:
+
+=for :list
+* file - the filename
+* pass - the number of pass results for that file
+* todo_fail - the number of fail results for that file that were marked TODO
+* fail - the number of fail results for that file (not including TODO tests)
+
+=head2 results_text
+
+After calling L</acceptance>, a text string tabulating the test results are provided here. This is
+the same table that is printed at the end of the test run.
+
 =head1 SUBROUTINES/METHODS
 
 =head2 acceptance
@@ -594,22 +610,6 @@ the same hashref structure as L</tests> above, which are ORed together.
     { file => 'boolean_schema.json', test_description => 'array is invalid' },
     # .. etc
   ]
-
-=head2 results
-
-After calling L</acceptance>, a list of test results are provided here. It is an arrayref of
-hashrefs with four keys:
-
-=for :list
-* file - the filename
-* pass - the number of pass results for that file
-* todo_fail - the number of fail results for that file that were marked TODO
-* fail - the number of fail results for that file (not including TODO tests)
-
-=head2 results_text
-
-After calling L</acceptance>, a text string tabulating the test results are provided here. This is
-the same table that is printed at the end of the test run.
 
 =head1 ACKNOWLEDGEMENTS
 
