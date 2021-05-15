@@ -224,6 +224,7 @@ sub _run_test {
 
         $result = $options->{validate_data}
           ? $options->{validate_data}->($test_group->{schema}, $test->{data})
+            # we use the decoder here so we don't prettify the string
           : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
 
         {
@@ -272,6 +273,18 @@ has _json_decoder => (
   isa => HasMethods[qw(encode decode)],
   lazy => 1,
   default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1) },
+);
+
+# used for pretty-printing diagnostics
+has _json_encoder => (
+  is => 'ro',
+  isa => HasMethods['encode'],
+  lazy => 1,
+  default => sub {
+    my $encoder = shift->_json_decoder->convert_blessed->canonical->pretty;
+    $encoder->indent_length(2) if $encoder->can('indent_length');
+    $encoder;
+  },
 );
 
 # see JSON::MaybeXS::is_bool
