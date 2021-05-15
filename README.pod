@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.007
+version 1.008
 
 =head1 SYNOPSIS
 
@@ -153,6 +153,47 @@ Optional. Pass a string or arrayref consisting of relative path name(s) to indic
 skipped. Note that this is only useful currently with C<include_optional => 1>, as otherwise all
 subdirectories would be skipped anyway.
 
+=head2 results
+
+After calling L</acceptance>, a list of test results are provided here. It is an arrayref of
+hashrefs with four keys:
+
+=over 4
+
+=item *
+
+file - the filename
+
+=item *
+
+pass - the number of pass results for that file
+
+=item *
+
+todo_fail - the number of fail results for that file that were marked TODO
+
+=item *
+
+fail - the number of fail results for that file (not including TODO tests)
+
+=back
+
+=head2 results_text
+
+After calling L</acceptance>, a text string tabulating the test results are provided here. This is
+the same table that is printed at the end of the test run.
+
+=head2 test_schemas
+
+=for stopwords metaschema
+
+Optional. A boolean that, when true, will test every schema against its
+specification metaschema. (When set, C<specification> must also be set.)
+
+This normally should not be set as the official test suite has already been
+sanity-tested, but you may want to set this in development environments if you
+are using your own test files.
+
 =head1 SUBROUTINES/METHODS
 
 =head2 acceptance
@@ -245,36 +286,6 @@ the same hashref structure as L</tests> above, which are ORed together.
     { file => 'boolean_schema.json', test_description => 'array is invalid' },
     # .. etc
   ]
-
-=head2 results
-
-After calling L</acceptance>, a list of test results are provided here. It is an arrayref of
-hashrefs with four keys:
-
-=over 4
-
-=item *
-
-file - the filename
-
-=item *
-
-pass - the number of pass results for that file
-
-=item *
-
-todo_fail - the number of fail results for that file that were marked TODO
-
-=item *
-
-fail - the number of fail results for that file (not including TODO tests)
-
-=back
-
-=head2 results_text
-
-After calling L</acceptance>, a text string tabulating the test results are provided here. This is
-the same table that is printed at the end of the test run.
 
 =head1 ACKNOWLEDGEMENTS
 

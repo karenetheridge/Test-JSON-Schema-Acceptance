@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.008     2021-05-15 18:03:12Z
         - clean up the results output when printing a custom test_dir
         - new optional config value "test_schemas", to perform a sanity test
           on the test schemas themselves
