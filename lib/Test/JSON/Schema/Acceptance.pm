@@ -582,6 +582,8 @@ This normally should not be set as the official test suite has already been
 sanity-tested, but you may want to set this in development environments if you
 are using your own test files.
 
+Defaults to false.
+
 =head1 SUBROUTINES/METHODS
 
 =head2 acceptance
