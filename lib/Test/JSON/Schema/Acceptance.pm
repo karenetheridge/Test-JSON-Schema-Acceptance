@@ -31,6 +31,7 @@ has specification => (
   isa => Str,
   lazy => 1,
   default => 'draft2020-12',
+  predicate => '_has_specification',
 );
 
 # specification version => metaschema URI
@@ -144,7 +145,8 @@ sub acceptance {
     );
   }
 
-  $ctx->note('running tests in '.$self->test_dir.' against '.$self->specification.'...');
+  $ctx->note('running tests in '.$self->test_dir.' against '
+    .($self->_has_specification ? $self->specification : 'unknown version').'...');
   my $tests = $self->_test_data;
 
   # [ { file => .., pass => .., fail => .. }, ... ]
@@ -179,7 +181,7 @@ sub acceptance {
 
       if ($self->test_schemas) {
         die 'specification_version unknown: cannot evaluate schema against metaschema'
-          if not $self->specification;
+          if not $self->_has_specification;
 
         my $metaspec_uri = METASCHEMA->{$self->specification};
         my $result = $options->{validate_data}
@@ -395,7 +397,7 @@ sub _build_results_text {
     push @lines, 'from '.$url.':';
   }
 
-  push @lines, 'specification version: '.$self->specification;
+  push @lines, 'specification version: '.($self->specification//'unknown');
 
   my $test_dir = $self->test_dir;
   my $orig_dir = $self->_build_test_dir;
