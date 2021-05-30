@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - always include specification_version in results
 
 1.008     2021-05-15 18:03:12Z
         - clean up the results output when printing a custom test_dir

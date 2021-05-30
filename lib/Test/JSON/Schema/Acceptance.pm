@@ -144,7 +144,7 @@ sub acceptance {
     );
   }
 
-  $ctx->note('running tests in '.$self->test_dir.'...');
+  $ctx->note('running tests in '.$self->test_dir.' against '.$self->specification.'...');
   my $tests = $self->_test_data;
 
   # [ { file => .., pass => .., fail => .. }, ... ]
@@ -395,6 +395,8 @@ sub _build_results_text {
     push @lines, 'from '.$url.':';
   }
 
+  push @lines, 'specification version: '.$self->specification;
+
   my $test_dir = $self->test_dir;
   my $orig_dir = $self->_build_test_dir;
   if ($test_dir ne $orig_dir) {
@@ -405,9 +407,6 @@ sub _build_results_text {
       $test_dir = $test_dir->relative;
     }
     push @lines, 'using custom test directory: '.$test_dir;
-  }
-  else {
-    push @lines, 'specification version: '.$self->specification;
   }
   push @lines, 'optional tests included: '.($self->include_optional ? 'yes' : 'no');
   push @lines, map 'skipping directory: '.$_, @{ $self->skip_dir };
