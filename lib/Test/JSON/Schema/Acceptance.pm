@@ -412,7 +412,7 @@ sub _build_results_text {
   push @lines, map 'skipping directory: '.$_, @{ $self->skip_dir };
 
   push @lines, '';
-  my $length = max(10, map length $_->{file}, @{$self->results});
+  my $length = max(40, map length $_->{file}, @{$self->results});
 
   push @lines, sprintf('%-'.$length.'s  pass  todo-fail  fail', 'filename');
   push @lines, '-'x($length + 23);
