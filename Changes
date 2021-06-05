@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 1.009     2021-06-05 17:48:22Z
         - always include specification_version in results
         - pad results with more whitespace, to minimize diffs
