@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.008
+version 1.009
 
 =head1 SYNOPSIS
 
@@ -193,6 +193,8 @@ specification metaschema. (When set, C<specification> must also be set.)
 This normally should not be set as the official test suite has already been
 sanity-tested, but you may want to set this in development environments if you
 are using your own test files.
+
+Defaults to false.
 
 =head1 SUBROUTINES/METHODS
 
