@@ -129,7 +129,7 @@ sub acceptance {
 
   my $ctx = Test2::API::context;
 
-  if ($options->{add_resource}) {
+  if ($options->{add_resource} and -d $self->additional_resources) {
     my $base = 'http://localhost:1234'; # TODO? make this customizable
     $ctx->note('adding resources from '.$self->additional_resources.' with the base URI "'.$base.'"...');
     $self->additional_resources->visit(
