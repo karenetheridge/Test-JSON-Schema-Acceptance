@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.009
+version 1.010
 
 =head1 SYNOPSIS
 
@@ -113,6 +113,10 @@ C<draft2020-12>
 =item *
 
 C<latest> (alias for C<draft2020-12>)
+
+=item *
+
+C<draft-future>
 
 =back
 
