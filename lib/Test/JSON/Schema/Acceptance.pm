@@ -519,6 +519,7 @@ Possible values are:
 * C<draft2019-09>
 * C<draft2020-12>
 * C<latest> (alias for C<draft2020-12>)
+* C<draft-future>
 
 The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3
 compliance.
