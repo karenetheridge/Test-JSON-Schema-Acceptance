@@ -179,6 +179,7 @@ sub acceptance {
           }
           @{$options->{todo_tests}};
 
+      my $schema_fails;
       if ($self->test_schemas) {
         die 'specification_version unknown: cannot evaluate schema against metaschema'
           if not $self->_has_specification;
@@ -191,6 +192,7 @@ sub acceptance {
         if (not $result) {
           $ctx->fail('schema for '.$one_file->{file}.': "'.$test_group->{description}.'" fails to validate against '.$metaspec_uri.':');
           $ctx->note($self->_json_encoder->encode($result));
+          $schema_fails = 1;
         }
       }
 
@@ -219,6 +221,7 @@ sub acceptance {
             @{$options->{todo_tests}};
 
         my $result = $self->_run_test($one_file, $test_group, $test, $options);
+        $result = 0 if $schema_fails;
 
         ++$results{ $result ? 'pass' : $todo ? 'todo_fail' : 'fail' };
       }
