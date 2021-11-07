@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - "draft-future" is now known as "draft-next"
 
 1.013     2021-10-22 22:00:15Z
         - reflect schema validation failure (against the metaschema) in the

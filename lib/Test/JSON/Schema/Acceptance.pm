@@ -36,6 +36,7 @@ has specification => (
 
 # specification version => metaschema URI
 use constant METASCHEMA => {
+  'draft-next'    => 'https://json-schema.org/draft/next/schema',
   'draft2020-12'  => 'https://json-schema.org/draft/2020-12/schema',
   'draft2019-09'  => 'https://json-schema.org/draft/2019-09/schema',
   'draft7'        => 'http://json-schema.org/draft-07/schema#',
@@ -522,7 +523,7 @@ Possible values are:
 * C<draft2019-09>
 * C<draft2020-12>
 * C<latest> (alias for C<draft2020-12>)
-* C<draft-future>
+* C<draft-next>
 
 The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3
 compliance.
