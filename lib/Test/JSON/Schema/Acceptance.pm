@@ -394,17 +394,21 @@ sub _build_results_text {
   my @lines;
   push @lines, 'Results using '.ref($self).' '.$self->VERSION;
 
+  my $test_dir = $self->test_dir;
+  my $orig_dir = $self->_build_test_dir;
+
   my $submodule_status = path(dist_dir('Test-JSON-Schema-Acceptance'), 'submodule_status');
   if ($submodule_status->exists and $submodule_status->parent->subsumes($self->test_dir)) {
     chomp(my ($commit, $url) = $submodule_status->lines);
     push @lines, 'with commit '.$commit;
     push @lines, 'from '.$url.':';
   }
+  elsif ($test_dir eq $orig_dir and not -d '.git') {
+    die 'submodule_status file is missing - packaging error? cannot continue';
+  }
 
   push @lines, 'specification version: '.($self->specification//'unknown');
 
-  my $test_dir = $self->test_dir;
-  my $orig_dir = $self->_build_test_dir;
   if ($test_dir ne $orig_dir) {
     if ($orig_dir->subsumes($test_dir)) {
       $test_dir = '<base test directory>/'.substr($test_dir, length($orig_dir)+1);
