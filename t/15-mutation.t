@@ -19,13 +19,21 @@ foreach my $test (
     my ($thing) = shift;
     $thing->{(keys %$thing)[0]}{$key++} = 'this should not be here';
   } ],
-  [ 'string->integer type mutation' => sub {
+  [ 'string->integer type mutation, explicit numification' => sub {
     my ($thing) = shift;
     $thing->{foo}{string} += 0;
   } ],
-  [ 'integer->string type mutation' => sub {
+  [ 'integer->string type mutation, explicit stringification' => sub {
     my ($thing) = shift;
     $thing->{foo}{int} .= '';
+  } ],
+  [ 'string->integer type mutation, used as a number' => sub {
+    my ($thing) = shift;
+    my $str = sprintf('%d', $thing->{foo}{string});
+  } ],
+  [ 'integer->string type mutation, used as a string' => sub {
+    my ($thing) = shift;
+    my $str = sprintf('%s', $thing->{foo}{int});
   } ],
   [ 'string->dualvar' => sub {
     my ($thing) = shift;
@@ -45,6 +53,10 @@ foreach my $test (
     tie(%hash, 'Tie::StdHash');
     @hash{keys %{$thing->{foo}}} = values %{$thing->{foo}};
     $thing->{foo} = \%hash;
+  } ],
+  [ 'bignum' => sub {
+    my ($thing) = shift;
+    $thing->{foo}{bigint} += 1;
   } ],
 )
 {

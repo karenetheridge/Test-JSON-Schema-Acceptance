@@ -17,7 +17,6 @@ use Test2::API ();
 use Test2::Todo;
 use Test2::Tools::Compare ();
 use JSON::MaybeXS 1.004001;
-use Storable 3.00 ();
 use File::ShareDir 'dist_dir';
 use Feature::Compat::Try;
 use MooX::TypeTiny 0.002002;
@@ -25,6 +24,7 @@ use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMeth
 use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny 0.069;
 use List::Util 1.33 qw(any max sum0);
+use Ref::Util qw(is_plain_arrayref is_plain_hashref is_ref);
 use namespace::clean;
 
 has specification => (
@@ -258,24 +258,16 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
     sub {
       my ($result, $schema_before, $data_before, $schema_after, $data_after);
       try {
-        {
-          local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
-          local $Storable::canonical = 1;
-          ($schema_before, $data_before) = map Storable::freeze(\$_),
-            $test_group->{schema}, $test->{data};
-        }
+        ($schema_before, $data_before) = map $self->_json_decoder->encode($_),
+          $test_group->{schema}, $test->{data};
 
         $result = $options->{validate_data}
           ? $options->{validate_data}->($test_group->{schema}, $test->{data})
             # we use the decoder here so we don't prettify the string
           : $options->{validate_json_string}->($test_group->{schema}, $self->_json_decoder->encode($test->{data}));
 
-        {
-          local $Storable::flags = Storable::BLESS_OK | Storable::TIE_OK;
-          local $Storable::canonical = 1;
-          ($schema_after, $data_after) = map Storable::freeze(\$_),
-            $test_group->{schema}, $test->{data};
-        }
+        ($schema_after, $data_after) = map $self->_json_decoder->encode($_),
+          $test_group->{schema}, $test->{data};
 
         my $ctx = Test2::API::context;
 
@@ -291,12 +283,30 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
           $pass = 1;
         }
 
-        if ($data_before ne $data_after) {
-          Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data');
+        my @mutated_data_paths = $self->_mutation_check($test->{data});
+        my @mutated_schema_paths = $self->_mutation_check($test_group->{schema});
+
+        if ($data_before ne $data_after or @mutated_data_paths) {
+          if ($data_before ne $data_after) {
+            Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data');
+          }
+          else {
+            $ctx->fail('evaluator did not mutate data');
+          }
+
+          $ctx->note('mutated data at location'.(@mutated_data_paths > 1 ? 's' : '').': '.join(', ', @mutated_data_paths)) if @mutated_data_paths;
           $pass = 0;
         }
-        if ($schema_before ne $schema_after) {
-          Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema');
+
+        if ($schema_before ne $schema_after or @mutated_schema_paths) {
+          if ($schema_before ne $schema_after) {
+            Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema');
+          }
+          else {
+            $ctx->fail('evaluator did not mutate schema');
+          }
+
+          $ctx->note('mutated schema at location'.(@mutated_schema_paths > 1 ? 's' : '').': '.join(', ', @mutated_schema_paths)) if @mutated_schema_paths;
           $pass = 0;
         }
 
@@ -315,11 +325,42 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
   return $pass;
 }
 
+sub _mutation_check ($self, $data) {
+  my @error_paths;
+
+  # [ path => data ]
+  my @nodes = ([ '', $data ]);
+  while (my $node = shift @nodes) {
+    if (not defined $node->[1]) {
+      next;
+    }
+    if (is_plain_arrayref($node->[1])) {
+      push @nodes, map [ $node->[0].'/'.$_, $node->[1][$_] ], 0 .. $node->[1]->$#*;
+      push @error_paths, $node->[0] if tied($node->[1]->@*);
+    }
+    elsif (is_plain_hashref($node->[1])) {
+      push @nodes, map [ $node->[0].'/'.(s/~/~0/gr =~ s!/!~1!gr), $node->[1]{$_} ], keys $node->[1]->%*;
+      push @error_paths, $node->[0] if tied($node->[1]->%*);
+    }
+    elsif (is_ref($node->[1])) {
+      next; # boolean or bignum
+    }
+    else {
+      my $flags = B::svref_2object(\$node->[1])->FLAGS;
+      push @error_paths, $node->[0]
+        if not ($flags & B::SVf_POK xor $flags & (B::SVf_IOK | B::SVf_NOK));
+    }
+  }
+
+  return @error_paths;
+}
+
+# used for internal serialization also
 has _json_decoder => (
   is => 'ro',
   isa => HasMethods[qw(encode decode)],
   lazy => 1,
-  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_bignum => 1) },
+  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_bignum => 1, allow_blessed => 1) },
 );
 
 # used for pretty-printing diagnostics
