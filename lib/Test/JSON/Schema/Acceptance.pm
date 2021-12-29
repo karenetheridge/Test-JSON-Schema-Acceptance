@@ -291,10 +291,14 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
           $pass = 1;
         }
 
-        $pass &&= Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data')
-          if $data_before ne $data_after;
-        $pass &&= Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema')
-          if $schema_before ne $schema_after;
+        if ($data_before ne $data_after) {
+          Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data');
+          $pass = 0;
+        }
+        if ($schema_before ne $schema_after) {
+          Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema');
+          $pass = 0;
+        }
 
         $ctx->release;
       }
