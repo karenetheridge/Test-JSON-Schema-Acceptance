@@ -8,6 +8,7 @@ no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 use Test2::API 'intercept';
 use Test::More 0.88;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
+use Scalar::Util 'dualvar';
 use Test::Deep;
 use Test::JSON::Schema::Acceptance;
 
@@ -25,6 +26,14 @@ foreach my $test (
   [ 'integer->string type mutation' => sub {
     my ($thing) = shift;
     $thing->{foo}{int} .= '';
+  } ],
+  [ 'string->dualvar' => sub {
+    my ($thing) = shift;
+    $thing->{foo}{string} = dualvar(1, 'one');
+  } ],
+  [ 'integer->dualvar' => sub {
+    my ($thing) = shift;
+    $thing->{foo}{int} = dualvar(1, 'one');
   } ],
   [ 'blessed hash replacement' => sub {
     my ($thing) = shift;
