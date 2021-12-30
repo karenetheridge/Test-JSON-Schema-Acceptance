@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.013
+version 1.014
 
 =head1 SYNOPSIS
 
@@ -30,8 +30,7 @@ In the JSON::Schema module, a test could look like the following:
   my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft3');
 
   $accepter->acceptance(
-    validate_data => sub {
-      my ($schema, $input_data) = @_;
+    validate_data => sub ($schema, $input_data) {
       return JSON::Schema->new($schema)->validate($input_data);
     },
     todo_tests => [ { file => 'dependencies.json' } ],
@@ -116,7 +115,7 @@ C<latest> (alias for C<draft2020-12>)
 
 =item *
 
-C<draft-future>
+C<draft-next>
 
 =back
 
@@ -334,6 +333,9 @@ This software is Copyright (c) 2015 by Ben Hutton.
 This is free software, licensed under:
 
   The MIT (X11) License
+
+This distribution includes data from the L<https://json-schema.org> test suite, which carries its own
+licence (see F<share/LICENSE>).
 
 =for Pod::Coverage BUILDARGS BUILD
 

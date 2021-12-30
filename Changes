@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.014     2021-12-30 05:08:33Z
         - "draft-future" is now known as "draft-next"
         - minimum perl version raised to 5.020
         - now deserializes large numbers in test data to Math::BigInt,
