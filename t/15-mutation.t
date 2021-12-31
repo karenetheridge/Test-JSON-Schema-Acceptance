@@ -59,6 +59,7 @@ foreach my $test (
 
   foreach my $type (qw(data schema)) {
     my $accepter = Test::JSON::Schema::Acceptance->new(test_dir => 't/tests/mutation');
+    $accepter->json_decoder->allow_bignum;
     my $events = intercept(
       sub {
         $accepter->acceptance(validate_data => sub ($schema, $data) {
