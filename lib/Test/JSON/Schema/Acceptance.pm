@@ -287,29 +287,33 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
         my @mutated_data_paths = $self->_mutation_check($test->{data});
         my @mutated_schema_paths = $self->_mutation_check($test_group->{schema});
 
-        if ($data_before ne $data_after or @mutated_data_paths) {
-          if ($data_before ne $data_after) {
-            Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data');
-          }
-          else {
-            $ctx->fail('evaluator did not mutate data');
-          }
+        # string check   path check    behaviour
+        #            0            0    ::is(), and note. $pass = 0
+        #            0            1    ::is().           $pass = 0
+        #            1            0    ->fail and note.  $pass = 0
+        #            1            1    no test. $pass does not change.
 
-          $ctx->note('mutated data at location'.(@mutated_data_paths > 1 ? 's' : '').': '.join(', ', @mutated_data_paths)) if @mutated_data_paths;
+        if ($data_before ne $data_after) {
+          Test2::Tools::Compare::is($data_after, $data_before, 'evaluator did not mutate data');
+          $pass = 0;
+        }
+        elsif (@mutated_data_paths) {
+          $ctx->fail('evaluator did not mutate data');
+          $pass = 0
+        }
+
+        $ctx->note('mutated data at location'.(@mutated_data_paths > 1 ? 's' : '').': '.join(', ', @mutated_data_paths)) if @mutated_data_paths;
+
+        if ($schema_before ne $schema_after) {
+          Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema');
+          $pass = 0;
+        }
+        elsif (@mutated_schema_paths) {
+          $ctx->fail('evaluator did not mutate schema');
           $pass = 0;
         }
 
-        if ($schema_before ne $schema_after or @mutated_schema_paths) {
-          if ($schema_before ne $schema_after) {
-            Test2::Tools::Compare::is($schema_after, $schema_before, 'evaluator did not mutate schema');
-          }
-          else {
-            $ctx->fail('evaluator did not mutate schema');
-          }
-
-          $ctx->note('mutated schema at location'.(@mutated_schema_paths > 1 ? 's' : '').': '.join(', ', @mutated_schema_paths)) if @mutated_schema_paths;
-          $pass = 0;
-        }
+        $ctx->note('mutated schema at location'.(@mutated_schema_paths > 1 ? 's' : '').': '.join(', ', @mutated_schema_paths)) if @mutated_schema_paths;
 
         $ctx->release;
       }
