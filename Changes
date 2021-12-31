@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.015     2021-12-31 21:17:27Z
         - removed bignum deserialization that was added in 1.014: you should
           override the json_decoder attribute if you want this
         - updated test suite:
