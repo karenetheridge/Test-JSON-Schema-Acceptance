@@ -47,8 +47,11 @@ foreach my $test (
     @hash{keys %{$thing->{foo}}} = values %{$thing->{foo}};
     $thing->{foo} = \%hash;
   } ],
-  [ 'bignum' => sub ($thing) {
+  [ 'bigint' => sub ($thing) {
     $thing->{foo}{bigint} += 1;
+  } ],
+  [ 'bignum' => sub ($thing) {
+    $thing->{foo}{bignum} += 1;
   } ],
 )
 {
