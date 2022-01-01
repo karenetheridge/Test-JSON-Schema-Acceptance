@@ -744,6 +744,13 @@ Ricardo Signes <rjbs@cpan.org> for direction to and creation of Test::Fatal.
 
 Various others in #perl-help.
 
+=head1 SUPPORT
+
+You can also find me on the L<JSON Schema Slack server|https://json-schema.slack.com> and L<OpenAPI Slack
+server|https://open-api.slack.com>, which are also great resources for finding help.
+
+=for stopwords OpenAPI
+
 =head1 COPYRIGHT AND LICENCE
 
 This distribution includes data from the L<https://json-schema.org> test suite, which carries its own
