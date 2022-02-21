@@ -13,6 +13,7 @@ use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Scalar::Util 'dualvar';
 use Test::Deep;
 use Test::JSON::Schema::Acceptance;
+use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
 
 my $key = 'a';
 
