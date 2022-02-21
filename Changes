@@ -1,6 +1,8 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - skip tests that are not possible on perls >= 5.35.9, due to changes
+          in internal handling of numbers when treated as strings
 
 1.015     2021-12-31 21:17:27Z
         - removed bignum deserialization that was added in 1.014: you should
