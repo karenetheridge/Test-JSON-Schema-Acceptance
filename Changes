@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.016     2022-02-22 01:59:45Z
         - skip tests that are not possible on perls >= 5.35.9, due to changes
           in internal handling of numbers when treated as strings
         - updated test suite:
