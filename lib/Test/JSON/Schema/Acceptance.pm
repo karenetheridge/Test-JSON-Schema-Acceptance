@@ -365,7 +365,7 @@ has json_decoder => (
   is => 'ro',
   isa => HasMethods[qw(encode decode)],
   lazy => 1,
-  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1) },
+  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1, canonical => 1) },
 );
 
 # used for pretty-printing diagnostics
