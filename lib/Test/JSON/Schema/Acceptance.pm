@@ -586,7 +586,7 @@ maps to C<draft3> through C<draft7>.)
 Instead of specifying a draft specification to test against, which will select the most appropriate
 tests, you can pass in the name of a directory of tests to run directly. Files in this directory
 should be F<.json> files following the format described in
-L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/master/README.md>.
+L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/main/README.md>.
 
 =head2 additional_resources
 
