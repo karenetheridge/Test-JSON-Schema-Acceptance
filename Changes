@@ -1,6 +1,8 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - now allowing additional (ignored) properties in test data, to be
+          forward-compatible with developments to the test suite
 
 1.016     2022-02-22 01:59:45Z
         - skip tests that are not possible on perls >= 5.35.9, due to changes

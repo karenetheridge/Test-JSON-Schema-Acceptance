@@ -20,7 +20,7 @@ use JSON::MaybeXS 1.004001;
 use File::ShareDir 'dist_dir';
 use Feature::Compat::Try;
 use MooX::TypeTiny 0.002002;
-use Types::Standard 1.010002 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional);
+use Types::Standard 1.016003 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional Slurpy);
 use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny 0.069;
 use List::Util 1.33 qw(any max sum0);
@@ -402,7 +402,9 @@ has _test_data => (
                description => Str,
                comment => Optional[Str],
                valid => $json_bool,
+               Slurpy[Any],
              ]],
+             Slurpy[Any],
            ]],
          ]],
 );
