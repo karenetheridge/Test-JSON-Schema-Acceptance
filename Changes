@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.017     2022-07-23 21:55:43Z
         - now allowing additional (ignored) properties in test data, to be
           forward-compatible with developments to the test suite
         - updated test suite:
