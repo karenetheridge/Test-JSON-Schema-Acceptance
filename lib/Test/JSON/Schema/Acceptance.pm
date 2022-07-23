@@ -4,7 +4,7 @@ package Test::JSON::Schema::Acceptance;
 # vim: set ts=8 sts=2 sw=2 tw=100 et :
 # ABSTRACT: Acceptance testing for JSON-Schema based validators like JSON::Schema
 
-our $VERSION = '1.017';
+our $VERSION = '1.018';
 
 use 5.020;
 use Moo;
