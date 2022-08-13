@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package Test::JSON::Schema::Acceptance;
 # vim: set ts=8 sts=2 sw=2 tw=100 et :
-# ABSTRACT: Acceptance testing for JSON-Schema based validators like JSON::Schema
+# ABSTRACT: Acceptance testing for JSON-Schema based validators
 
 our $VERSION = '1.018';
 
@@ -505,25 +505,25 @@ same tests that many modules (libraries, plugins, packages, etc.) use to confirm
 json-schema. Using this module to confirm support gives assurance of interoperability with other
 modules that run the same tests in different languages.
 
-In the JSON::Schema module, a test could look like the following:
+In the JSON::Schema::Modern module, a test could look like the following:
 
   use Test::More;
-  use JSON::Schema;
+  use JSON::Schema::Modern;
   use Test::JSON::Schema::Acceptance;
 
-  my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft3');
+  my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft7');
 
   $accepter->acceptance(
     validate_data => sub ($schema, $input_data) {
-      return JSON::Schema->new($schema)->validate($input_data);
+      return JSON::Schema::Modern->new($schema)->validate($input_data);
     },
     todo_tests => [ { file => 'dependencies.json' } ],
   );
 
   done_testing();
 
-This would determine if JSON::Schema's C<validate> method returns the right result for all of the
-cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+This would determine if JSON::Schema::Modern's C<validate> method returns the right result for all
+of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
 
 =head1 DESCRIPTION
 
@@ -547,7 +547,7 @@ complex JSON data structures, or based on some sort of condition.
 
 =back
 
-This module allows other perl modules (for example JSON::Schema) to test that they are JSON
+This module allows other perl modules (for example JSON::Schema::Modern) to test that they are JSON
 Schema-compliant, by running the tests from the official test suite, without having to manually
 convert them to perl tests.
 
@@ -577,7 +577,7 @@ Possible values are:
 * C<latest> (alias for C<draft2020-12>)
 * C<draft-next>
 
-The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3
+The default is C<latest>, but in the synopsis example, L<JSON::Schema::Modern> is testing draft 7
 compliance.
 
 (For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which
