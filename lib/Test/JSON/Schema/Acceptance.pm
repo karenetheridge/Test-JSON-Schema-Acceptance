@@ -130,7 +130,9 @@ sub acceptance {
   my $ctx = Test2::API::context;
 
   if ($options->{add_resource} and -d $self->additional_resources) {
-    my $base = 'http://localhost:1234'; # TODO? make this customizable
+    # this is essentially what `bin/jsonschema_suite remote` does: resolves the filename against the
+    # base uri to determine the absolute schema location of each resource.
+    my $base = 'http://localhost:1234';
     $ctx->note('adding resources from '.$self->additional_resources.' with the base URI "'.$base.'"...');
     $self->additional_resources->visit(
       sub ($path, @) {
