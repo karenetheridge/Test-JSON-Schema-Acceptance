@@ -3,6 +3,8 @@ Revision history for Test-JSON-Schema-Acceptance
 {{$NEXT}}
         - use two separate json encoders, to avoid inadvertently changing
           serialization results in the middle of testing
+        - prints actual result on test failure, for nicer diagnostics in
+          cpantesters reports
 
 1.017     2022-07-23 21:55:43Z
         - now allowing additional (ignored) properties in test data, to be

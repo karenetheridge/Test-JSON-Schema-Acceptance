@@ -276,6 +276,7 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
         if ($result xor $test->{valid}) {
           my $got = $result ? 'true' : 'false';
           $ctx->fail('evaluation result is incorrect', 'expected '.$expected.'; got '.$got);
+          $ctx->${ $self->verbose ? \'diag' : \'note' }($self->json_prettyprint($result));
           $pass = 0;
         }
         else {
