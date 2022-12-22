@@ -137,7 +137,7 @@ sub acceptance {
     $self->additional_resources->visit(
       sub ($path, @) {
         return if not $path->is_file or $path !~ /\.json$/;
-        my $data = $self->json_decoder->decode($path->slurp_raw);
+        my $data = $self->json_deserialize($path->slurp_raw);
         my $file = $path->relative($self->additional_resources);
         my $uri = $base.'/'.$file;
         $options->{add_resource}->($uri => $data);
@@ -188,11 +188,10 @@ sub acceptance {
         my $metaspec_uri = METASCHEMA->{$self->specification};
         my $result = $options->{validate_data}
           ? $options->{validate_data}->($metaspec_uri, $test_group->{schema})
-          # we use the decoder here so we don't prettify the string
-          : $options->{validate_json_string}->($metaspec_uri, $self->json_decoder->encode($test_group->{schema}));
+          : $options->{validate_json_string}->($metaspec_uri, $self->json_serialize($test_group->{schema}));
         if (not $result) {
           $ctx->fail('schema for '.$one_file->{file}.': "'.$test_group->{description}.'" fails to validate against '.$metaspec_uri.':');
-          $ctx->note($self->json_encoder->encode($result));
+          $ctx->note($self->json_prettyprint($result));
           $schema_fails = 1;
         }
       }
@@ -260,16 +259,14 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
     sub {
       my ($result, $schema_before, $data_before, $schema_after, $data_after);
       try {
-        # we use the decoder here so we don't prettify the string
-        ($schema_before, $data_before) = map $self->json_decoder->encode($_),
+        ($schema_before, $data_before) = map $self->json_serialize($_),
           $test_group->{schema}, $test->{data};
 
         $result = $options->{validate_data}
           ? $options->{validate_data}->($test_group->{schema}, $test->{data})
-            # we use the decoder here so we don't prettify the string
-          : $options->{validate_json_string}->($test_group->{schema}, $self->json_decoder->encode($test->{data}));
+          : $options->{validate_json_string}->($test_group->{schema}, $self->json_serialize($test->{data}));
 
-        ($schema_after, $data_after) = map $self->json_decoder->encode($_),
+        ($schema_after, $data_after) = map $self->json_serialize($_),
           $test_group->{schema}, $test->{data};
 
         my $ctx = Test2::API::context;
@@ -362,29 +359,38 @@ sub _mutation_check ($self, $data) {
   return @error_paths;
 }
 
-# used for internal serialization also
-has json_decoder => (
+# used for internal serialization/deserialization; does not prettify the string.
+has _json_serializer => (
   is => 'ro',
   isa => HasMethods[qw(encode decode)],
+  handles => {
+    json_serialize => 'encode',
+    json_deserialize => 'decode',
+  },
   lazy => 1,
   default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1, canonical => 1) },
 );
 
-# used for pretty-printing diagnostics
-has json_encoder => (
+# used for displaying diagnostics only
+has _json_prettyprinter => (
   is => 'ro',
   isa => HasMethods['encode'],
   lazy => 1,
+  handles => {
+    json_prettyprint => 'encode',
+  },
   default => sub {
-    my $encoder = shift->json_decoder->convert_blessed->canonical->pretty;
+    my $encoder = JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1, canonical => 1, convert_blessed => 1, pretty => 1)->space_before(0);
     $encoder->indent_length(2) if $encoder->can('indent_length');
     $encoder;
   },
 );
 
 # backcompat shims
-sub _json_decoder { shift->json_decoder(@_) }
-sub _json_encoder { shift->json_encoder(@_) }
+sub _json_decoder { shift->_json_serializer(@_) }
+sub json_decoder { shift->_json_serializer(@_) }
+sub _json_encoder { shift->_json_prettyprinter(@_) }
+sub json_encoder { shift->_json_prettyprinter(@_) }
 
 # see JSON::MaybeXS::is_bool
 my $json_bool = InstanceOf[qw(JSON::XS::Boolean Cpanel::JSON::XS::Boolean JSON::PP::Boolean)];
@@ -420,7 +426,7 @@ sub _build__test_data ($self) {
       return if any { $self->test_dir->child($_)->subsumes($path) } $self->skip_dir->@*;
       return if not $path->is_file;
       return if $path !~ /\.json$/;
-      my $data = $self->json_decoder->decode($path->slurp_raw);
+      my $data = $self->json_deserialize($path->slurp_raw);
       return if not @$data; # placeholder files for renamed tests
       my $file = $path->relative($self->test_dir);
       push @test_groups, [
@@ -496,7 +502,7 @@ __END__
 =for stopwords validators Schemas ANDed ORed TODO
 
 =for :footer
-=for Pod::Coverage BUILDARGS BUILD
+=for Pod::Coverage BUILDARGS BUILD json_encoder json_decoder
 
 =head1 SYNOPSIS
 
