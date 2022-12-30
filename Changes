@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.018     2022-12-30 22:15:58Z
         - use two separate json encoders, to avoid inadvertently changing
           serialization results in the middle of testing
         - prints actual result on test failure, for nicer diagnostics in

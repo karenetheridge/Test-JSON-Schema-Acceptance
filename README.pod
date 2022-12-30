@@ -6,11 +6,11 @@
 
 =head1 NAME
 
-Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators like JSON::Schema
+Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based validators
 
 =head1 VERSION
 
-version 1.017
+version 1.018
 
 =head1 SYNOPSIS
 
@@ -21,25 +21,25 @@ same tests that many modules (libraries, plugins, packages, etc.) use to confirm
 json-schema. Using this module to confirm support gives assurance of interoperability with other
 modules that run the same tests in different languages.
 
-In the JSON::Schema module, a test could look like the following:
+In the JSON::Schema::Modern module, a test could look like the following:
 
   use Test::More;
-  use JSON::Schema;
+  use JSON::Schema::Modern;
   use Test::JSON::Schema::Acceptance;
 
-  my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft3');
+  my $accepter = Test::JSON::Schema::Acceptance->new(specification => 'draft7');
 
   $accepter->acceptance(
     validate_data => sub ($schema, $input_data) {
-      return JSON::Schema->new($schema)->validate($input_data);
+      return JSON::Schema::Modern->new($schema)->validate($input_data);
     },
     todo_tests => [ { file => 'dependencies.json' } ],
   );
 
   done_testing();
 
-This would determine if JSON::Schema's C<validate> method returns the right result for all of the
-cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+This would determine if JSON::Schema::Modern's C<validate> method returns the right result for all
+of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
 
 =head1 DESCRIPTION
 
@@ -63,7 +63,7 @@ complex JSON data structures, or based on some sort of condition.
 
 =back
 
-This module allows other perl modules (for example JSON::Schema) to test that they are JSON
+This module allows other perl modules (for example JSON::Schema::Modern) to test that they are JSON
 Schema-compliant, by running the tests from the official test suite, without having to manually
 convert them to perl tests.
 
@@ -119,7 +119,7 @@ C<draft-next>
 
 =back
 
-The default is C<latest>, but in the synopsis example, L<JSON::Schema> is testing draft 3
+The default is C<latest>, but in the synopsis example, L<JSON::Schema::Modern> is testing draft 7
 compliance.
 
 (For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which
@@ -142,7 +142,7 @@ L</add_resource> value to L</acceptance> (see below), this will be done for you.
 
 =head2 verbose
 
-Optional. When true, prints version information and test result table such that it is visible
+Optional. When true, prints version information and the test result table such that it is visible
 during C<make test> or C<prove>.
 
 =head2 include_optional
@@ -215,7 +215,7 @@ Available options are:
 =head3 validate_data
 
 A subroutine reference, which is passed two arguments: the JSON Schema, and the B<inflated> data
-structure to be validated.
+structure to be validated. This is the main entry point to your JSON Schema library being tested.
 
 The subroutine should return truthy or falsey depending on if the schema was valid for the input or
 not.
@@ -225,12 +225,13 @@ Either C<validate_data> or C<validate_json_string> is required.
 =head3 validate_json_string
 
 A subroutine reference, which is passed two arguments: the JSON Schema, and the B<JSON string>
-containing the data to be validated.
+containing the data to be validated. This is an alternative to L</validate_data> above, if your
+library only accepts JSON strings.
 
 The subroutine should return truthy or falsey depending on if the schema was valid for the input or
 not.
 
-Either C<validate_data> or C<validate_json_string> is required.
+Exactly one of C<validate_data> or C<validate_json_string> is required.
 
 =head3 add_resource
 
@@ -342,6 +343,6 @@ This is free software, licensed under:
 This distribution includes data from the L<https://json-schema.org> test suite, which carries its own
 licence (see F<share/LICENSE>).
 
-=for Pod::Coverage BUILDARGS BUILD
+=for Pod::Coverage BUILDARGS BUILD json_encoder json_decoder
 
 =cut
