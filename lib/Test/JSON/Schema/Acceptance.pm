@@ -612,7 +612,7 @@ L</add_resource> value to L</acceptance> (see below), this will be done for you.
 
 =head2 verbose
 
-Optional. When true, prints version information and test result table such that it is visible
+Optional. When true, prints version information and the test result table such that it is visible
 during C<make test> or C<prove>.
 
 =head2 include_optional
@@ -671,7 +671,7 @@ Available options are:
 =head3 validate_data
 
 A subroutine reference, which is passed two arguments: the JSON Schema, and the B<inflated> data
-structure to be validated.
+structure to be validated. This is the main entry point to your JSON Schema library being tested.
 
 The subroutine should return truthy or falsey depending on if the schema was valid for the input or
 not.
@@ -681,12 +681,13 @@ Either C<validate_data> or C<validate_json_string> is required.
 =head3 validate_json_string
 
 A subroutine reference, which is passed two arguments: the JSON Schema, and the B<JSON string>
-containing the data to be validated.
+containing the data to be validated. This is an alternative to L</validate_data> above, if your
+library only accepts JSON strings.
 
 The subroutine should return truthy or falsey depending on if the schema was valid for the input or
 not.
 
-Either C<validate_data> or C<validate_json_string> is required.
+Exactly one of C<validate_data> or C<validate_json_string> is required.
 
 =head3 add_resource
 
