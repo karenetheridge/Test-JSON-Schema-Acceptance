@@ -185,12 +185,15 @@ sub acceptance {
         die 'specification_version unknown: cannot evaluate schema against metaschema'
           if not $self->_has_specification;
 
-        my $metaspec_uri = METASCHEMA->{$self->specification};
+        my $metaschema_uri = is_plain_hashref($test_group->{schema}) && $test_group->{schema}{'$schema'}
+          ? $test_group->{schema}{'$schema'}
+          : METASCHEMA->{$self->specification};
+        my $metaschema_schema = { '$ref' => $metaschema_uri };
         my $result = $options->{validate_data}
-          ? $options->{validate_data}->($metaspec_uri, $test_group->{schema})
-          : $options->{validate_json_string}->($metaspec_uri, $self->json_serialize($test_group->{schema}));
+          ? $options->{validate_data}->($metaschema_schema, $test_group->{schema})
+          : $options->{validate_json_string}->($metaschema_schema, $self->json_serialize($test_group->{schema}));
         if (not $result) {
-          $ctx->fail('schema for '.$one_file->{file}.': "'.$test_group->{description}.'" fails to validate against '.$metaspec_uri.':');
+          $ctx->fail('schema for '.$one_file->{file}.': "'.$test_group->{description}.'" fails to validate against '.$metaschema_uri.':');
           $ctx->note($self->json_prettyprint($result));
           $schema_fails = 1;
         }
