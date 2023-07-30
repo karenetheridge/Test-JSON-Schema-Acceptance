@@ -1,6 +1,8 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - properly skip over remote resources that reference the wrong spec
+          version
 
 1.019     2023-04-01 17:50:45Z
         - updated test suite:

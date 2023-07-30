@@ -20,20 +20,12 @@ use JSON::MaybeXS 1.004001;
 use File::ShareDir 'dist_dir';
 use Feature::Compat::Try;
 use MooX::TypeTiny 0.002002;
-use Types::Standard 1.016003 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional Slurpy);
+use Types::Standard 1.016003 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMethods Bool Optional Slurpy Enum);
 use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny 0.069;
 use List::Util 1.33 qw(any max sum0);
 use Ref::Util qw(is_plain_arrayref is_plain_hashref is_ref);
 use namespace::clean;
-
-has specification => (
-  is => 'ro',
-  isa => Str,
-  lazy => 1,
-  default => 'draft2020-12',
-  predicate => '_has_specification',
-);
 
 # specification version => metaschema URI
 use constant METASCHEMA => {
@@ -43,7 +35,23 @@ use constant METASCHEMA => {
   'draft7'        => 'http://json-schema.org/draft-07/schema#',
   'draft6'        => 'http://json-schema.org/draft-06/schema#',
   'draft4'        => 'http://json-schema.org/draft-04/schema#',
+  'draft3'        => 'http://json-schema.org/draft-03/schema#',
 };
+
+has specification => (
+  is => 'ro',
+  isa => Enum[keys METASCHEMA->%*],
+  lazy => 1,
+  default => 'draft2020-12',
+  predicate => '_has_specification',
+);
+
+has supported_specifications => (
+  is => 'ro',
+  isa => ArrayRef[Enum[keys METASCHEMA->%*]],
+  lazy => 1,
+  default => sub { [ shift->specification ] },
+);
 
 has test_dir => (
   is => 'ro',
@@ -137,6 +145,12 @@ sub acceptance {
     $self->additional_resources->visit(
       sub ($path, @) {
         return if not $path->is_file or $path !~ /\.json$/;
+
+        # skip resource files that are marked as being for an unsupported draft
+        my $relative_path = $path->relative($self->additional_resources);
+        my ($topdir) = split qr{/}, $relative_path, 2;
+        return if $topdir =~ /^draft/ and not grep $topdir eq $_, $self->supported_specifications->@*;
+
         my $data = $self->json_deserialize($path->slurp_raw);
         my $file = $path->relative($self->additional_resources);
         my $uri = $base.'/'.$file;
@@ -594,6 +608,11 @@ compliance.
 
 (For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which
 maps to C<draft3> through C<draft7>.)
+
+=head2 supported_specifications
+
+The version(s) that the implementation supports; used to skip adding remote resources that reference
+unsupported schema versions (for cross-schema tests). Defaults to C<< [ $self->specification ] >>.
 
 =head2 test_dir
 
