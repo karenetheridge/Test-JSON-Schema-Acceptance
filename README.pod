@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.019
+version 1.020
 
 =head1 SYNOPSIS
 
@@ -124,6 +124,11 @@ compliance.
 
 (For backwards compatibility, C<new> can be called with a single numeric argument of 3 to 7, which
 maps to C<draft3> through C<draft7>.)
+
+=head2 supported_specifications
+
+The version(s) that the implementation supports; used to skip adding remote resources that reference
+unsupported schema versions (for cross-schema tests). Defaults to C<< [ $self->specification ] >>.
 
 =head2 test_dir
 
