@@ -521,7 +521,7 @@ __END__
 =for stopwords validators Schemas ANDed ORed TODO
 
 =for :footer
-=for Pod::Coverage BUILDARGS BUILD json_encoder json_decoder
+=for Pod::Coverage BUILDARGS BUILD json_decoder
 
 =head1 SYNOPSIS
 
@@ -768,6 +768,14 @@ the same hashref structure as L</tests> above, which are ORed together.
     { file => 'boolean_schema.json', test_description => 'array is invalid' },
     # .. etc
   ]
+
+=head2 json_prettyprint
+
+JSON-encodes a data structure in a format suitable for human view, used for printing test diagnostics.
+
+=head2 json_encoder
+
+Provides access to the object that provides the L</json_prettyprint> method.
 
 =head1 ACKNOWLEDGEMENTS
 
