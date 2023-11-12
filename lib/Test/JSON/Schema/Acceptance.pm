@@ -387,7 +387,7 @@ has _json_serializer => (
     json_deserialize => 'decode',
   },
   lazy => 1,
-  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1, canonical => 1) },
+  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1, allow_bignum => 1, canonical => 1) },
 );
 
 # used for displaying diagnostics only
@@ -399,7 +399,7 @@ has _json_prettyprinter => (
     json_prettyprint => 'encode',
   },
   default => sub {
-    my $encoder = JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1, canonical => 1, convert_blessed => 1, pretty => 1)->space_before(0);
+    my $encoder = JSON::MaybeXS->new(allow_nonref => 1, utf8 => 0, allow_blessed => 1, allow_bignum => 1, canonical => 1, convert_blessed => 1, pretty => 1)->space_before(0);
     $encoder->indent_length(2) if $encoder->can('indent_length');
     $encoder;
   },
