@@ -643,7 +643,7 @@ Optional. When true, tests in subdirectories (most notably F<optional/> are also
 
 Optional. Pass a string or arrayref consisting of relative path name(s) to indicate directories
 (within the test directory as specified above with C<specification> or C<test_dir>) which will be
-skipped. Note that this is only useful currently with C<include_optional => 1>, as otherwise all
+skipped. Note that this is only useful currently with C<< include_optional => 1 >>, as otherwise all
 subdirectories would be skipped anyway.
 
 =head2 results
