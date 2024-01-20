@@ -17,7 +17,7 @@ no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 use Test2::API ();
 use Test2::Todo;
 use Test2::Tools::Compare ();
-use JSON::MaybeXS 1.004001;
+use Mojo::JSON ();  # for JSON_XS, MOJO_NO_JSON_XS environment variables
 use File::ShareDir 'dist_dir';
 use Feature::Compat::Try;
 use MooX::TypeTiny 0.002002;
@@ -378,6 +378,8 @@ sub _mutation_check ($self, $data) {
   return @error_paths;
 }
 
+use constant _JSON_BACKEND => Mojo::JSON::JSON_XS ? 'Cpanel::JSON::XS' : 'JSON::PP';
+
 # used for internal serialization/deserialization; does not prettify the string.
 has _json_serializer => (
   is => 'ro',
@@ -387,7 +389,8 @@ has _json_serializer => (
     json_deserialize => 'decode',
   },
   lazy => 1,
-  default => sub { JSON::MaybeXS->new(allow_nonref => 1, utf8 => 1, allow_blessed => 1, allow_bignum => 1, canonical => 1) },
+  default => sub { _JSON_BACKEND->new->allow_nonref(1)->utf8(1)->allow_blessed(1)->allow_bignum(1)->canonical(1) },
+
 );
 
 # used for displaying diagnostics only
@@ -399,7 +402,7 @@ has _json_prettyprinter => (
     json_prettyprint => 'encode',
   },
   default => sub {
-    my $encoder = JSON::MaybeXS->new(allow_nonref => 1, utf8 => 0, allow_blessed => 1, allow_bignum => 1, canonical => 1, convert_blessed => 1, pretty => 1)->space_before(0);
+    my $encoder = _JSON_BACKEND->new->allow_nonref(1)->utf8(0)->allow_blessed(1)->allow_bignum(1)->canonical(1)->convert_blessed(1)->pretty(1)->space_before(0);
     $encoder->indent_length(2) if $encoder->can('indent_length');
     $encoder;
   },
