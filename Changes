@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.022     2024-03-09 22:26:06Z
         - handle out-of-range numeric test data by decoding to
           Math::BigFloat/Math::BigInt objects
         - remove use of JSON::MaybeXS, to avoid potential use of JSON::XS;
