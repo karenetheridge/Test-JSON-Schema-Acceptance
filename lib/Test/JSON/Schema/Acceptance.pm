@@ -553,7 +553,7 @@ In the JSON::Schema::Modern module, a test could look like the following:
   done_testing();
 
 This would determine if JSON::Schema::Modern's C<validate> method returns the right result for all
-of the cases in the JSON Schema Test Suite, except for those listed in C<$skip_tests>.
+of the cases in the JSON Schema Test Suite, except for those listed in C<skip_tests>.
 
 =head1 DESCRIPTION
 
@@ -629,7 +629,7 @@ L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/main/README.md>
 
 A directory of additional resources which should be made available to the implementation under the
 base URI C<http://localhost:1234>. This is automatically provided if you did not override
-C</test_dir>; otherwise, you need to supply it yourself, if any tests require it (for example by
+L</test_dir>; otherwise, you need to supply it yourself, if any tests require it (for example by
 containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>). If you supply an
 L</add_resource> value to L</acceptance> (see below), this will be done for you.
 
@@ -645,7 +645,7 @@ Optional. When true, tests in subdirectories (most notably F<optional/> are also
 =head2 skip_dir
 
 Optional. Pass a string or arrayref consisting of relative path name(s) to indicate directories
-(within the test directory as specified above with C<specification> or C<test_dir>) which will be
+(within the test directory as specified above with L</specification> or L</test_dir>) which will be
 skipped. Note that this is only useful currently with C<< include_optional => 1 >>, as otherwise all
 subdirectories would be skipped anyway.
 
@@ -670,7 +670,7 @@ the same table that is printed at the end of the test run.
 =for stopwords metaschema
 
 Optional. A boolean that, when true, will test every schema against its
-specification metaschema. (When set, C<specification> must also be set.)
+specification metaschema. (When set, L</specification> must also be set.)
 
 This normally should not be set as the official test suite has already been
 sanity-tested, but you may want to set this in development environments if you
@@ -686,7 +686,7 @@ Defaults to false.
 
 Accepts a hash of options as its arguments.
 
-(Backwards-compatibility mode: accepts a subroutine which is used as C<validate_json_string>,
+(Backwards-compatibility mode: accepts a subroutine which is used as L</validate_json_string>,
 and a hashref of arguments.)
 
 Available options are:
@@ -699,7 +699,7 @@ structure to be validated. This is the main entry point to your JSON Schema libr
 The subroutine should return truthy or falsey depending on if the schema was valid for the input or
 not (an object with a boolean overload is acceptable).
 
-Either C<validate_data> or C<validate_json_string> is required.
+Either L</validate_data> or L</validate_json_string> is required.
 
 =head3 validate_json_string
 
@@ -710,7 +710,7 @@ library only accepts JSON strings.
 The subroutine should return truthy or falsey depending on if the schema was valid for the input or
 not (an object with a boolean overload is acceptable).
 
-Exactly one of C<validate_data> or C<validate_json_string> is required.
+Exactly one of L</validate_data> or L</validate_json_string> is required.
 
 =head3 add_resource
 
