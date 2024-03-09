@@ -802,4 +802,11 @@ server|https://open-api.slack.com>, which are also great resources for finding h
 This distribution includes data from the L<https://json-schema.org> test suite, which carries its own
 licence (see F<share/LICENSE>).
 
+Permission is explicitly B<NOT> granted to repackage or redistribute this distribution with any
+files altered or added (such as with a different set of test data) than what was originally
+published to the Perl Programming Authors Upload Server (PAUSE), as dependencies of this
+distribution have specific expectations as to the contents of this test data depending on version.
+If it is desired to use a different dataset at runtime, please refer to the L</test_dir>
+configuration option.
+
 =cut

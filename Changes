@@ -6,6 +6,8 @@ Revision history for Test-JSON-Schema-Acceptance
         - remove use of JSON::MaybeXS, to avoid potential use of JSON::XS;
           now we use Cpanel::JSON::XS or JSON::PP directly, using the same
           environment variables as in Mojo::JSON for customization.
+        - explicit mention added to LICENSE prohibiting the alteration of the
+          test data packaged with this distribution
 
 1.021     2023-10-25 22:02:36Z
         - updated test suite:
