@@ -8,6 +8,8 @@ Revision history for Test-JSON-Schema-Acceptance
           environment variables as in Mojo::JSON for customization.
         - explicit mention added to LICENSE prohibiting the alteration of the
           test data packaged with this distribution
+        - updated test suite:
+          https://github.com/json-schema-org/JSON-Schema-Test-Suite/compare/cda4281c46226b980cbf9db4610f03d9f718e533...bf0360f4b7c51b8f968aabe7f3f49e12b120fc85
 
 1.021     2023-10-25 22:02:36Z
         - updated test suite:
