@@ -423,6 +423,7 @@ has _test_data => (
            file => InstanceOf['Path::Tiny'],
            json => ArrayRef[Dict[
              # id => Optional[Str],
+             # specification => Optional[Str],
              description => Str,
              comment => Optional[Str],
              schema => $json_bool|HashRef,
