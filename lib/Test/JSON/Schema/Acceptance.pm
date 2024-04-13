@@ -26,6 +26,7 @@ use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny 0.069;
 use List::Util 1.33 qw(any max sum0);
 use Ref::Util qw(is_plain_arrayref is_plain_hashref is_ref);
+use Git::Wrapper;
 use namespace::clean;
 
 # specification version => metaschema URI
@@ -497,6 +498,12 @@ sub _build_results_text ($self) {
       $test_dir = $test_dir->relative;
     }
     push @lines, 'using custom test directory: '.$test_dir;
+
+    eval {
+      my $git  = Git::Wrapper->new($test_dir);
+      my @ref = $git->describe({ all => 1, long => 1, always => 1 });
+      push @lines, 'at ref: '. $ref[0];
+    };
   }
   push @lines, 'optional tests included: '.($self->include_optional ? 'yes' : 'no');
   push @lines, map 'skipping directory: '.$_, $self->skip_dir->@*;

@@ -1,6 +1,8 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - include git location in generated results files when using a custom
+          test directory
 
 1.022     2024-03-09 22:26:06Z
         - handle out-of-range numeric test data by decoding to
