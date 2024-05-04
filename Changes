@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 1.024     2024-05-04 23:51:50Z
         - no longer include the local git sha in the result output, when
           testing with a local data directory
