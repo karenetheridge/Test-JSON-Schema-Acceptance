@@ -2,6 +2,7 @@ Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
         - declare Mojolicious minimum version needed for JSON_XS logic
+        - also print data and schema for failed tests
 
 1.025     2024-06-01 23:58:10Z
         - updated test suite:
