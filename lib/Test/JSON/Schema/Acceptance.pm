@@ -252,8 +252,7 @@ sub acceptance {
   $self->_set_results(\@results);
 
   my $diag = $self->verbose ? 'diag' : 'note';
-  $ctx->$diag("\n\n".$self->results_text);
-  $ctx->$diag('');
+  $ctx->$diag("\n".$self->results_text."\n");
 
   if ($self->test_dir !~ m{\boptional\b}
       and grep +($_->{file} !~ m{^optional/} && $_->{todo_fail} + $_->{fail}), @results) {
