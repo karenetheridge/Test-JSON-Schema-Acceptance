@@ -295,8 +295,8 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
         if ($result xor $test->{valid}) {
           my $got = $result ? 'true' : 'false';
           $ctx->fail('evaluation result is incorrect', 'expected '.$expected.'; got '.$got);
-          $ctx->${ $self->verbose ? \'diag' : \'note' }('data: '.$self->json_prettyprint($data_after));
-          $ctx->${ $self->verbose ? \'diag' : \'note' }('schema: '.$self->json_prettyprint($schema_after));
+          $ctx->${ $self->verbose ? \'diag' : \'note' }('schema: '.$self->json_prettyprint($test_group->{schema}));
+          $ctx->${ $self->verbose ? \'diag' : \'note' }('data: '.$self->json_prettyprint($test->{data}));
 
           $ctx->${ $self->verbose ? \'diag' : \'note' }('result: '.$self->json_prettyprint($result));
           $pass = 0;

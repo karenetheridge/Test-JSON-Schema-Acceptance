@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - fix double json-encoding of schema and data diagnostics
 
 1.026     2024-06-19 04:02:15Z
         - declare Mojolicious minimum version needed for JSON_XS logic
