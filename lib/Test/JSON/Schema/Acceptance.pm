@@ -292,8 +292,7 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
         # skip the ugly matrix comparison
         my $expected = $test->{valid} ? 'true' : 'false';
         if ($result xor $test->{valid}) {
-          my $got = $result ? 'true' : 'false';
-          $ctx->fail('evaluation result is incorrect', 'expected '.$expected.'; got '.$got);
+          $ctx->fail('evaluation result is incorrect', 'expected '.$expected.'; got '.($result ? 'true' : 'false'));
           $ctx->${ $self->verbose ? \'diag' : \'note' }('schema: '.$self->json_prettyprint($test_group->{schema}));
           $ctx->${ $self->verbose ? \'diag' : \'note' }('data: '.$self->json_prettyprint($test->{data}));
 
