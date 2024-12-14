@@ -55,6 +55,7 @@ has supported_specifications => (
   default => sub { [ shift->specification ] },
 );
 
+# this comes from the tests/<spec version> directories in the JSON-Schema-Test-Suite repository
 has test_dir => (
   is => 'ro',
   isa => InstanceOf['Path::Tiny'],
@@ -65,6 +66,7 @@ has test_dir => (
 );
 sub _build_test_dir { path(dist_dir('Test-JSON-Schema-Acceptance'), 'tests', $_[0]->specification) };
 
+# this comes from the remotes/ directory in the JSON-Schema-Test-Suite repository
 has additional_resources => (
   is => 'ro',
   isa => InstanceOf['Path::Tiny'],
@@ -640,7 +642,7 @@ L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/main/README.md>
 =head2 additional_resources
 
 A directory of additional resources which should be made available to the implementation under the
-base URI C<http://localhost:1234>. This is automatically provided if you did not override
+base URI C<http://localhost:1234>. This dataset is automatically provided if you did not override
 L</test_dir>; otherwise, you need to supply it yourself, if any tests require it (for example by
 containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>). If you supply an
 L</add_resource> value to L</acceptance> (see below), this will be done for you.
