@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.026
+version 1.027
 
 =head1 SYNOPSIS
 
@@ -140,7 +140,7 @@ L<https://github.com/json-schema-org/JSON-Schema-Test-Suite/blob/main/README.md>
 =head2 additional_resources
 
 A directory of additional resources which should be made available to the implementation under the
-base URI C<http://localhost:1234>. This is automatically provided if you did not override
+base URI C<http://localhost:1234>. This dataset is automatically provided if you did not override
 L</test_dir>; otherwise, you need to supply it yourself, if any tests require it (for example by
 containing C<< {"$ref": "http://localhost:1234/foo.json/#a/b/c"} >>). If you supply an
 L</add_resource> value to L</acceptance> (see below), this will be done for you.

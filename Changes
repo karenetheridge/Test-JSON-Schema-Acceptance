@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.027     2025-02-02 18:40:55Z
         - fix double json-encoding of schema and data diagnostics
         - fix a test for latest Test2::*
         - updated test suite:
