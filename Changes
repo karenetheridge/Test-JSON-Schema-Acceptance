@@ -1,6 +1,8 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - now passing the specification_version to the add_resource sub, when
+          documents are in draft-specific subdirectories
 
 1.027     2025-02-02 18:40:55Z
         - fix double json-encoding of schema and data diagnostics
