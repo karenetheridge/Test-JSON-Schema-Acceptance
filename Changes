@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.028     2025-05-10 19:51:04Z
         - now passing the specification_version to the add_resource sub, when
           documents are in draft-specific subdirectories
         - updated test suite:

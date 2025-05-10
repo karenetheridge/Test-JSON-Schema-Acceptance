@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.027
+version 1.028
 
 =head1 SYNOPSIS
 
@@ -241,8 +241,25 @@ Exactly one of L</validate_data> or L</validate_json_string> is required.
 =head3 add_resource
 
 Optional. A subroutine reference, which will be called at the start of L</acceptance> multiple
-times, with two arguments: a URI (string), and a data structure containing schema data to be
-associated with that URI, for use in some tests that use additional resources (see above). If you do
+times, with the arguments:
+
+=over 4
+
+=item *
+
+a URI (string): the canonical uri to use for the new resource
+
+=item *
+
+a data structure containing schema data to be associated with that URI, for use in some tests that use additional resources (see above).
+
+=item *
+
+a list of key-value pairs (optional), containing additional options to be passed to the subroutine: keys currently limited to C<specification_version>.
+
+=back
+
+If you do
 not provide this option, you will be responsible for ensuring that those additional resources are
 made available to your implementation for the successful execution of the tests that rely on them.
 
@@ -363,6 +380,6 @@ distribution have specific expectations as to the contents of this test data dep
 If it is desired to use a different dataset at runtime, please refer to the L</test_dir>
 configuration option.
 
-=for Pod::Coverage BUILDARGS BUILD json_decoder
+=for Pod::Coverage BUILDARGS BUILD json_decoder METASCHEMA
 
 =cut
