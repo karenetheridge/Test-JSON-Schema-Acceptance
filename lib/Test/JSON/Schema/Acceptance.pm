@@ -541,7 +541,7 @@ __END__
 =for stopwords validators Schemas ANDed ORed TODO
 
 =for :footer
-=for Pod::Coverage BUILDARGS BUILD json_decoder
+=for Pod::Coverage BUILDARGS BUILD json_decoder METASCHEMA
 
 =head1 SYNOPSIS
 
