@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.028
+version 1.029
 
 =head1 SYNOPSIS
 
@@ -208,7 +208,7 @@ Defaults to false.
 
 =head2 acceptance
 
-=for stopwords truthy falsey
+=for stopwords truthy falsey JSONified
 
 Accepts a hash of options as its arguments.
 
@@ -222,8 +222,16 @@ Available options are:
 A subroutine reference, which is passed two arguments: the JSON Schema, and the B<inflated> data
 structure to be validated. This is the main entry point to your JSON Schema library being tested.
 
-The subroutine should return truthy or falsey depending on if the schema was valid for the input or
-not (an object with a boolean overload is acceptable).
+The subroutine can return either one value or two:
+
+=over 4
+
+
+
+=back
+
+* a boolean value indicating whether the schema was valid for the input or not (required)
+* a value containing the result of the evaluation (which will be JSONified in the test output) (optional)
 
 Either L</validate_data> or L</validate_json_string> is required.
 
@@ -233,8 +241,16 @@ A subroutine reference, which is passed two arguments: the JSON Schema, and the 
 containing the data to be validated. This is an alternative to L</validate_data> above, if your
 library only accepts JSON strings.
 
-The subroutine should return truthy or falsey depending on if the schema was valid for the input or
-not (an object with a boolean overload is acceptable).
+The subroutine can return either one value or two:
+
+=over 4
+
+
+
+=back
+
+* a boolean value indicating whether the schema was valid for the input or not (required)
+* a value containing the result of the evaluation (which will be JSONified in the test output) (optional)
 
 Exactly one of L</validate_data> or L</validate_json_string> is required.
 

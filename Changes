@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.029     2025-06-03 21:01:17Z
         - the acceptance sub provided by the application can now return an
           additional value, containing the error result of the validation, for
           diagnostic purposes.
