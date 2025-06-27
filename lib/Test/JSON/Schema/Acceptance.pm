@@ -371,7 +371,7 @@ sub _mutation_check ($self, $data) {
       push @error_paths, $node->[0] if tied($node->[1]->@*);
     }
     elsif (is_plain_hashref($node->[1])) {
-      push @nodes, map [ $node->[0].'/'.(s/~/~0/gr =~ s!/!~1!gr), $node->[1]{$_} ], keys $node->[1]->%*;
+      push @nodes, map [ $node->[0].'/'.(s!~!~0!gr =~ s!/!~1!gr), $node->[1]{$_} ], keys $node->[1]->%*;
       push @error_paths, $node->[0] if tied($node->[1]->%*);
     }
     elsif (is_ref($node->[1])) {
