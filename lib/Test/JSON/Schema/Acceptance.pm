@@ -31,7 +31,7 @@ use namespace::clean;
 
 # specification version => metaschema URI
 use constant METASCHEMA => {
-  'draft-next'    => 'https://json-schema.org/draft/next/schema',
+  'v1'            => 'https://json-schema.org/v1',
   'draft2020-12'  => 'https://json-schema.org/draft/2020-12/schema',
   'draft2019-09'  => 'https://json-schema.org/draft/2019-09/schema',
   'draft7'        => 'http://json-schema.org/draft-07/schema#',
@@ -40,9 +40,10 @@ use constant METASCHEMA => {
   'draft3'        => 'http://json-schema.org/draft-03/schema#',
 };
 
+my $spec_type = Enum[sort keys METASCHEMA->%*];
 has specification => (
   is => 'ro',
-  isa => Enum[keys METASCHEMA->%*],
+  isa => $spec_type,
   lazy => 1,
   default => 'draft2020-12',
   predicate => '_has_specification',
@@ -50,7 +51,7 @@ has specification => (
 
 has supported_specifications => (
   is => 'ro',
-  isa => ArrayRef[Enum[keys METASCHEMA->%*]],
+  isa => ArrayRef[$spec_type],
   lazy => 1,
   default => sub { [ shift->specification ] },
 );
@@ -624,7 +625,7 @@ Possible values are:
 * C<draft2019-09>
 * C<draft2020-12>
 * C<latest> (alias for C<draft2020-12>)
-* C<draft-next>
+* C<v1>
 
 The default is C<latest>, but in the synopsis example, L<JSON::Schema::Modern> is testing draft 7
 compliance.
