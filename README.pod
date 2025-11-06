@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.029
+version 1.030
 
 =head1 SYNOPSIS
 
@@ -115,7 +115,7 @@ C<latest> (alias for C<draft2020-12>)
 
 =item *
 
-C<draft-next>
+C<v1>
 
 =back
 
@@ -350,6 +350,14 @@ Ricardo Signes <rjbs@cpan.org> for direction to and creation of Test::Fatal.
 Various others in #perl-help.
 
 =for stopwords OpenAPI
+
+=head1 GIVING THANKS
+
+=for stopwords MetaCPAN GitHub
+
+If you found this module to be useful, please show your appreciation by
+adding a +1 in L<MetaCPAN|https://metacpan.org/dist/Test-JSON-Schema-Acceptance>
+and a star in L<GitHub|https://github.com/karenetheridge/Test-JSON-Schema-Acceptance>.
 
 =head1 SUPPORT
 
