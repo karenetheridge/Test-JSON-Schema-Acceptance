@@ -557,7 +557,7 @@ modules that run the same tests in different languages.
 
 In the JSON::Schema::Modern module, a test could look like the following:
 
-  use Test::More;
+  use Test2::V0;
   use JSON::Schema::Modern;
   use Test::JSON::Schema::Acceptance;
 

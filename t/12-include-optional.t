@@ -5,9 +5,9 @@ no if "$]" >= 5.031009, feature => 'indirect';
 no if "$]" >= 5.033001, feature => 'multidimensional';
 no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 
-use Test::More 0.88;
+use Test2::V0 qw(!bag !bool), -no_pragmas => 1;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
-use Test::Deep;
+use Test::Deep qw(!array !hash);;
 use Test::JSON::Schema::Acceptance;
 
 my $accepter = Test::JSON::Schema::Acceptance->new(

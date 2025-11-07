@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - remove Test::More as a dependency
 
 1.030     2025-11-06 01:05:56Z
         - "draft-next" is now known as "v1"

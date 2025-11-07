@@ -3,7 +3,7 @@ use strict;
 use warnings;
 no if "$]" >= 5.031009, feature => 'indirect';
 
-use Test::More 0.88;
+use Test2::V0;
 use Test::Warnings;
 use Feature::Compat::Try;
 use Path::Tiny;

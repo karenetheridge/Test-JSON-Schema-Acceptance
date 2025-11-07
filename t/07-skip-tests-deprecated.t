@@ -9,9 +9,9 @@ no if "$]" >= 5.033001, feature => 'multidimensional';
 no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 
 use Test2::API 'intercept';
-use Test::More 0.88;
+use Test2::V0 qw(!bag !bool !warnings), -no_pragmas => 1;
 use Test::Warnings 'warnings';
-use Test::Deep;
+use Test::Deep qw(!array !hash);;
 use Test::JSON::Schema::Acceptance;
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
 
