@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 1.031     2025-11-07 17:27:21Z
         - remove Test::More as a dependency
 
