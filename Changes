@@ -1,6 +1,8 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - make tests "todo" when they fail when Cpanel::JSON::XS is not
+          installed (GH#24)
 
 1.031     2025-11-07 17:27:21Z
         - remove Test::More as a dependency

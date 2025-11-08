@@ -71,7 +71,6 @@ foreach my $test (
     }
 
     my $accepter = Test::JSON::Schema::Acceptance->new(test_dir => 't/tests/mutation');
-    $accepter->json_decoder->allow_bignum;
     my $events = intercept(
       sub {
         $accepter->acceptance(validate_data => sub ($schema, $data) {
@@ -81,6 +80,9 @@ foreach my $test (
         });
       }
     );
+
+    my $TODO = todo 'JSON::PP may mutate some bignums'
+      if Test::JSON::Schema::Acceptance::_JSON_BACKEND eq 'JSON::PP' and $test_name =~ /^big/;
 
     cmp_result(
       [ map exists $_->{parent}
