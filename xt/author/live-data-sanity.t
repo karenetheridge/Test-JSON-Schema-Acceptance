@@ -4,7 +4,7 @@ use warnings;
 no if "$]" >= 5.031009, feature => 'indirect';
 
 use Test2::V0;
-use Test::Warnings;
+use Test2::Warnings;
 use Feature::Compat::Try;
 use Path::Tiny;
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };

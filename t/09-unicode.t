@@ -11,7 +11,7 @@ use utf8;
 use open ':std', ':encoding(UTF-8)'; # force stdin, stdout, stderr into utf8
 
 use Test2::V0;
-use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
+use if $ENV{AUTHOR_TESTING}, 'Test2::Warnings';
 use Test::JSON::Schema::Acceptance;
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
 

@@ -6,7 +6,7 @@ no if "$]" >= 5.033001, feature => 'multidimensional';
 no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 
 use Test2::V0;
-use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
+use if $ENV{AUTHOR_TESTING}, 'Test2::Warnings';
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
 use Test::JSON::Schema::Acceptance;
 
