@@ -17,6 +17,7 @@ use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' =>
 use Test::JSON::Schema::Acceptance;
 use lib 't/lib';
 use SchemaParser;
+use Helper;
 
 my $accepter = Test::JSON::Schema::Acceptance->new(7);
 
@@ -54,6 +55,7 @@ cmp_deeply(
     ),
   )),
   'tests pass for checking schemas that test for boolean type',
-);
+)
+or diag "all failing tests:\n", join("\n", failing_test_names($events));
 
 done_testing;
