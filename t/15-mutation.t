@@ -13,9 +13,11 @@ use Test2::V0 qw(!bag !bool), -no_pragmas => 1;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Scalar::Util 'dualvar';
 use Tie::Hash;
-use Test::Deep qw(!array !hash);;
 use Test::JSON::Schema::Acceptance;
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
+
+use lib 't/lib';
+use Helper;
 
 my $key = 'a';
 
@@ -80,7 +82,7 @@ foreach my $test (
       }
     );
 
-    cmp_deeply(
+    cmp_result(
       [ map exists $_->{parent}
           ? {
               details => $_->{assert}{details},

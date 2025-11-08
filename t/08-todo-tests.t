@@ -10,13 +10,13 @@ no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 
 use Test2::API 'intercept';
 use Test2::V0 qw(!bag !bool), -no_pragmas => 1;
-use Test::Deep qw(!array !hash);;
 use if $ENV{AUTHOR_TESTING}, 'Test::Warnings';
 use Test::JSON::Schema::Acceptance;
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
 
 use lib 't/lib';
 use SchemaParser;
+use Helper;
 
 my $accepter = Test::JSON::Schema::Acceptance->new(test_dir => 't/tests/subset');
 my $parser = SchemaParser->new;
@@ -151,7 +151,7 @@ foreach my $test (
     'right number of tests are marked TODO ('.$todo_count.')',
   );
 
-  cmp_deeply(
+  cmp_result(
     $accepter->results,
     $test->{results},
     'result data was populated',

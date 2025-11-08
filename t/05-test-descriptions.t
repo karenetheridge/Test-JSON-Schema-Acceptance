@@ -17,6 +17,7 @@ use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' =>
 
 use lib 't/lib';
 use SchemaParser;
+use Helper;
 
 my $accepter = Test::JSON::Schema::Acceptance->new(test_dir => 't/tests/simple-booleans');
 my $parser = SchemaParser->new;
@@ -41,7 +42,7 @@ cmp_deeply(
   'all tests pass',
 );
 
-cmp_deeply(
+cmp_result(
   [ map $_->name, @bool_tests ],
   [
     map {

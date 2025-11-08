@@ -11,12 +11,12 @@ no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 use Test2::API 'intercept';
 use Test2::V0 qw(!bag !bool !warnings), -no_pragmas => 1;
 use Test::Warnings 'warnings';
-use Test::Deep qw(!array !hash);;
 use Test::JSON::Schema::Acceptance;
 use Test::File::ShareDir -share => { -dist => { 'Test-JSON-Schema-Acceptance' => 'share' } };
 
 use lib 't/lib';
 use SchemaParser;
+use Helper;
 
 my $accepter = Test::JSON::Schema::Acceptance->new(test_dir => 't/tests/subset');
 my $parser = SchemaParser->new;
@@ -60,7 +60,7 @@ foreach my $test (
     $todo_count.' tests are marked TODO',
   );
 
-  cmp_deeply(
+  cmp_result(
     \@warnings,
     [ re(qr/'skip_tests' option is deprecated at /) ],
     'got deprecation warnings for skip_tests feature',
