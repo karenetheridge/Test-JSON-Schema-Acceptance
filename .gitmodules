@@ -1,4 +1,5 @@
 [submodule "share"]
-  path = share
-  url = git://github.com/json-schema-org/JSON-Schema-Test-Suite.git
-  branch = main
+	path = share
+	; url = git://github.com/json-schema-org/JSON-Schema-Test-Suite.git
+	url = /Volumes/chambord/Users/ether/git/JSON-Schema-Test-Suite.git
+	branch = main
