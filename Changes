@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 1.032     2025-11-09 01:52:07Z
         - make tests "todo" when they fail when Cpanel::JSON::XS is not
           installed (GH#24)
