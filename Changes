@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.033     2025-11-09 16:24:46Z
         - fix test warnings on older perls
         - updated test suite:
           https://github.com/json-schema-org/JSON-Schema-Test-Suite/compare/8fd4fcec8ffc2294958818e05326a37fcf2b6c5c...8da0a7bcb23f3516590e70bc5c3e396400c27741
