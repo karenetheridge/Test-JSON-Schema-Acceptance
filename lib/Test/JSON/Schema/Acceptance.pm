@@ -820,16 +820,6 @@ JSON-encodes a data structure in a format suitable for human view, used for prin
 
 Provides access to the object that provides the L</json_prettyprint> method.
 
-=head1 ACKNOWLEDGEMENTS
-
-=for stopwords Perrett Signes
-
-Daniel Perrett <perrettdl@cpan.org> for the concept and help in design.
-
-Ricardo Signes <rjbs@cpan.org> for direction to and creation of Test::Fatal.
-
-Various others in #perl-help.
-
 =head1 SUPPORT
 
 You can also find me on the L<JSON Schema Slack server|https://json-schema.slack.com> and L<OpenAPI Slack
