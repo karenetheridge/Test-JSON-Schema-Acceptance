@@ -1,6 +1,8 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - increased some prereq requirements to resolve failures on older
+          perls; now using more Test2-specific modules
 
 1.033     2025-11-09 16:24:46Z
         - fix test warnings on older perls
