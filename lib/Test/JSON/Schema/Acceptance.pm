@@ -162,8 +162,7 @@ sub acceptance {
         return if $topdir =~ /^draft/ and not grep $topdir eq $_, $self->supported_specifications->@*;
 
         my $data = $self->json_deserialize($path->slurp_raw);
-        my $file = $path->relative($self->additional_resources);
-        my $uri = $base.'/'.$file;
+        my $uri = $base.'/'.$relative_path;
         $options->{add_resource}->($uri => $data,
           # ensure the evaluator parses this resource using its specified version
           $topdir =~ /^draft/ ? (specification_version => $topdir) : ());
