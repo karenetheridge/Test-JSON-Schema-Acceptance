@@ -159,7 +159,7 @@ sub acceptance {
         # skip resource files that are marked as being for an unsupported draft
         my $relative_path = $path->relative($self->additional_resources);
         my ($topdir) = split qr{/}, $relative_path, 2;
-        return if $topdir =~ /^draft/ and not grep $topdir eq $_, $self->supported_specifications->@*;
+        return if $topdir =~ /^(?:draft(?:[3467]|2019-09|2020-12)|v1)\z/ and not grep $topdir eq $_, $self->supported_specifications->@*;
 
         my $data = $self->json_deserialize($path->slurp_raw);
         my $uri = $base.'/'.$relative_path;
