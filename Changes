@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.036     2026-01-06 18:04:22Z
         - do not add v1/ remotes when the implementation does not support that
           version
         - updated test suite:
