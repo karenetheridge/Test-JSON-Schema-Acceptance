@@ -303,7 +303,8 @@ sub _run_test ($self, $one_file, $test_group, $test, $options) {
         if ($result_bool xor $test->{valid}) {
           $ctx->fail('evaluation result is incorrect', 'expected '.$expected.'; got '.($result_bool ? 'true' : 'false'));
           $ctx->${ $self->verbose ? \'diag' : \'note' }('schema: '.$self->json_prettyprint($test_group->{schema}));
-          $ctx->${ $self->verbose ? \'diag' : \'note' }('data: '.$self->json_prettyprint($test->{data}));
+          $ctx->${ $self->verbose ? \'diag' : \'note' }('data: '.$self->json_prettyprint($test->{data})
+            .(ref $test->{data} ? 'reference to '.ref $test->{data} : ''));
 
           # for backwards compatibility, if only one value is returned, it might be possible to
           # jsonify it to access the full results
