@@ -150,7 +150,8 @@ sub acceptance {
     # this is essentially what `bin/jsonschema_suite remote` does: resolves the filename against the
     # base uri to determine the absolute schema location of each resource.
     my $base = 'http://localhost:1234';
-    $ctx->note('adding resources from '.$self->additional_resources.' with the base URI "'.$base.'"...');
+    my %note_seen;
+    my $resource_basename = $self->additional_resources->basename;  # "remotes"
     $self->additional_resources->visit(
       sub ($path, @) {
         return if not $path->is_file or $path !~ /\.json$/;
@@ -158,8 +159,11 @@ sub acceptance {
         # version-specific resources are stored in a subdirectory by version:
         # skip resource files that are marked as being for an unsupported draft
         my $relative_path = $path->relative($self->additional_resources);
-        my ($topdir) = split qr{/}, $relative_path, 2;
+        my ($topdir, $rest) = split qr{/}, $relative_path, 2;
         return if $topdir =~ /^(?:draft(?:[3467]|2019-09|2020-12)|v1)\z/ and not grep $topdir eq $_, $self->supported_specifications->@*;
+
+        $ctx->note('adding resource'.($rest//'' =~ m{/} ? 's' : '').' from '.$resource_basename.'/'.$topdir.' with the base URI "'.$base.'"...')
+          if not $note_seen{$resource_basename.'/'.$topdir}++;
 
         my $data = $self->json_deserialize($path->slurp_raw);
         my $uri = $base.'/'.$relative_path;
