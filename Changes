@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - removed dependency on Ref::Util
 
 1.037     2026-01-21 22:49:02Z
         - when dumping data for a failed test, include its type when blessed

@@ -29,7 +29,6 @@ use Types::Standard 1.016003 qw(Str InstanceOf ArrayRef HashRef Dict Any HasMeth
 use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny 0.069;
 use List::Util 1.33 qw(any max sum0);
-use Ref::Util qw(is_plain_arrayref is_plain_hashref is_ref);
 use Git::Wrapper;
 use namespace::clean;
 
@@ -214,7 +213,7 @@ sub acceptance {
         die 'specification_version unknown: cannot evaluate schema against metaschema'
           if not $self->_has_specification;
 
-        my $metaschema_uri = is_plain_hashref($test_group->{schema}) && $test_group->{schema}{'$schema'}
+        my $metaschema_uri = ref $test_group->{schema} eq 'HASH' && $test_group->{schema}{'$schema'}
           ? $test_group->{schema}{'$schema'}
           : METASCHEMA->{$self->specification};
         my $metaschema_schema = { '$ref' => $metaschema_uri };
@@ -375,15 +374,15 @@ sub _mutation_check ($self, $data) {
     if (not defined $node->[1]) {
       next;
     }
-    if (is_plain_arrayref($node->[1])) {
+    if (ref $node->[1] eq 'ARRAY') {
       push @nodes, map [ $node->[0].'/'.$_, $node->[1][$_] ], 0 .. $node->[1]->$#*;
       push @error_paths, $node->[0] if tied($node->[1]->@*);
     }
-    elsif (is_plain_hashref($node->[1])) {
+    elsif (ref $node->[1] eq 'HASH') {
       push @nodes, map [ $node->[0].'/'.(s!~!~0!gr =~ s!/!~1!gr), $node->[1]{$_} ], keys $node->[1]->%*;
       push @error_paths, $node->[0] if tied($node->[1]->%*);
     }
-    elsif (is_ref($node->[1])) {
+    elsif (ref $node->[1]) {
       next; # boolean or bignum
     }
     else {
