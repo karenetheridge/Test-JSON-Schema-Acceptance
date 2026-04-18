@@ -491,6 +491,7 @@ sub _build_results_text ($self) {
   my @lines;
   sub _pad ($s, $rest) { sprintf('%-29s', $s) . $rest }
   push @lines, _pad('generated with:', ref($self).' '.$self->VERSION);
+  push @lines, _pad('on perl: ', $^V);
 
   my $test_dir = $self->test_dir;
   my $orig_dir = $self->_build_test_dir;
