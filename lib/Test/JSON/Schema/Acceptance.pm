@@ -30,6 +30,7 @@ use Types::Common::Numeric 'PositiveOrZeroInt';
 use Path::Tiny 0.069;
 use List::Util 1.33 qw(any max sum0);
 use Git::Wrapper;
+use B;
 use namespace::clean;
 
 # specification version => metaschema URI
