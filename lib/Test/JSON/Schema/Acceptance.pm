@@ -537,7 +537,7 @@ sub _build_results_text ($self) {
   push @lines, map sprintf('%-'.$length.'s % 5d       % 4d  % 4d', $_->@{qw(file pass todo_fail fail)}),
     $self->results->@*;
 
-  my $total = +{ map { my $type = $_; $type => sum0(map $_->{$type}, $self->results->@*) } qw(pass todo_fail fail) };
+  my $total = +{ map do { my $type = $_; $type => sum0(map $_->{$type}, $self->results->@*) }, qw(pass todo_fail fail) };
   push @lines, '-'x($length + 23);
   push @lines, sprintf('%-'.$length.'s % 5d      % 5d % 5d', 'TOTAL', $total->@{qw(pass todo_fail fail)});
 
