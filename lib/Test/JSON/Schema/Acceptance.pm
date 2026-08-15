@@ -217,7 +217,7 @@ sub acceptance {
         my $metaschema_uri = ref $test_group->{schema} eq 'HASH' && $test_group->{schema}{'$schema'}
           ? $test_group->{schema}{'$schema'}
           : METASCHEMA->{$self->specification};
-        my $metaschema_schema = { '$ref' => $metaschema_uri };
+        my $metaschema_schema = $metaschema_uri;
         my $result = $options->{validate_data}
           ? $options->{validate_data}->($metaschema_schema, $test_group->{schema})
           : $options->{validate_json_string}->($metaschema_schema, $self->json_serialize($test_group->{schema}));
