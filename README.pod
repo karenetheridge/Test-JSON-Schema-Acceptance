@@ -10,7 +10,7 @@ Test::JSON::Schema::Acceptance - Acceptance testing for JSON-Schema based valida
 
 =head1 VERSION
 
-version 1.038
+version 1.039
 
 =head1 SYNOPSIS
 
@@ -34,6 +34,7 @@ In the JSON::Schema::Modern module, a test could look like the following:
       return JSON::Schema::Modern->new($schema)->validate($input_data);
     },
     todo_tests => [ { file => 'dependencies.json' } ],
+    skip_tests => [ { file => 'bad_tests.json' } ],
   );
 
   done_testing();
@@ -320,13 +321,26 @@ The syntax can take one of many forms:
 
 =head3 todo_tests
 
-Optional. Mentioned tests will run as L<"TODO"|Test::More/TODO: BLOCK>. Uses arrayrefs of
+Optional. Mentioned tests will run as if in a L<"TODO"|Test::More/TODO: BLOCK>. Uses arrayrefs of
 the same hashref structure as L</tests> above, which are ORed together.
 
   todo_tests => [
     # all tests in this file are TODO
     { file => 'dependencies.json' },
     # just some tests in this file are TODO
+    { file => 'boolean_schema.json', test_description => 'array is invalid' },
+    # .. etc
+  ]
+
+=head3 skip_tests
+
+Optional. Mentioned tests will run as if in a L<""|Test::More/SKIP: BLOCK>. Uses arrayrefs of
+the same hashref structure as L</tests> above, which are ORed together.
+
+  skip_tests => [
+    # all tests in this file are SKIPped
+    { file => 'dependencies.json' },
+    # just some tests in this file are SKIPped
     { file => 'boolean_schema.json', test_description => 'array is invalid' },
     # .. etc
   ]
