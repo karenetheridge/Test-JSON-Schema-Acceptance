@@ -237,6 +237,7 @@ sub acceptance {
         my $todo;
         $todo = Test2::Todo->new(reason => 'Test marked TODO via deprecated "skip_tests"')
           if ref $options->{skip_tests} eq 'ARRAY'
+            and not (grep +ref, $options->{skip_tests}->@*)
             and grep +(($test_group->{description}.' - '.$test->{description}) =~ /$_/),
               $options->{skip_tests}->@*;
 
