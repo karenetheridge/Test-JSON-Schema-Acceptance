@@ -1,6 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
 {{$NEXT}}
+        - new "skip_tests" feature, using the same format as "todo_tests"
 
 1.038     2026-08-16 00:22:45Z
         - removed dependency on Ref::Util
