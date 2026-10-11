@@ -1,6 +1,6 @@
 Revision history for Test-JSON-Schema-Acceptance
 
-{{$NEXT}}
+1.040     2026-10-11 01:06:25Z
         - adjust tests to handle a change in perl 5.45.4 (see perl issue
           #24845) (PR #26, Richard Leach)
         - updated test suite:
