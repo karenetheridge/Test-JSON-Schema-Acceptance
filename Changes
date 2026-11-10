@@ -1,5 +1,7 @@
 Revision history for Test-JSON-Schema-Acceptance
 
+{{$NEXT}}
+
 1.041     2026-11-10 03:00:31Z
         - updated test suite:
           https://github.com/json-schema-org/JSON-Schema-Test-Suite/compare/7de0e6a06031ede80028583dd45d0cd41105ae5b...245a45abc90190c0bff04d97e6d2b541b4bb9f12
